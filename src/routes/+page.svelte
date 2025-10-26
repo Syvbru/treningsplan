@@ -121,7 +121,6 @@
             
             if (savedUsername) {
                 username = savedUsername;
-                console.log('[AUTO-LOGIN] Gjenopprettet brukernavn:', username);
             }
 
             isLoading = true;
@@ -146,7 +145,6 @@
                 
                 goToToday(); 
                 
-                console.log('[AUTO-LOGIN SUCCESS] Fullstendig reaktiv oppdatering og datoendring tvunget.');
             })
             .catch(() => {
                 isLoading = false;
@@ -266,10 +264,6 @@
         const user = USER_CREDENTIALS[userKeyHash];
 
         if (!user) {
-            console.error("=================================================");
-            console.error("[FEILKODE 404] Brukernavn ikke funnet.");
-            console.error("Beregnet HASH (Lookup Key) fra tastet brukernavn:", userKeyHash);
-            console.error("=================================================");
             loginError = "Ugyldig brukernavn.";
             isLoading = false;
             return;
@@ -280,13 +274,11 @@
         if (hashedPassword.length !== 64) {
             loginError = "Kryptograferingsfeil: Klarte ikke å generere gyldig passord-hash (Feil lengde på output).";
             isLoading = false;
-            console.error("DEBUG: Hashing feilet. Oppnådd hash-lengde:", hashedPassword.length, "Oppnådd hash:", hashedPassword);
             return;
         }
 
         if (hashedPassword === user.hash) {
-            console.log(`[SUKSESS] Logger inn (brukerhash: ${userKeyHash.substring(0, 8)}...) og laster ${user.file}.`);
-
+            
             if (typeof window !== "undefined") {
                 localStorage.setItem(USER_KEY_STORAGE, userKeyHash);
                 localStorage.setItem(USERNAME_STORAGE, plainUser);
@@ -301,11 +293,6 @@
         } else {
             loginError = "Feil passord.";
             isLoading = false;
-            console.error("=================================================");
-            console.error("[FEILKODE 401] Passordfeil for bruker:", plainUser);
-            console.error("Beregnet PASSORD HASH:", hashedPassword);
-            console.error("Forventet PASSORD HASH for denne brukeren:", user.hash);
-            console.error("=================================================");
         }
     }
 
@@ -328,8 +315,6 @@
         selectedDate = null;
         calendarCursor = startOfMonth(new Date());
         view = VIEWS.OVERVIEW;
-
-        console.log("[LOGOUT] Brukeren logget ut og LocalStorage er tømt.");
     }
 
     // === CSV-lasting ===
@@ -406,7 +391,6 @@
             }
 
             const csvText = await response.text();
-            console.log('Felles økter CSV lastet, lengde:', csvText.length);
             
             Papa.parse(csvText, {
                 header: true,
@@ -414,10 +398,6 @@
                 complete: (result) => {
                     const rows = result.data as any[];
                     const parsed: Array<{dato: string, okt: string, utovere: string[]}> = [];
-
-                    console.log('Parser felles økter, rader:', rows.length);
-                    console.log('Første rad:', rows[0]);
-
                     rows.forEach((row, idx) => {
                         const dato = row.Dato || row.dato || row.DATO;
                         const okt = row.Økt || row.økt || row.ØKT || row.Okt;
@@ -432,15 +412,11 @@
                             
                             if (parsedDato && utovereList.length > 0) {
                                 parsed.push({ dato: parsedDato, okt: okt.trim(), utovere: utovereList });
-                                if (idx < 3) {
-                                    console.log(`Rad ${idx}: dato=${parsedDato}, økt=${okt.trim()}, utøvere=${utovereList.join(', ')}`);
-                                }
                             }
                         }
                     });
 
                     fellesOkter = parsed;
-                    console.log('Felles økter lastet:', fellesOkter.length, 'økter');
                 }
             });
         } catch (e) {
@@ -677,7 +653,6 @@
     // === Reaktiv blokk for å sikre at felles utøvere oppdateres etter Auto-Login/Refresh ===
     $: {
         if (username.trim() && fellesOkter.length > 0 && loggedIn) {
-            console.log('[REACTIVE] Tvinger oppdatering av felles økter basert på brukernavn:', username);
             expandedDates = expandedDates;
         }
     }
