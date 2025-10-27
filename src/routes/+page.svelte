@@ -630,7 +630,7 @@
     $: activeWorkouts = workouts.filter((w) => w.date === activeIso);
     $: windowDates =
         windowMode === "next"
-            ? { start: addDays(activeDate, 1), end: addDays(activeDate, 7) }
+            ? { start: addDays(activeDate, 1), end: addDays(activeDate, 6) }
             : { start: subDays(activeDate, 7), end: subDays(activeDate, 1) };
 
     $: windowWorkouts = workouts
