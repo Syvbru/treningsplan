@@ -1021,7 +1021,7 @@
                                     </div>
                                 {:else}
                                     <p class="text-sm text-slate-600 italic">
-                                        Ingen andre har planlagt økt denne dagen.
+                                        Ingen andre har denne økten.
                                     </p>
                                 {/if}
                             </div>
@@ -1250,7 +1250,7 @@
                                         </div>
                                     {:else}
                                         <p class="text-sm text-slate-600 italic">
-                                            Ingen andre har planlagt økt denne dagen.
+                                            Ingen andre har denne økten.
                                         </p>
                                     {/if}
                                 </div>
