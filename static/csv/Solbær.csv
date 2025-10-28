@@ -1,7 +1,7 @@
 Dag,Dato,Hva økt 1,Tid,Hva økt 2,Tid,Kommentar/Viktig ved gjennomføring økt,Total timer
 torsdag,1.mai,Fotball kamp,01:15,,,"Klassisk 01:15, hvis kan blir avlyst",
-fredag,2.mai,Fotball trening,01:30,,,
-lørdag,3.mai,Råskinnet/Råtassen,01:30,,,
+fredag,2.mai,Fotball trening,01:30,,,,
+lørdag,3.mai,Råskinnet/Råtassen,01:30,,,,
 søndag,4.mai,Langtur sykkel: søndagsgruppa,02:15,,,,"6,5t"
 ,,,,,
 mandag,5.mai,Styrke m/Asker Sk,01:30,,,
@@ -264,4 +264,5 @@ lørdag,13.desember,Hakadalsrennet fristil,01:30,,,Masse lykke til! Veldig vikti
 søndag,14.desember,Konnerudrennet klassisk,01:30,,,,
 
 ,,,,,,,
+
 
