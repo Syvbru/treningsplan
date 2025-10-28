@@ -1,5 +1,5 @@
 Dag,Dato,Hva økt 1,Tid,Hva økt 2,Tid,Kommentar/Viktig ved gjennomføring økt,Total timer
-torsdag,1.mai,Fotball kamp,01:15,,,"Klassisk 01:15, hvis kan blir avlyst",
+torsdag,1.mai,Fotball kamp,01:15,,"Klassisk 01:15, hvis kan blir avlyst",
 fredag,2.mai,Fotball trening,01:30,,,
 lørdag,3.mai,Råskinnet/Råtassen,01:30,,,
 søndag,4.mai,Langtur sykkel: søndagsgruppa,02:15,,,,"6,5t"
@@ -262,4 +262,5 @@ torsdag,11.desember,"Basisferdigheter (svinger, utfor, balanse) klassisk",01:30,
 fredag,12.desember,Rennforberedende skate,01:00,,,"Kjør de forberedelsene du er trygg på. Noen varianter: 5 stigningsdrag (ca 30sek), 5 hurtighetsdrag, 3x2min i4",
 lørdag,13.desember,Hakadalsrennet fristil,01:30,,,Masse lykke til! Veldig viktig å holde fokus på de tekniske oppgavene og ikke stresse. Da man går raskest :-),
 søndag,14.desember,Konnerudrennet klassisk,01:30,,,,
+
 ,,,,,,,
