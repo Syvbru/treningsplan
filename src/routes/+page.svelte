@@ -68,7 +68,7 @@
         },
         "7e975df2841e7a25ebbe6e3bd2c30a55dcd1895420ed1fddae1a141709a5038a": {
             hash: "f4b73b7da041a26825d9d5566b468b1cf2333e55fa0051ab76e05777962cfe33",
-            file: "Blåbær.csv",
+            file: "Blabaer.csv",
         },
         "99d9d8db45cd4afad1a4995074e31ee38c79b4becc138315d0a4c0777c389978": {
             hash: "bef3523a54f1204786583e293d63b0d2ad8eccf8333ea0b8a87463c07702ec85",
