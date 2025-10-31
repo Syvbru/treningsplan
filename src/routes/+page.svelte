@@ -66,9 +66,9 @@
             hash: "5a2e47eec0de18abbb9b705a39eaaf2177047db41297a09202ea31889e3c545c",
             file: "Jordbær.csv",
         },
-        "7e975df2841e7a25ebbe6e3bd2c30a55dcd1895420ed1fddae1a141709a5038a": {
+        "8bbae86e930057698e451b4e7c50411077d0eba4f60d72c6ac93ad4ece44e183": {
             hash: "f4b73b7da041a26825d9d5566b468b1cf2333e55fa0051ab76e05777962cfe33",
-            file: "Blabaer.csv",
+            file: "Blåbær.csv",
         },
         "99d9d8db45cd4afad1a4995074e31ee38c79b4becc138315d0a4c0777c389978": {
             hash: "bef3523a54f1204786583e293d63b0d2ad8eccf8333ea0b8a87463c07702ec85",
