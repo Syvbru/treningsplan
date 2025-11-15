@@ -881,8 +881,8 @@
 
             <div class="mx-auto max-w-5xl px-4 pb-6">
                 {#if isAdmin}
-                    <div class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                        <div class="flex-1 flex gap-2">
+                    <div class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full">
+                        <div class="flex-1 flex gap-2 w-full">
                             <input
                                 type="text"
                                 bind:value={currentUtoverNavn}
