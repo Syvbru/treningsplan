@@ -1526,7 +1526,7 @@
             {/if}
 
             {#if view === VIEWS.TECHNIQUE}
-                <div class="mt-8 mb-12 mx-auto max-w-6xl px-0 sm:px-4">
+                <div class="mt-8 mb-12 mx-auto max-w-6xl px-1 sm:px-4">
                     <h2
                         class="mb-6 text-3xl font-bold text-center text-violet-700"
                     >
@@ -1539,7 +1539,7 @@
                             class="group bg-white rounded-2xl shadow-lg border border-violet-500 overflow-hidden"
                         >
                             <summary
-                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between"
+                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 group-open:bg-violet-50 transition-colors flex items-center justify-between"
                             >
                                 Klassisk
                                 <ChevronDown
@@ -1549,16 +1549,12 @@
 
                             <div class="px-1 sm:px-6 pb-6 space-y-4">
                                 <!-- Diagonal -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl mt-4 overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Diagonal
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
@@ -1594,16 +1590,12 @@
                                 </details>
 
                                 <!-- Staking -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Staking
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
@@ -1639,16 +1631,12 @@
                                 </details>
 
                                 <!-- Dobbeltak med fraspark -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Dobbeltak med fraspark
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
@@ -1674,7 +1662,7 @@
                             class="group bg-white rounded-2xl shadow-lg border border-violet-500 overflow-hidden"
                         >
                             <summary
-                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between"
+                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 group-open:bg-violet-50 transition-colors flex items-center justify-between"
                             >
                                 Skøyting
                                 <ChevronDown
@@ -1682,18 +1670,14 @@
                                 />
                             </summary>
 
-                            <div class="px-1 sm:px-6 pb-6 space-y-4">
+                            <div class="0 sm:px-6 pb-6 space-y-4">
                                 <!-- Dobbeldans -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl mt-4 overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Dobbeldans
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
@@ -1729,16 +1713,12 @@
                                 </details>
 
                                 <!-- Padling -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Padling
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
@@ -1774,16 +1754,12 @@
                                 </details>
 
                                 <!-- Enkeldans -->
-                                <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <details class="group/sub bg-white rounded-2xl overflow-hidden">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Enkeldans
-                                        <ChevronDown
-                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
-                                        />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
                                     </summary>
-                                    <div
-                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-                                    >
+                                        <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
                                             class="bg-white rounded-xl shadow overflow-hidden"
                                         >
