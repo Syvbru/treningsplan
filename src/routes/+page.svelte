@@ -1526,7 +1526,7 @@
             {/if}
 
             {#if view === VIEWS.TECHNIQUE}
-                <div class="mt-8 mb-12 mx-auto max-w-6xl px-2 sm:px-4">
+                <div class="mt-8 mb-12 mx-auto max-w-6xl px-0 sm:px-4">
                     <h2
                         class="mb-6 text-3xl font-bold text-center text-violet-700"
                     >
@@ -1547,10 +1547,10 @@
                                 />
                             </summary>
 
-                            <div class="px-6 pb-6 space-y-4">
+                            <div class="px-1 sm:px-6 pb-6 space-y-4">
                                 <!-- Diagonal -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Diagonal
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1595,7 +1595,7 @@
 
                                 <!-- Staking -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Staking
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1640,7 +1640,7 @@
 
                                 <!-- Dobbeltak med fraspark -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Dobbeltak med fraspark
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1682,10 +1682,10 @@
                                 />
                             </summary>
 
-                            <div class="px-6 pb-6 space-y-4">
+                            <div class="px-1 sm:px-6 pb-6 space-y-4">
                                 <!-- Dobbeldans -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Dobbeldans
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1730,7 +1730,7 @@
 
                                 <!-- Padling -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Padling
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1775,7 +1775,7 @@
 
                                 <!-- Enkeldans -->
                                 <details class="group bg-white rounded-2xl shadow-lg border border-violet-300 overflow-hidden">
-                                    <summary class="cursor-pointer px-3 sm:px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                    <summary class="cursor-pointer px-2 sm:px-4 py-3 text-l font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
                                         Enkeldans
                                         <ChevronDown
                                             class="h-4 w-4 transition-transform group-open/sub:rotate-180"
@@ -1825,7 +1825,7 @@
         </div>
 
         {#if view === VIEWS.CALENDAR}
-            <div class="mt-8 mb-12 mx-auto max-w-6xl">
+            <div class="mt-8 mb-12 mx-auto max-w-6xl px-4">
                 <div
                     class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3 sm:gap-0"
                 >
