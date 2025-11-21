@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {tick } from 'svelte';
+    import { tick } from "svelte";
     import Papa from "papaparse";
     import {
         parse,
@@ -34,6 +34,7 @@
         ChevronDown,
         ChevronUp,
         Users,
+        Video,
     } from "lucide-svelte";
 
     // Brukerdefinisjoner for innlogging og filnavn
@@ -98,8 +99,10 @@
 
     // Admin bruker
     const ADMIN_USER = {
-        usernameHash: "986193bec6464a05ece11907bbd5197d9644e65303fccf1f4b44a26b721ea84b",
-        passwordHash: "5b44c7e51a1ced96857901979f29bb492dce4c20d06343e5e6be3f5779660c15",
+        usernameHash:
+            "986193bec6464a05ece11907bbd5197d9644e65303fccf1f4b44a26b721ea84b",
+        passwordHash:
+            "5b44c7e51a1ced96857901979f29bb492dce4c20d06343e5e6be3f5779660c15",
     };
 
     // Login State
@@ -110,89 +113,89 @@
     let isLoading = false;
     let isAdmin = false;
     let currentUtoverNavn = "";
-    
+
     const USER_KEY_STORAGE = "userKey";
     const USERNAME_STORAGE = "savedUsername";
     const ADMIN_FLAG_STORAGE = "isAdmin";
     const SELECTED_USER_STORAGE = "selectedAdminUser";
-    
+
     // Felles økter data
-    let fellesOkter: Array<{dato: string, okt: string, utovere: string[]}> = [];
+    let fellesOkter: Array<{ dato: string; okt: string; utovere: string[] }> =
+        [];
     let expandedDates = new Set<string>();
 
     // Initial State Check og Auto-Login
     if (typeof window !== "undefined") {
         const persistedKey = localStorage.getItem(USER_KEY_STORAGE);
         const savedUsername = localStorage.getItem(USERNAME_STORAGE);
-        const persistedAdmin = localStorage.getItem(ADMIN_FLAG_STORAGE) === "true";
-        const persistedSelectedUser = localStorage.getItem(SELECTED_USER_STORAGE);
-        
+        const persistedAdmin =
+            localStorage.getItem(ADMIN_FLAG_STORAGE) === "true";
+        const persistedSelectedUser = localStorage.getItem(
+            SELECTED_USER_STORAGE,
+        );
+
         if (persistedAdmin && persistedSelectedUser) {
             // Admin med valgt bruker
             isAdmin = true;
             loggedIn = true;
             currentUtoverNavn = persistedSelectedUser;
-            
+
             if (savedUsername) {
                 username = savedUsername;
             }
 
             const nameHash = sha256Sync(persistedSelectedUser.toLowerCase());
             const user = USER_CREDENTIALS[nameHash];
-            
+
             if (user) {
                 isLoading = true;
-                Promise.all([
-                    loadWorkoutPlan(user.file),
-                    loadFellesOkter()
-                ])
-                .then(async () => {
-                    isLoading = false;
-                    const finalView = view; 
-                    const tempView = (finalView === VIEWS.OVERVIEW) 
-                        ? VIEWS.CALENDAR 
-                        : VIEWS.OVERVIEW;
-                    view = tempView; 
-                    await tick();
-                    view = finalView; 
-                    await tick();
-                    goToToday(); 
-                })
-                .catch(() => {
-                    isLoading = false;
-                    loginError = "Kunne ikke laste treningsdata.";
-                });
+                Promise.all([loadWorkoutPlan(user.file), loadFellesOkter()])
+                    .then(async () => {
+                        isLoading = false;
+                        const finalView = view;
+                        const tempView =
+                            finalView === VIEWS.OVERVIEW
+                                ? VIEWS.CALENDAR
+                                : VIEWS.OVERVIEW;
+                        view = tempView;
+                        await tick();
+                        view = finalView;
+                        await tick();
+                        goToToday();
+                    })
+                    .catch(() => {
+                        isLoading = false;
+                        loginError = "Kunne ikke laste treningsdata.";
+                    });
             }
         } else if (persistedKey && USER_CREDENTIALS[persistedKey]) {
             // Vanlig bruker
             const user = USER_CREDENTIALS[persistedKey];
             loggedIn = true;
-            
+
             if (savedUsername) {
                 username = savedUsername;
             }
 
             isLoading = true;
-            Promise.all([
-                loadWorkoutPlan(user.file),
-                loadFellesOkter()
-            ])
-            .then(async () => {
-                isLoading = false;
-                const finalView = view; 
-                const tempView = (finalView === VIEWS.OVERVIEW) 
-                    ? VIEWS.CALENDAR 
-                    : VIEWS.OVERVIEW;
-                view = tempView; 
-                await tick();
-                view = finalView; 
-                await tick();
-                goToToday(); 
-            })
-            .catch(() => {
-                isLoading = false;
-                loginError = "Kunne ikke laste treningsdata.";
-            });
+            Promise.all([loadWorkoutPlan(user.file), loadFellesOkter()])
+                .then(async () => {
+                    isLoading = false;
+                    const finalView = view;
+                    const tempView =
+                        finalView === VIEWS.OVERVIEW
+                            ? VIEWS.CALENDAR
+                            : VIEWS.OVERVIEW;
+                    view = tempView;
+                    await tick();
+                    view = finalView;
+                    await tick();
+                    goToToday();
+                })
+                .catch(() => {
+                    isLoading = false;
+                    loginError = "Kunne ikke laste treningsdata.";
+                });
         }
     }
 
@@ -303,14 +306,14 @@
         const plainUser = username.trim().toLowerCase();
         const userKeyHash = sha256Sync(plainUser);
         const hashedPassword = sha256Sync(password);
-        
+
         // Sjekk om det er admin
         if (userKeyHash === ADMIN_USER.usernameHash) {
             if (hashedPassword === ADMIN_USER.passwordHash) {
                 isAdmin = true;
                 loggedIn = true;
                 isLoading = false;
-                
+
                 if (typeof window !== "undefined") {
                     localStorage.setItem(ADMIN_FLAG_STORAGE, "true");
                     localStorage.setItem(USERNAME_STORAGE, plainUser);
@@ -322,7 +325,7 @@
                 return;
             }
         }
-        
+
         // Vanlig bruker
         const user = USER_CREDENTIALS[userKeyHash];
 
@@ -333,7 +336,8 @@
         }
 
         if (hashedPassword.length !== 64) {
-            loginError = "Kryptograferingsfeil: Klarte ikke å generere gyldig passord-hash (Feil lengde på output).";
+            loginError =
+                "Kryptograferingsfeil: Klarte ikke å generere gyldig passord-hash (Feil lengde på output).";
             isLoading = false;
             return;
         }
@@ -344,10 +348,7 @@
                 localStorage.setItem(USERNAME_STORAGE, plainUser);
             }
 
-            await Promise.all([
-                loadWorkoutPlan(user.file),
-                loadFellesOkter()
-            ]);
+            await Promise.all([loadWorkoutPlan(user.file), loadFellesOkter()]);
             loggedIn = true;
             isLoading = false;
         } else {
@@ -380,10 +381,7 @@
             localStorage.setItem(SELECTED_USER_STORAGE, searchName);
         }
 
-        await Promise.all([
-            loadWorkoutPlan(user.file),
-            loadFellesOkter()
-        ]);
+        await Promise.all([loadWorkoutPlan(user.file), loadFellesOkter()]);
 
         isLoading = false;
         selectedDate = null;
@@ -437,17 +435,28 @@
                     const parsed: Workout[] = [];
 
                     const idxDato = header.findIndex((h) => h.includes("dato"));
-                    const idxHva1 = header.findIndex((h) => h.includes("hva økt 1"));
+                    const idxHva1 = header.findIndex((h) =>
+                        h.includes("hva økt 1"),
+                    );
                     const idxTid1 = header.findIndex((h) => h === "tid");
-                    const idxHva2 = header.findIndex((h) => h.includes("hva økt 2"));
-                    const idxTid2 = header.findIndex((h, i) => h === "tid" && i > idxTid1);
-                    const idxKommentar = header.findIndex((h) => h.includes("kommentar"));
+                    const idxHva2 = header.findIndex((h) =>
+                        h.includes("hva økt 2"),
+                    );
+                    const idxTid2 = header.findIndex(
+                        (h, i) => h === "tid" && i > idxTid1,
+                    );
+                    const idxKommentar = header.findIndex((h) =>
+                        h.includes("kommentar"),
+                    );
 
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
                         const dato = parseDate(row[idxDato]);
-                        const kommentar = idxKommentar >= 0 ? (row[idxKommentar]?.trim() ?? "") : "";
-                        
+                        const kommentar =
+                            idxKommentar >= 0
+                                ? (row[idxKommentar]?.trim() ?? "")
+                                : "";
+
                         if (row[idxHva1]) {
                             parsed.push({
                                 date: dato,
@@ -473,75 +482,91 @@
             });
         } catch (e) {
             console.error("Feil ved lasting av plan:", e);
-            loginError = "En uventet feil oppstod under lasting av treningsplanen.";
+            loginError =
+                "En uventet feil oppstod under lasting av treningsplanen.";
         }
     }
 
     // Last inn felles økter CSV
     async function loadFellesOkter() {
         try {
-            const response = await fetch('/csv/felles_økter.csv');
+            const response = await fetch("/csv/felles_økter.csv");
             if (!response.ok) {
-                console.warn('Kunne ikke laste felles_økter.csv');
+                console.warn("Kunne ikke laste felles_økter.csv");
                 return;
             }
 
             const csvText = await response.text();
-            
+
             Papa.parse(csvText, {
                 header: true,
                 skipEmptyLines: true,
                 complete: (result) => {
                     const rows = result.data as any[];
-                    const parsed: Array<{dato: string, okt: string, utovere: string[]}> = [];
+                    const parsed: Array<{
+                        dato: string;
+                        okt: string;
+                        utovere: string[];
+                    }> = [];
 
                     rows.forEach((row) => {
                         const dato = row.Dato || row.dato || row.DATO;
                         const okt = row.Økt || row.økt || row.ØKT || row.Okt;
-                        const utovere = row.Utøvere || row.utøvere || row.UTØVERE || row.Utovere;
-                        
+                        const utovere =
+                            row.Utøvere ||
+                            row.utøvere ||
+                            row.UTØVERE ||
+                            row.Utovere;
+
                         if (dato && okt && utovere) {
                             const parsedDato = parseDate(dato);
                             const utovereList = utovere
-                                .split(',')
+                                .split(",")
                                 .map((n: string) => n.trim())
                                 .filter((n: string) => n.length > 0);
-                            
+
                             if (parsedDato && utovereList.length > 0) {
-                                parsed.push({ dato: parsedDato, okt: okt.trim(), utovere: utovereList });
+                                parsed.push({
+                                    dato: parsedDato,
+                                    okt: okt.trim(),
+                                    utovere: utovereList,
+                                });
                             }
                         }
                     });
 
                     fellesOkter = parsed;
-                }
+                },
             });
         } catch (e) {
-            console.error('Feil ved lasting av felles økter:', e);
+            console.error("Feil ved lasting av felles økter:", e);
         }
     }
 
     // Hjelpefunksjon for å finne felles utøvere for en spesifikk økt
     function getFellesUtovere(date: string, sessionTitle: string): string[] {
-        const currentUser = isAdmin ? currentUtoverNavn.trim() : username.trim();
+        const currentUser = isAdmin
+            ? currentUtoverNavn.trim()
+            : username.trim();
 
         if (!currentUser || !sessionTitle) {
             return [];
         }
 
-        const matching = fellesOkter.filter(fo => 
-            fo.dato === date && 
-            fo.okt.toLowerCase() === sessionTitle.toLowerCase()
+        const matching = fellesOkter.filter(
+            (fo) =>
+                fo.dato === date &&
+                fo.okt.toLowerCase() === sessionTitle.toLowerCase(),
         );
-        
+
         const allUtovere = new Set<string>();
         matching.forEach((fo) => {
-            const hasUser = fo.utovere.some(u => 
-                u.toLowerCase() === currentUser.toLowerCase()
+            const hasUser = fo.utovere.some(
+                (u) => u.toLowerCase() === currentUser.toLowerCase(),
             );
-            
+
             if (hasUser) {
-                fo.utovere.forEach(u => {
+                fo.utovere.forEach((u) => {
                     if (u.toLowerCase() !== currentUser.toLowerCase()) {
                         allUtovere.add(u);
                     }
@@ -573,6 +598,7 @@
     const VIEWS = {
         OVERVIEW: "overview",
         CALENDAR: "calendar",
+        TECHNIQUE: "technique",
     } as const;
     type View = (typeof VIEWS)[keyof typeof VIEWS];
     let view: View = VIEWS.OVERVIEW;
@@ -771,7 +797,7 @@
     }
 
     let days: (Date | null)[] = [];
-    
+
     function selectDay(d: Date) {
         selectedDate = startOfDay(d);
         view = VIEWS.OVERVIEW;
@@ -801,14 +827,21 @@
 </script>
 
 {#if !loggedIn}
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-95 p-4">
-        <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 ease-in-out transform scale-100">
+    <div
+        class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-95 p-4"
+    >
+        <div
+            class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 ease-in-out transform scale-100"
+        >
             <h2 class="mb-6 text-center text-3xl font-bold text-violet-700">
                 Treningsplan
             </h2>
 
             <div class="mb-4">
-                <label for="username" class="mb-2 flex items-center text-sm font-medium text-gray-700">
+                <label
+                    for="username"
+                    class="mb-2 flex items-center text-sm font-medium text-gray-700"
+                >
                     <User class="mr-2 h-4 w-4" /> Brukernavn
                 </label>
                 <input
@@ -821,7 +854,10 @@
             </div>
 
             <div class="mb-6">
-                <label for="password" class="mb-2 flex items-center text-sm font-medium text-gray-700">
+                <label
+                    for="password"
+                    class="mb-2 flex items-center text-sm font-medium text-gray-700"
+                >
                     <Lock class="mr-2 h-4 w-4" /> Passord
                 </label>
                 <input
@@ -837,7 +873,9 @@
             </div>
 
             {#if loginError}
-                <div class="mb-4 rounded-lg bg-red-100 p-3 text-sm font-medium text-red-700">
+                <div
+                    class="mb-4 rounded-lg bg-red-100 p-3 text-sm font-medium text-red-700"
+                >
                     {loginError}
                 </div>
             {/if}
@@ -848,9 +886,25 @@
                 class="flex w-full items-center justify-center rounded-xl bg-violet-600 px-4 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-violet-700 disabled:bg-violet-300"
             >
                 {#if isLoading}
-                    <svg class="mr-3 h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                        class="mr-3 h-5 w-5 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                        ></circle>
+                        <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                     </svg>
                     Logger inn...
                 {:else}
@@ -868,7 +922,9 @@
 {#if loggedIn}
     <div class="min-h-screen bg-slate-50">
         <div class="bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white">
-            <div class="mx-auto max-w-5xl px-4 py-8 flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between items-start sm:items-center">
+            <div
+                class="mx-auto max-w-5xl px-4 py-8 flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between items-start sm:items-center"
+            >
                 <h1 class="text-3xl sm:text-5xl font-bold">TRENINGSPLAN</h1>
 
                 <button
@@ -881,7 +937,9 @@
 
             <div class="mx-auto max-w-5xl px-4 pb-6">
                 {#if isAdmin}
-                    <div class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full">
+                    <div
+                        class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full"
+                    >
                         <div class="flex-1 flex gap-2 w-full">
                             <input
                                 type="text"
@@ -894,13 +952,30 @@
                             />
                             <button
                                 on:click={searchUtoverByName}
-                                disabled={isLoading || !currentUtoverNavn.trim()}
+                                disabled={isLoading ||
+                                    !currentUtoverNavn.trim()}
                                 class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {#if isLoading}
-                                    <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg
+                                        class="h-4 w-4 animate-spin"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            class="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="4"
+                                        ></circle>
+                                        <path
+                                            class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
                                     </svg>
                                 {:else}
                                     <User class="h-4 w-4" />
@@ -911,34 +986,59 @@
                     </div>
 
                     {#if loginError}
-                        <div class="mb-3 rounded-lg bg-red-500/90 p-3 text-sm font-medium text-white">
+                        <div
+                            class="mb-3 rounded-lg bg-red-500/90 p-3 text-sm font-medium text-white"
+                        >
                             {loginError}
                         </div>
                     {/if}
                 {/if}
 
                 <div class="flex justify-end">
-                    <div class="relative flex bg-white/15 p-1 rounded-full w-[230px]">
+                    <div
+                        class="relative flex bg-white/15 rounded-full w-full sm:w-[345px]"
+                        style="padding: 0.175rem;"
+                    >
                         <div
-                            class="absolute top-1 left-1 h-[calc(100%-0.5rem)] w-[calc(50%-0.5rem)] bg-white rounded-full shadow-md transition-all duration-[700ms]"
-                            style={`transform: ${viewTransform};`}
+                            class="absolute bg-white rounded-full shadow-md transition-all duration-[700ms]"
+                            style={`top: 0.175rem; left: 0.175rem; height: calc(100% - 0.35rem); width: calc(33.333% - 0.38rem); transform: translateX(${
+                                view === VIEWS.OVERVIEW
+                                    ? "0"
+                                    : view === VIEWS.CALENDAR
+                                      ? "calc(100% + 0.35rem)"
+                                      : "calc(200% + 0.7rem)"
+                            });`}
                         ></div>
 
                         <button
                             on:click={() => (view = VIEWS.OVERVIEW)}
-                            class={`relative z-10 w-1/2 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
-                                view === VIEWS.OVERVIEW ? "text-violet-600" : "text-white/80 hover:text-white"
+                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                view === VIEWS.OVERVIEW
+                                    ? "text-violet-600"
+                                    : "text-white/80 hover:text-white"
                             }`}
                         >
                             <LineChart class="h-4 w-4 mr-1" /> Oversikt
                         </button>
                         <button
                             on:click={() => (view = VIEWS.CALENDAR)}
-                            class={`relative z-10 w-1/2 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
-                                isCalendarView ? "text-violet-600" : "text-white/80 hover:text-white"
+                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                view === VIEWS.CALENDAR
+                                    ? "text-violet-600"
+                                    : "text-white/80 hover:text-white"
                             }`}
                         >
                             <Calendar class="h-4 w-4 mr-1" /> Kalender
+                        </button>
+                        <button
+                            on:click={() => (view = VIEWS.TECHNIQUE)}
+                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                view === VIEWS.TECHNIQUE
+                                    ? "text-violet-600"
+                                    : "text-white/80 hover:text-white"
+                            }`}
+                        >
+                            <Video class="h-4 w-4 mr-1" /> Teknikk
                         </button>
                     </div>
                 </div>
@@ -962,37 +1062,71 @@
                     {@const s1Title = g.sessions[0]?.title || "Økt 1"}
                     {@const s2Title = g.sessions[1]?.title || "Økt 2"}
                     {@const fellesUtovere1 = getFellesUtovere(g.date, s1Title)}
-                    {@const fellesUtovere2 = isDoubleSession ? getFellesUtovere(g.date, s2Title) : []}
-                    {@const uniqueFellesUtovere = Array.from(new Set([...fellesUtovere1, ...fellesUtovere2]))}
+                    {@const fellesUtovere2 = isDoubleSession
+                        ? getFellesUtovere(g.date, s2Title)
+                        : []}
+                    {@const uniqueFellesUtovere = Array.from(
+                        new Set([...fellesUtovere1, ...fellesUtovere2]),
+                    )}
                     {@const totalCount = uniqueFellesUtovere.length}
-                    {@const isRestDay = g.sessions.some(s => s.title.toLowerCase().includes('hvile'))}
-                    
-                    <div class="rounded-2xl border border-violet-500 bg-white p-4 shadow-sm mb-3">
+                    {@const isRestDay = g.sessions.some((s) =>
+                        s.title.toLowerCase().includes("hvile"),
+                    )}
+
+                    <div
+                        class="rounded-2xl border border-violet-500 bg-white p-4 shadow-sm mb-3"
+                    >
                         <div class="mb-1 grid gap-y-1">
                             {#each g.sessions as s}
                                 {#key s}
                                     {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
-                                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full">
-                                            <div class="flex items-stretch gap-3 w-full">
-                                                <div class={`flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}>
-                                                    <svelte:component this={info.icon} class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`} />
+                                        <div
+                                            class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
+                                        >
+                                            <div
+                                                class="flex items-stretch gap-3 w-full"
+                                            >
+                                                <div
+                                                    class={`flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
+                                                >
+                                                    <svelte:component
+                                                        this={info.icon}
+                                                        class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
+                                                    />
                                                 </div>
 
-                                                <div class="flex flex-col justify-between w-full min-w-0 h-12 sm:h-13">
-                                                    <div class="text-[15px] sm:text-lg font-semibold leading-tight">
+                                                <div
+                                                    class="flex flex-col justify-between w-full min-w-0 h-12 sm:h-13"
+                                                >
+                                                    <div
+                                                        class="text-[15px] sm:text-lg font-semibold leading-tight"
+                                                    >
                                                         {s.title}
                                                     </div>
 
-                                                    <div class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]">
-                                                        <div class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}>
-                                                            <svelte:component this={info.icon} class="h-[15px] w-[15px]" />
+                                                    <div
+                                                        class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                    >
+                                                        <div
+                                                            class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
+                                                        >
+                                                            <svelte:component
+                                                                this={info.icon}
+                                                                class="h-[15px] w-[15px]"
+                                                            />
                                                             {info.label}
                                                         </div>
 
                                                         {#if s.durationMin}
-                                                            <div class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]">
-                                                                <Clock class="inline h-[15px] w-[15px] mr-0.5 text-slate-500" />
-                                                                {formatTime(s.durationMin)}
+                                                            <div
+                                                                class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                            >
+                                                                <Clock
+                                                                    class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                />
+                                                                {formatTime(
+                                                                    s.durationMin,
+                                                                )}
                                                             </div>
                                                         {/if}
                                                     </div>
@@ -1004,8 +1138,12 @@
                             {/each}
                         </div>
 
-                        <p class="text-slate-700 font-semibold text-base sm:text-lg mt-1 mb-1">
-                            {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                        <p
+                            class="text-slate-700 font-semibold text-base sm:text-lg mt-1 mb-1"
+                        >
+                            {format(parseISO(g.date), "EEEE d.MMMM", {
+                                locale: nb,
+                            })}
                         </p>
 
                         {#if g.sessions[0].description}
@@ -1021,7 +1159,12 @@
                             >
                                 <Users class="h-4 w-4" />
                                 {#if totalCount > 0}
-                                    {totalCount} {totalCount === 1 ? 'person har' : 'personer har'} samme økt{isDoubleSession ? 'er' : ''}
+                                    {totalCount}
+                                    {totalCount === 1
+                                        ? "person har"
+                                        : "personer har"} samme økt{isDoubleSession
+                                        ? "er"
+                                        : ""}
                                 {:else}
                                     Finner ingen med lik økt
                                 {/if}
@@ -1031,52 +1174,83 @@
                                     <ChevronDown class="h-4 w-4 ml-auto" />
                                 {/if}
                             </button>
-                            
+
                             {#if expandedDates.has(g.date)}
                                 <div class="mt-2 bg-violet-50 rounded-lg p-3">
                                     {#if isDoubleSession}
                                         {#if fellesUtovere1.length > 0}
-                                            <p class="text-sm font-semibold mb-2 text-slate-700">Økt 1:</p>
-                                            <div class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200">
+                                            <p
+                                                class="text-sm font-semibold mb-2 text-slate-700"
+                                            >
+                                                Økt 1:
+                                            </p>
+                                            <div
+                                                class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
+                                            >
                                                 {#each fellesUtovere1 as utover}
-                                                    <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                    <div
+                                                        class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                    >
                                                         {utover}
                                                     </div>
                                                 {/each}
                                             </div>
                                         {:else}
-                                            <p class="text-sm font-semibold mb-2 text-slate-700">Økt 1:</p>
-                                            <p class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200">
+                                            <p
+                                                class="text-sm font-semibold mb-2 text-slate-700"
+                                            >
+                                                Økt 1:
+                                            </p>
+                                            <p
+                                                class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
+                                            >
                                                 Ingen andre har denne økten.
                                             </p>
                                         {/if}
-                                        
+
                                         {#if fellesUtovere2.length > 0}
-                                            <p class="text-sm font-semibold mb-2 text-slate-700">Økt 2:</p>
+                                            <p
+                                                class="text-sm font-semibold mb-2 text-slate-700"
+                                            >
+                                                Økt 2:
+                                            </p>
                                             <div class="flex flex-wrap gap-2">
                                                 {#each fellesUtovere2 as utover}
-                                                    <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                    <div
+                                                        class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                    >
                                                         {utover}
                                                     </div>
                                                 {/each}
                                             </div>
                                         {:else}
-                                            <p class="text-sm font-semibold mb-2 text-slate-700">Økt 2:</p>
-                                            <p class="text-sm text-slate-600 italic">
+                                            <p
+                                                class="text-sm font-semibold mb-2 text-slate-700"
+                                            >
+                                                Økt 2:
+                                            </p>
+                                            <p
+                                                class="text-sm text-slate-600 italic"
+                                            >
                                                 Ingen andre har denne økten.
                                             </p>
                                         {/if}
                                     {:else if fellesUtovere1.length > 0}
                                         <div class="flex flex-wrap gap-2">
                                             {#each fellesUtovere1 as utover}
-                                                <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                <div
+                                                    class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                >
                                                     {utover}
                                                 </div>
                                             {/each}
                                         </div>
                                     {:else}
-                                        <p class="text-sm text-slate-600 italic">
-                                            Ingen andre har planlagt økt denne dagen.
+                                        <p
+                                            class="text-sm text-slate-600 italic"
+                                        >
+                                            Ingen andre har planlagt økt denne
+                                            dagen.
                                         </p>
                                     {/if}
                                 </div>
@@ -1085,22 +1259,29 @@
                     </div>
                 {/each}
             {:else if view === VIEWS.OVERVIEW}
-                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-slate-600">
+                <div
+                    class="rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-slate-600"
+                >
                     Ingen planlagt økt for denne dagen.
                 </div>
             {/if}
 
             {#if view === VIEWS.OVERVIEW}
-                <div class="relative mt-6 flex bg-slate-200 p-1 rounded-full w-[270px]">
+                <div
+                    class="relative mt-6 flex bg-slate-200 rounded-full w-[270px]"
+                    style="padding: 0.175rem;"
+                >
                     <div
-                        class="absolute top-1 left-1 h-[calc(100%-0.5rem)] w-[calc(50%-0.5rem)] bg-violet-600 rounded-full shadow-sm transition-all duration-[700ms] ease-in-out"
-                        style={`transform: translateX(${windowMode === "next" ? "100%" : "0"});`}
+                        class="absolute bg-violet-600 rounded-full shadow-sm transition-all duration-[700ms] ease-in-out"
+                        style={`top: 0.175rem; left: 0.175rem; height: calc(100% - 0.35rem); width: calc(50% - 0.38rem); transform: translateX(${windowMode === "next" ? "calc(100% + 0.35rem)" : "0"});`}
                     ></div>
 
                     <button
                         on:click={() => (windowMode = "prev")}
                         class={`relative z-10 w-1/2 text-sm font-medium py-2 transition-all duration-500 ${
-                            windowMode === "prev" ? "text-white" : "text-slate-700 hover:text-violet-700"
+                            windowMode === "prev"
+                                ? "text-white"
+                                : "text-slate-700 hover:text-violet-700"
                         }`}
                     >
                         7 forrige dager
@@ -1109,7 +1290,9 @@
                     <button
                         on:click={() => (windowMode = "next")}
                         class={`relative z-10 w-1/2 text-sm font-medium py-2 transition-all duration-500 ${
-                            windowMode === "next" ? "text-white" : "text-slate-700 hover:text-violet-700"
+                            windowMode === "next"
+                                ? "text-white"
+                                : "text-slate-700 hover:text-violet-700"
                         }`}
                     >
                         7 neste dager
@@ -1119,11 +1302,15 @@
 
             {#if view === VIEWS.OVERVIEW}
                 <h3 class="mt-6 mb-2 text-xl font-semibold">
-                    {windowMode === "next" ? "Kommende økter" : "Tidligere økter"}
+                    {windowMode === "next"
+                        ? "Kommende økter"
+                        : "Tidligere økter"}
                 </h3>
 
                 {#if windowWorkouts.length === 0}
-                    <div class="border border-dashed border-slate-300 rounded-xl p-6 text-slate-600">
+                    <div
+                        class="border border-dashed border-slate-300 rounded-xl p-6 text-slate-600"
+                    >
                         Ingen økter i valgt periode.
                     </div>
                 {:else}
@@ -1131,38 +1318,75 @@
                         {@const isDoubleSession = g.sessions.length >= 2}
                         {@const s1Title = g.sessions[0]?.title || "Økt 1"}
                         {@const s2Title = g.sessions[1]?.title || "Økt 2"}
-                        {@const fellesUtovere1 = getFellesUtovere(g.date, s1Title)}
-                        {@const fellesUtovere2 = isDoubleSession ? getFellesUtovere(g.date, s2Title) : []}
-                        {@const uniqueFellesUtovere = Array.from(new Set([...fellesUtovere1, ...fellesUtovere2]))}
+                        {@const fellesUtovere1 = getFellesUtovere(
+                            g.date,
+                            s1Title,
+                        )}
+                        {@const fellesUtovere2 = isDoubleSession
+                            ? getFellesUtovere(g.date, s2Title)
+                            : []}
+                        {@const uniqueFellesUtovere = Array.from(
+                            new Set([...fellesUtovere1, ...fellesUtovere2]),
+                        )}
                         {@const totalCount = uniqueFellesUtovere.length}
-                        {@const isRestDay = g.sessions.some(s => s.title.toLowerCase().includes('hvile'))}
-                        
-                        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm mb-3">
+                        {@const isRestDay = g.sessions.some((s) =>
+                            s.title.toLowerCase().includes("hvile"),
+                        )}
+
+                        <div
+                            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm mb-3"
+                        >
                             <div class="mb-2 grid gap-y-3">
                                 {#each g.sessions as s}
                                     {#key s}
                                         {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
-                                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full">
-                                                <div class="flex items-stretch gap-3 w-full">
-                                                    <div class={`flex items-center justify-center w-13 h-13 sm:w-12 sm:h-12 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}>
-                                                        <svelte:component this={info.icon} class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`} />
+                                            <div
+                                                class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
+                                            >
+                                                <div
+                                                    class="flex items-stretch gap-3 w-full"
+                                                >
+                                                    <div
+                                                        class={`flex items-center justify-center w-13 h-13 sm:w-12 sm:h-12 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
+                                                    >
+                                                        <svelte:component
+                                                            this={info.icon}
+                                                            class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
+                                                        />
                                                     </div>
 
-                                                    <div class="flex flex-col justify-between w-full min-w-0 h-13 sm:h-12">
-                                                        <div class="text-[15px] sm:text-lg font-semibold leading-tight">
+                                                    <div
+                                                        class="flex flex-col justify-between w-full min-w-0 h-13 sm:h-12"
+                                                    >
+                                                        <div
+                                                            class="text-[15px] sm:text-lg font-semibold leading-tight"
+                                                        >
                                                             {s.title}
                                                         </div>
 
-                                                        <div class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]">
-                                                            <div class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}>
-                                                                <svelte:component this={info.icon} class="h-[15px] w-[15px]" />
+                                                        <div
+                                                            class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                        >
+                                                            <div
+                                                                class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
+                                                            >
+                                                                <svelte:component
+                                                                    this={info.icon}
+                                                                    class="h-[15px] w-[15px]"
+                                                                />
                                                                 {info.label}
                                                             </div>
 
                                                             {#if s.durationMin}
-                                                                <div class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]">
-                                                                    <Clock class="inline h-[15px] w-[15px] mr-0.5 text-slate-500" />
-                                                                    {formatTime(s.durationMin)}
+                                                                <div
+                                                                    class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                                >
+                                                                    <Clock
+                                                                        class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                    />
+                                                                    {formatTime(
+                                                                        s.durationMin,
+                                                                    )}
                                                                 </div>
                                                             {/if}
                                                         </div>
@@ -1174,8 +1398,12 @@
                                 {/each}
                             </div>
 
-                            <p class="text-slate-700 font-semibold text-base sm:text-lg mt-3 mb-1">
-                                {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                            <p
+                                class="text-slate-700 font-semibold text-base sm:text-lg mt-3 mb-1"
+                            >
+                                {format(parseISO(g.date), "EEEE d.MMMM", {
+                                    locale: nb,
+                                })}
                             </p>
 
                             {#if g.sessions[0].description}
@@ -1191,7 +1419,12 @@
                                 >
                                     <Users class="h-4 w-4" />
                                     {#if totalCount > 0}
-                                        {totalCount} {totalCount === 1 ? 'person har' : 'personer har'} samme økt{isDoubleSession ? 'er' : ''}
+                                        {totalCount}
+                                        {totalCount === 1
+                                            ? "person har"
+                                            : "personer har"} samme økt{isDoubleSession
+                                            ? "er"
+                                            : ""}
                                     {:else}
                                         Finner ingen med lik økt
                                     {/if}
@@ -1201,52 +1434,87 @@
                                         <ChevronDown class="h-4 w-4 ml-auto" />
                                     {/if}
                                 </button>
-                                
+
                                 {#if expandedDates.has(g.date)}
-                                    <div class="mt-2 bg-violet-50 rounded-lg p-3">
+                                    <div
+                                        class="mt-2 bg-violet-50 rounded-lg p-3"
+                                    >
                                         {#if isDoubleSession}
                                             {#if fellesUtovere1.length > 0}
-                                                <p class="text-sm font-semibold mb-2 text-slate-700">Økt 1:</p>
-                                                <div class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200">
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 1:
+                                                </p>
+                                                <div
+                                                    class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
+                                                >
                                                     {#each fellesUtovere1 as utover}
-                                                        <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                        <div
+                                                            class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                        >
                                                             {utover}
                                                         </div>
                                                     {/each}
                                                 </div>
                                             {:else}
-                                                <p class="text-sm font-semibold mb-2 text-slate-700">Økt 1:</p>
-                                                <p class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200">
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 1:
+                                                </p>
+                                                <p
+                                                    class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
+                                                >
                                                     Ingen andre har denne økten.
                                                 </p>
                                             {/if}
-                                            
+
                                             {#if fellesUtovere2.length > 0}
-                                                <p class="text-sm font-semibold mb-2 text-slate-700">Økt 2:</p>
-                                                <div class="flex flex-wrap gap-2">
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 2:
+                                                </p>
+                                                <div
+                                                    class="flex flex-wrap gap-2"
+                                                >
                                                     {#each fellesUtovere2 as utover}
-                                                        <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                        <div
+                                                            class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                        >
                                                             {utover}
                                                         </div>
                                                     {/each}
                                                 </div>
                                             {:else}
-                                                <p class="text-sm font-semibold mb-2 text-slate-700">Økt 2:</p>
-                                                <p class="text-sm text-slate-600 italic">
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 2:
+                                                </p>
+                                                <p
+                                                    class="text-sm text-slate-600 italic"
+                                                >
                                                     Ingen andre har denne økten.
                                                 </p>
                                             {/if}
                                         {:else if fellesUtovere1.length > 0}
                                             <div class="flex flex-wrap gap-2">
                                                 {#each fellesUtovere1 as utover}
-                                                    <div class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200">
+                                                    <div
+                                                        class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                    >
                                                         {utover}
                                                     </div>
                                                 {/each}
                                             </div>
                                         {:else}
-                                            <p class="text-sm text-slate-600 italic">
-                                                Ingen andre har planlagt økt denne dagen.
+                                            <p
+                                                class="text-sm text-slate-600 italic"
+                                            >
+                                                Ingen andre har planlagt økt
+                                                denne dagen.
                                             </p>
                                         {/if}
                                     </div>
@@ -1256,29 +1524,340 @@
                     {/each}
                 {/if}
             {/if}
+
+            {#if view === VIEWS.TECHNIQUE}
+                <div class="mt-8 mb-12 mx-auto max-w-6xl px-4">
+                    <h2
+                        class="mb-6 text-3xl font-bold text-center text-violet-700"
+                    >
+                        Teknikkvideoer
+                    </h2>
+
+                    <div class="space-y-4">
+                        <!-- Klassisk -->
+                        <details
+                            class="group bg-white rounded-2xl shadow-lg border border-violet-200 overflow-hidden"
+                        >
+                            <summary
+                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between"
+                            >
+                                Klassisk
+                                <ChevronDown
+                                    class="h-5 w-5 transition-transform group-open:rotate-180"
+                                />
+                            </summary>
+
+                            <div class="px-6 pb-6 space-y-4">
+                                <!-- Diagonal -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Diagonal
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/Z2oNfG4eulQ?si=K3hgPIcHR19j3CUx"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/NNR6YpFA7Jw?si=i19W-qDQ-Rv-4TDG" 
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+
+                                <!-- Staking -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Staking
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/D_hlp-buPhA?si=dDlDK1h5lWddEDzN"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/MYVK4agNPcE?si=5L52ljY36n9Z1MZH"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+
+                                <!-- Dobbeltak med fraspark -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Dobbeltak med fraspark
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/7SZn1vDG_WY?si=obHl2RpMR8ByMgfz"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+                        </details>
+
+                        <!-- Skøyting -->
+                        <details
+                            class="group bg-white rounded-2xl shadow-lg border border-violet-200 overflow-hidden"
+                        >
+                            <summary
+                                class="cursor-pointer px-6 py-4 text-xl font-bold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between"
+                            >
+                                Skøyting
+                                <ChevronDown
+                                    class="h-5 w-5 transition-transform group-open:rotate-180"
+                                />
+                            </summary>
+
+                            <div class="px-6 pb-6 space-y-4">
+                                <!-- Dobbeldans -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Dobbeldans
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/PlFkOEr7bw0?si=qVwizVGKQVB6ixoA"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/G-vIb6gzYRk?si=I7mpCV1p-j7vSKv_" 
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+
+                                <!-- Padling -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Padling
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/Z6ynMU7KixA?si=Av9HKthu8O9wEXGm"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/-eWpFQ9rDos?si=7QZpyucS4EGulPl7" 
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+
+                                <!-- Enkeldans -->
+                                <details class="group/sub bg-white rounded-xl border border-violet-400 overflow-hidden">
+                                    <summary class="cursor-pointer px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 transition-colors flex items-center justify-between">
+                                        Enkeldans
+                                        <ChevronDown
+                                            class="h-4 w-4 transition-transform group-open/sub:rotate-180"
+                                        />
+                                    </summary>
+                                    <div
+                                        class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/8PLC-KWs4c0?si=pk7x-OE3AfzP6xfh" 
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="bg-white rounded-xl shadow overflow-hidden"
+                                        >
+                                            <div class="aspect-video">
+                                                <iframe
+                                                    class="w-full h-full"
+                                                    src="https://www.youtube.com/embed/QWZp2WVukkY?si=LTEtEeruo-R8zkWa"
+                                                    title="YouTube video player"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    referrerpolicy="strict-origin-when-cross-origin"
+                                                    allowfullscreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            {/if}
         </div>
 
         {#if view === VIEWS.CALENDAR}
             <div class="mt-8 mb-12 mx-auto max-w-6xl">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3 sm:gap-0">
+                <div
+                    class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3 sm:gap-0"
+                >
                     <h3 class="text-2xl font-bold text-center sm:text-left">
                         {format(calendarCursor, "LLLL yyyy", { locale: nb })}
                     </h3>
 
                     <div class="flex justify-center sm:justify-end gap-2">
-                        <button on:click={goToToday} class="border rounded-xl px-3 py-2 text-sm hover:bg-violet-50">
+                        <button
+                            on:click={goToToday}
+                            class="border rounded-xl px-3 py-2 text-sm hover:bg-violet-50"
+                        >
                             I dag
                         </button>
-                        <button on:click={() => changeMonth("prev")} class="border rounded-xl p-2">
+                        <button
+                            on:click={() => changeMonth("prev")}
+                            class="border rounded-xl p-2"
+                        >
                             <ChevronLeft class="h-4 w-4" />
                         </button>
-                        <button on:click={() => changeMonth("next")} class="border rounded-xl p-2">
+                        <button
+                            on:click={() => changeMonth("next")}
+                            class="border rounded-xl p-2"
+                        >
                             <ChevronRight class="h-4 w-4" />
                         </button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-7 gap-2 text-center text-sm text-slate-600">
+                <div
+                    class="grid grid-cols-7 gap-2 text-center text-sm text-slate-600"
+                >
                     {#each ["man", "tir", "ons", "tor", "fre", "lør", "søn"] as d}
                         <div>{d}</div>
                     {/each}
@@ -1289,46 +1868,76 @@
                         {#if d}
                             <button
                                 class={`relative rounded-xl border p-2 pt-8 text-left bg-white hover:bg-violet-50 transition-colors ${
-                                    isSameDay(d, activeDate) ? "border-violet-500" : "border-slate-200"
+                                    isSameDay(d, activeDate)
+                                        ? "border-violet-500"
+                                        : "border-slate-200"
                                 }`}
                                 on:click={() => selectDay(d)}
                             >
-                                <div class="absolute top-1 left-1 flex items-start justify-start">
-                                    <div class="hidden sm:flex w-7 h-7 rounded-full bg-violet-600 text-white text-xs font-semibold items-center justify-center shadow-sm">
+                                <div
+                                    class="absolute top-1 left-1 flex items-start justify-start"
+                                >
+                                    <div
+                                        class="hidden sm:flex w-7 h-7 rounded-full bg-violet-600 text-white text-xs font-semibold items-center justify-center shadow-sm"
+                                    >
                                         {format(d, "d")}
                                     </div>
 
-                                    <div class="text-sm font-medium text-center sm:hidden">
+                                    <div
+                                        class="text-sm font-medium text-center sm:hidden"
+                                    >
                                         {format(d, "d")}
                                     </div>
                                 </div>
 
-                                {#await Promise.all(workouts.filter((w) => w.date === format(d, "yyyy-MM-dd")).map((w) => getWorkoutInfo(w.title))) then infos}
+                                {#await Promise.all(workouts
+                                        .filter((w) => w.date === format(d, "yyyy-MM-dd"))
+                                        .map( (w) => getWorkoutInfo(w.title), )) then infos}
                                     {#if infos.length > 0}
-                                        <div class="flex sm:hidden mt-1 flex-wrap gap-1">
+                                        <div
+                                            class="flex sm:hidden mt-1 flex-wrap gap-1"
+                                        >
                                             {#each infos.slice(0, 3) as info, idx (idx)}
                                                 <div
                                                     class="w-3 h-3 rounded-full shadow-sm"
                                                     style={`background-color: ${
-                                                        info.color.includes("bg-red-100") ? '#ff0000' :
-                                                        info.color.includes("bg-yellow-100") ? '#ffff00' :
-                                                        info.color.includes("bg-green-100") ? '#00ff00' :
-                                                        info.color.includes("bg-cyan-100") ? '#00ffff' :
-                                                        '#f9eeff'
+                                                        info.color.includes(
+                                                            "bg-red-100",
+                                                        )
+                                                            ? "#ff0000"
+                                                            : info.color.includes(
+                                                                    "bg-yellow-100",
+                                                                )
+                                                              ? "#ffff00"
+                                                              : info.color.includes(
+                                                                      "bg-green-100",
+                                                                  )
+                                                                ? "#00ff00"
+                                                                : info.color.includes(
+                                                                        "bg-cyan-100",
+                                                                    )
+                                                                  ? "#00ffff"
+                                                                  : "#f9eeff"
                                                     };`}
                                                 ></div>
                                             {/each}
                                             {#if infos.length > 3}
-                                                <div class="w-3 h-3 rounded-full bg-slate-400 shadow-sm"></div>
+                                                <div
+                                                    class="w-3 h-3 rounded-full bg-slate-400 shadow-sm"
+                                                ></div>
                                             {/if}
                                         </div>
                                     {/if}
                                 {/await}
-                                
+
                                 <div class="hidden sm:block mt-1">
-                                    {#each workouts.filter((w) => w.date === format(d, "yyyy-MM-dd")).slice(0, 2) as w}
+                                    {#each workouts
+                                        .filter((w) => w.date === format(d, "yyyy-MM-dd"))
+                                        .slice(0, 2) as w}
                                         {#await Promise.resolve(getWorkoutInfo(w.title)) then info}
-                                            <div class={`text-xs ${info.color} px-2 py-0.5 rounded-lg mb-0.5 break-words whitespace-normal font-medium`}>
+                                            <div
+                                                class={`text-xs ${info.color} px-2 py-0.5 rounded-lg mb-0.5 break-words whitespace-normal font-medium`}
+                                            >
                                                 {w.title}
                                             </div>
                                         {/await}
