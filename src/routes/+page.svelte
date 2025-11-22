@@ -929,7 +929,7 @@
 
                 <button
                     on:click={handleLogout}
-                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium transition-colors flex items-center gap-1"
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-xl text-sm font-medium transition-colors flex items-center gap-1"
                 >
                     <Lock class="h-4 w-4" /> Logg ut
                 </button>
@@ -948,13 +948,13 @@
                                     if (e.key === "Enter") searchUtoverByName();
                                 }}
                                 placeholder="Søk etter utøvernavn..."
-                                class="flex-1 rounded-xl border-0 bg-white/20 px-4 py-2 text-white placeholder-white/60 font-medium focus:bg-white/30 focus:ring-2 focus:ring-white/50"
+                                class="flex-1 rounded-full border-0 bg-white/20 px-4 py-2 text-white placeholder-white/60 font-medium focus:bg-white/30 focus:ring-2 focus:ring-white/50"
                             />
                             <button
                                 on:click={searchUtoverByName}
                                 disabled={isLoading ||
                                     !currentUtoverNavn.trim()}
-                                class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {#if isLoading}
                                     <svg
