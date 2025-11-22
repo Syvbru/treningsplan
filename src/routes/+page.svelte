@@ -1075,7 +1075,7 @@
 
                     <div class="rounded-2xl border border-violet-500 bg-white shadow-sm mb-3 overflow-hidden">
                         <div class="bg-violet-50 py-3 border-b border-violet-500">
-                            <p class="text-slate-800 font-semibold text-base sm:text-lg px-4 capitalize">
+                            <p class="text-slate-900 font-semibold text-base sm:text-lg px-4 capitalize">
                                 {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
                             </p>
                         </div>
@@ -1103,7 +1103,7 @@
                                                         class="flex flex-col justify-between w-full min-w-0 h-12 sm:h-13"
                                                     >
                                                         <div
-                                                            class="text-slate-700 text-[15px] sm:text-lg font-semibold leading-tight"
+                                                            class="text-slate-800 text-[15px] sm:text-lg font-semibold leading-tight"
                                                         >
                                                             {s.title}
                                                         </div>
@@ -1332,7 +1332,7 @@
 
                         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm mb-6 overflow-hidden">
                             <div class="bg-violet-50 py-3">
-                                <p class="text-slate-800 font-semibold text-base sm:text-lg px-4 capitalize">
+                                <p class="text-slate-900 font-semibold text-base sm:text-lg px-4 capitalize">
                                     {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
                                 </p>
                             </div>
@@ -1361,7 +1361,7 @@
                                                             class="flex flex-col justify-between w-full min-w-0 h-13 sm:h-12"
                                                         >
                                                             <div
-                                                                class="text-slate-700 text-[15px] sm:text-lg font-semibold leading-tight"
+                                                                class="text-slate-800 text-[15px] sm:text-lg font-semibold leading-tight"
                                                             >
                                                                 {s.title}
                                                             </div>
