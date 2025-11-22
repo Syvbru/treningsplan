@@ -1073,120 +1073,166 @@
                         s.title.toLowerCase().includes("hvile"),
                     )}
 
-                    <div
-                        class="rounded-2xl border border-violet-500 bg-white p-4 shadow-sm mb-3"
-                    >
-                        <div class="mb-1 grid gap-y-1">
-                            {#each g.sessions as s}
-                                {#key s}
-                                    {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
-                                        <div
-                                            class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
-                                        >
+                    <div class="rounded-2xl border border-violet-500 bg-white shadow-sm mb-3 overflow-hidden">
+                        <div class="bg-violet-50 py-3 border-b border-violet-500">
+                            <p class="text-slate-800 font-semibold text-base sm:text-lg px-4 capitalize">
+                                {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                            </p>
+                        </div>
+                        <div class="p-4">
+                            <div class="mb-1 grid gap-y-5">
+                                {#each g.sessions as s}
+                                    {#key s}
+                                        {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
                                             <div
-                                                class="flex items-stretch gap-3 w-full"
+                                                class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
                                             >
                                                 <div
-                                                    class={`flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
-                                                >
-                                                    <svelte:component
-                                                        this={info.icon}
-                                                        class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
-                                                    />
-                                                </div>
-
-                                                <div
-                                                    class="flex flex-col justify-between w-full min-w-0 h-12 sm:h-13"
+                                                    class="flex items-stretch gap-3 w-full"
                                                 >
                                                     <div
-                                                        class="text-[15px] sm:text-lg font-semibold leading-tight"
+                                                        class={`flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
                                                     >
-                                                        {s.title}
+                                                        <svelte:component
+                                                            this={info.icon}
+                                                            class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
+                                                        />
                                                     </div>
 
                                                     <div
-                                                        class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                        class="flex flex-col justify-between w-full min-w-0 h-12 sm:h-13"
                                                     >
                                                         <div
-                                                            class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
+                                                            class="text-slate-700 text-[15px] sm:text-lg font-semibold leading-tight"
                                                         >
-                                                            <svelte:component
-                                                                this={info.icon}
-                                                                class="h-[15px] w-[15px]"
-                                                            />
-                                                            {info.label}
+                                                            {s.title}
                                                         </div>
 
-                                                        {#if s.durationMin}
+                                                        <div
+                                                            class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                        >
                                                             <div
-                                                                class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                                class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
                                                             >
-                                                                <Clock
-                                                                    class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                <svelte:component
+                                                                    this={info.icon}
+                                                                    class="h-[15px] w-[15px]"
                                                                 />
-                                                                {formatTime(
-                                                                    s.durationMin,
-                                                                )}
+                                                                {info.label}
                                                             </div>
-                                                        {/if}
+
+                                                            {#if s.durationMin}
+                                                                <div
+                                                                    class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                                >
+                                                                    <Clock
+                                                                        class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                    />
+                                                                    {formatTime(
+                                                                        s.durationMin,
+                                                                    )}
+                                                                </div>
+                                                            {/if}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    {/await}
-                                {/key}
-                            {/each}
-                        </div>
+                                        {/await}
+                                    {/key}
+                                {/each}
+                            </div>
 
-                        <p
-                            class="text-slate-700 font-semibold text-base sm:text-lg mt-1 mb-1"
-                        >
-                            {format(parseISO(g.date), "EEEE d.MMMM", {
-                                locale: nb,
-                            })}
-                        </p>
+                            {#if g.sessions[0].description}
+                                <p class="mt-3 text-slate-700">
+                                    {g.sessions[0].description}
+                                </p>
+                            {/if}
 
-                        {#if g.sessions[0].description}
-                            <p class="mt-2 text-slate-700">
-                                {g.sessions[0].description}
-                            </p>
-                        {/if}
+                            {#if !isRestDay}
+                                <button
+                                    on:click={() => toggleExpanded(g.date)}
+                                    class="mt-3 flex items-center gap-2 text-violet-600 hover:text-violet-700 font-medium text-sm transition-colors w-full"
+                                >
+                                    <Users class="h-4 w-4" />
+                                    {#if totalCount > 0}
+                                        {totalCount}
+                                        {totalCount === 1
+                                            ? "person har"
+                                            : "personer har"} samme økt{isDoubleSession
+                                            ? "er"
+                                            : ""}
+                                    {:else}
+                                        Finner ingen med lik økt
+                                    {/if}
+                                    {#if expandedDates.has(g.date)}
+                                        <ChevronUp class="h-4 w-4 ml-auto" />
+                                    {:else}
+                                        <ChevronDown class="h-4 w-4 ml-auto" />
+                                    {/if}
+                                </button>
 
-                        {#if !isRestDay}
-                            <button
-                                on:click={() => toggleExpanded(g.date)}
-                                class="mt-3 flex items-center gap-2 text-violet-600 hover:text-violet-700 font-medium text-sm transition-colors w-full"
-                            >
-                                <Users class="h-4 w-4" />
-                                {#if totalCount > 0}
-                                    {totalCount}
-                                    {totalCount === 1
-                                        ? "person har"
-                                        : "personer har"} samme økt{isDoubleSession
-                                        ? "er"
-                                        : ""}
-                                {:else}
-                                    Finner ingen med lik økt
-                                {/if}
                                 {#if expandedDates.has(g.date)}
-                                    <ChevronUp class="h-4 w-4 ml-auto" />
-                                {:else}
-                                    <ChevronDown class="h-4 w-4 ml-auto" />
-                                {/if}
-                            </button>
+                                    <div class="mt-2 bg-violet-50 rounded-lg p-3">
+                                        {#if isDoubleSession}
+                                            {#if fellesUtovere1.length > 0}
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 1:
+                                                </p>
+                                                <div
+                                                    class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
+                                                >
+                                                    {#each fellesUtovere1 as utover}
+                                                        <div
+                                                            class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                        >
+                                                            {utover}
+                                                        </div>
+                                                    {/each}
+                                                </div>
+                                            {:else}
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 1:
+                                                </p>
+                                                <p
+                                                    class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
+                                                >
+                                                    Ingen andre har denne økten.
+                                                </p>
+                                            {/if}
 
-                            {#if expandedDates.has(g.date)}
-                                <div class="mt-2 bg-violet-50 rounded-lg p-3">
-                                    {#if isDoubleSession}
-                                        {#if fellesUtovere1.length > 0}
-                                            <p
-                                                class="text-sm font-semibold mb-2 text-slate-700"
-                                            >
-                                                Økt 1:
-                                            </p>
-                                            <div
-                                                class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
-                                            >
+                                            {#if fellesUtovere2.length > 0}
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 2:
+                                                </p>
+                                                <div class="flex flex-wrap gap-2">
+                                                    {#each fellesUtovere2 as utover}
+                                                        <div
+                                                            class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                        >
+                                                            {utover}
+                                                        </div>
+                                                    {/each}
+                                                </div>
+                                            {:else}
+                                                <p
+                                                    class="text-sm font-semibold mb-2 text-slate-700"
+                                                >
+                                                    Økt 2:
+                                                </p>
+                                                <p
+                                                    class="text-sm text-slate-600 italic"
+                                                >
+                                                    Ingen andre har denne økten.
+                                                </p>
+                                            {/if}
+                                        {:else if fellesUtovere1.length > 0}
+                                            <div class="flex flex-wrap gap-2">
                                                 {#each fellesUtovere1 as utover}
                                                     <div
                                                         class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
@@ -1197,65 +1243,16 @@
                                             </div>
                                         {:else}
                                             <p
-                                                class="text-sm font-semibold mb-2 text-slate-700"
-                                            >
-                                                Økt 1:
-                                            </p>
-                                            <p
-                                                class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
-                                            >
-                                                Ingen andre har denne økten.
-                                            </p>
-                                        {/if}
-
-                                        {#if fellesUtovere2.length > 0}
-                                            <p
-                                                class="text-sm font-semibold mb-2 text-slate-700"
-                                            >
-                                                Økt 2:
-                                            </p>
-                                            <div class="flex flex-wrap gap-2">
-                                                {#each fellesUtovere2 as utover}
-                                                    <div
-                                                        class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
-                                                    >
-                                                        {utover}
-                                                    </div>
-                                                {/each}
-                                            </div>
-                                        {:else}
-                                            <p
-                                                class="text-sm font-semibold mb-2 text-slate-700"
-                                            >
-                                                Økt 2:
-                                            </p>
-                                            <p
                                                 class="text-sm text-slate-600 italic"
                                             >
-                                                Ingen andre har denne økten.
+                                                Ingen andre har planlagt økt denne
+                                                dagen.
                                             </p>
                                         {/if}
-                                    {:else if fellesUtovere1.length > 0}
-                                        <div class="flex flex-wrap gap-2">
-                                            {#each fellesUtovere1 as utover}
-                                                <div
-                                                    class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
-                                                >
-                                                    {utover}
-                                                </div>
-                                            {/each}
-                                        </div>
-                                    {:else}
-                                        <p
-                                            class="text-sm text-slate-600 italic"
-                                        >
-                                            Ingen andre har planlagt økt denne
-                                            dagen.
-                                        </p>
-                                    {/if}
-                                </div>
+                                    </div>
+                                {/if}
                             {/if}
-                        {/if}
+                        </div>
                     </div>
                 {/each}
             {:else if view === VIEWS.OVERVIEW}
@@ -1301,7 +1298,7 @@
             {/if}
 
             {#if view === VIEWS.OVERVIEW}
-                <h3 class="mt-6 mb-2 text-xl font-semibold">
+                <h3 class="mt-4 mb-6 text-xl font-semibold">
                     {windowMode === "next"
                         ? "Kommende økter"
                         : "Tidligere økter"}
@@ -1333,122 +1330,172 @@
                             s.title.toLowerCase().includes("hvile"),
                         )}
 
-                        <div
-                            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm mb-3"
-                        >
-                            <div class="mb-2 grid gap-y-3">
-                                {#each g.sessions as s}
-                                    {#key s}
-                                        {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
-                                            <div
-                                                class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
-                                            >
+                        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm mb-6 overflow-hidden">
+                            <div class="bg-violet-50 py-3">
+                                <p class="text-slate-800 font-semibold text-base sm:text-lg px-4 capitalize">
+                                    {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                                </p>
+                            </div>
+
+                            <div class="p-4">
+                                <div class="mb-1 grid gap-y-5">
+                                    {#each g.sessions as s}
+                                        {#key s}
+                                            {#await Promise.resolve(getWorkoutInfo(s.title)) then info}
                                                 <div
-                                                    class="flex items-stretch gap-3 w-full"
+                                                    class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 w-full"
                                                 >
                                                     <div
-                                                        class={`flex items-center justify-center w-13 h-13 sm:w-12 sm:h-12 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
-                                                    >
-                                                        <svelte:component
-                                                            this={info.icon}
-                                                            class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
-                                                        />
-                                                    </div>
-
-                                                    <div
-                                                        class="flex flex-col justify-between w-full min-w-0 h-13 sm:h-12"
+                                                        class="flex items-stretch gap-3 w-full"
                                                     >
                                                         <div
-                                                            class="text-[15px] sm:text-lg font-semibold leading-tight"
+                                                            class={`flex items-center justify-center w-13 h-13 sm:w-12 sm:h-12 rounded-xl shrink-0 ${info.iconBg ?? "bg-slate-100"}`}
                                                         >
-                                                            {s.title}
+                                                            <svelte:component
+                                                                this={info.icon}
+                                                                class={`h-8 w-8 sm:h-6 sm:w-6 ${info.iconColor ?? "text-violet-600"}`}
+                                                            />
                                                         </div>
 
                                                         <div
-                                                            class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                            class="flex flex-col justify-between w-full min-w-0 h-13 sm:h-12"
                                                         >
                                                             <div
-                                                                class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
+                                                                class="text-slate-700 text-[15px] sm:text-lg font-semibold leading-tight"
                                                             >
-                                                                <svelte:component
-                                                                    this={info.icon}
-                                                                    class="h-[15px] w-[15px]"
-                                                                />
-                                                                {info.label}
+                                                                {s.title}
                                                             </div>
 
-                                                            {#if s.durationMin}
+                                                            <div
+                                                                class="flex items-center flex-wrap gap-x-1 leading-none mt-[1px]"
+                                                            >
                                                                 <div
-                                                                    class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                                    class={`flex items-center px-2 py-[2px] rounded-full text-[13px] sm:text-[14px] font-medium gap-1 ${info.color} ${info.italic ? "italic" : ""}`}
                                                                 >
-                                                                    <Clock
-                                                                        class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                    <svelte:component
+                                                                        this={info.icon}
+                                                                        class="h-[15px] w-[15px]"
                                                                     />
-                                                                    {formatTime(
-                                                                        s.durationMin,
-                                                                    )}
+                                                                    {info.label}
                                                                 </div>
-                                                            {/if}
+
+                                                                {#if s.durationMin}
+                                                                    <div
+                                                                        class="flex items-center text-[13px] sm:text-[14px] text-slate-600 mt-[1px]"
+                                                                    >
+                                                                        <Clock
+                                                                            class="inline h-[15px] w-[15px] mr-0.5 text-slate-500"
+                                                                        />
+                                                                        {formatTime(
+                                                                            s.durationMin,
+                                                                        )}
+                                                                    </div>
+                                                                {/if}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        {/await}
-                                    {/key}
-                                {/each}
-                            </div>
+                                            {/await}
+                                        {/key}
+                                    {/each}
+                                </div>
+                            
 
-                            <p
-                                class="text-slate-700 font-semibold text-base sm:text-lg mt-3 mb-1"
-                            >
-                                {format(parseISO(g.date), "EEEE d.MMMM", {
-                                    locale: nb,
-                                })}
-                            </p>
+                                {#if g.sessions[0].description}
+                                    <p class="mt-3 text-slate-700">
+                                        {g.sessions[0].description}
+                                    </p>
+                                {/if}
 
-                            {#if g.sessions[0].description}
-                                <p class="mt-2 text-slate-700">
-                                    {g.sessions[0].description}
-                                </p>
-                            {/if}
-
-                            {#if !isRestDay}
-                                <button
-                                    on:click={() => toggleExpanded(g.date)}
-                                    class="mt-3 flex items-center gap-2 text-violet-600 hover:text-violet-700 font-medium text-sm transition-colors w-full"
-                                >
-                                    <Users class="h-4 w-4" />
-                                    {#if totalCount > 0}
-                                        {totalCount}
-                                        {totalCount === 1
-                                            ? "person har"
-                                            : "personer har"} samme økt{isDoubleSession
-                                            ? "er"
-                                            : ""}
-                                    {:else}
-                                        Finner ingen med lik økt
-                                    {/if}
-                                    {#if expandedDates.has(g.date)}
-                                        <ChevronUp class="h-4 w-4 ml-auto" />
-                                    {:else}
-                                        <ChevronDown class="h-4 w-4 ml-auto" />
-                                    {/if}
-                                </button>
-
-                                {#if expandedDates.has(g.date)}
-                                    <div
-                                        class="mt-2 bg-violet-50 rounded-lg p-3"
+                                {#if !isRestDay}
+                                    <button
+                                        on:click={() => toggleExpanded(g.date)}
+                                        class="mt-3 flex items-center gap-2 text-violet-600 hover:text-violet-700 font-medium text-sm transition-colors w-full"
                                     >
-                                        {#if isDoubleSession}
-                                            {#if fellesUtovere1.length > 0}
-                                                <p
-                                                    class="text-sm font-semibold mb-2 text-slate-700"
-                                                >
-                                                    Økt 1:
-                                                </p>
-                                                <div
-                                                    class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
-                                                >
+                                        <Users class="h-4 w-4" />
+                                        {#if totalCount > 0}
+                                            {totalCount}
+                                            {totalCount === 1
+                                                ? "person har"
+                                                : "personer har"} samme økt{isDoubleSession
+                                                ? "er"
+                                                : ""}
+                                        {:else}
+                                            Finner ingen med lik økt
+                                        {/if}
+                                        {#if expandedDates.has(g.date)}
+                                            <ChevronUp class="h-4 w-4 ml-auto" />
+                                        {:else}
+                                            <ChevronDown class="h-4 w-4 ml-auto" />
+                                        {/if}
+                                    </button>
+
+                                    {#if expandedDates.has(g.date)}
+                                        <div
+                                            class="mt-2 bg-violet-50 rounded-lg p-3"
+                                        >
+                                            {#if isDoubleSession}
+                                                {#if fellesUtovere1.length > 0}
+                                                    <p
+                                                        class="text-sm font-semibold mb-2 text-slate-700"
+                                                    >
+                                                        Økt 1:
+                                                    </p>
+                                                    <div
+                                                        class="flex flex-wrap gap-2 mb-3 pb-3 border-b border-violet-200"
+                                                    >
+                                                        {#each fellesUtovere1 as utover}
+                                                            <div
+                                                                class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                            >
+                                                                {utover}
+                                                            </div>
+                                                        {/each}
+                                                    </div>
+                                                {:else}
+                                                    <p
+                                                        class="text-sm font-semibold mb-2 text-slate-700"
+                                                    >
+                                                        Økt 1:
+                                                    </p>
+                                                    <p
+                                                        class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
+                                                    >
+                                                        Ingen andre har denne økten.
+                                                    </p>
+                                                {/if}
+
+                                                {#if fellesUtovere2.length > 0}
+                                                    <p
+                                                        class="text-sm font-semibold mb-2 text-slate-700"
+                                                    >
+                                                        Økt 2:
+                                                    </p>
+                                                    <div
+                                                        class="flex flex-wrap gap-2"
+                                                    >
+                                                        {#each fellesUtovere2 as utover}
+                                                            <div
+                                                                class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
+                                                            >
+                                                                {utover}
+                                                            </div>
+                                                        {/each}
+                                                    </div>
+                                                {:else}
+                                                    <p
+                                                        class="text-sm font-semibold mb-2 text-slate-700"
+                                                    >
+                                                        Økt 2:
+                                                    </p>
+                                                    <p
+                                                        class="text-sm text-slate-600 italic"
+                                                    >
+                                                        Ingen andre har denne økten.
+                                                    </p>
+                                                {/if}
+                                            {:else if fellesUtovere1.length > 0}
+                                                <div class="flex flex-wrap gap-2">
                                                     {#each fellesUtovere1 as utover}
                                                         <div
                                                             class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
@@ -1459,67 +1506,16 @@
                                                 </div>
                                             {:else}
                                                 <p
-                                                    class="text-sm font-semibold mb-2 text-slate-700"
-                                                >
-                                                    Økt 1:
-                                                </p>
-                                                <p
-                                                    class="text-sm text-slate-600 italic mb-3 pb-3 border-b border-violet-200"
-                                                >
-                                                    Ingen andre har denne økten.
-                                                </p>
-                                            {/if}
-
-                                            {#if fellesUtovere2.length > 0}
-                                                <p
-                                                    class="text-sm font-semibold mb-2 text-slate-700"
-                                                >
-                                                    Økt 2:
-                                                </p>
-                                                <div
-                                                    class="flex flex-wrap gap-2"
-                                                >
-                                                    {#each fellesUtovere2 as utover}
-                                                        <div
-                                                            class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
-                                                        >
-                                                            {utover}
-                                                        </div>
-                                                    {/each}
-                                                </div>
-                                            {:else}
-                                                <p
-                                                    class="text-sm font-semibold mb-2 text-slate-700"
-                                                >
-                                                    Økt 2:
-                                                </p>
-                                                <p
                                                     class="text-sm text-slate-600 italic"
                                                 >
-                                                    Ingen andre har denne økten.
+                                                    Ingen andre har planlagt økt
+                                                    denne dagen.
                                                 </p>
                                             {/if}
-                                        {:else if fellesUtovere1.length > 0}
-                                            <div class="flex flex-wrap gap-2">
-                                                {#each fellesUtovere1 as utover}
-                                                    <div
-                                                        class="bg-white px-3 py-1 rounded-full text-sm font-medium text-violet-700 border border-violet-200"
-                                                    >
-                                                        {utover}
-                                                    </div>
-                                                {/each}
-                                            </div>
-                                        {:else}
-                                            <p
-                                                class="text-sm text-slate-600 italic"
-                                            >
-                                                Ingen andre har planlagt økt
-                                                denne dagen.
-                                            </p>
-                                        {/if}
-                                    </div>
+                                        </div>
+                                    {/if}
                                 {/if}
-                            {/if}
+                            </div>
                         </div>
                     {/each}
                 {/if}
