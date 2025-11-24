@@ -824,6 +824,26 @@
     $: viewTransform =
         view === VIEWS.CALENDAR ? "translateX(100%)" : "translateX(0)";
     $: isCalendarView = view === VIEWS.CALENDAR;
+
+    // Hamburgermeny state
+    let menuOpen = false;
+
+    // PDF-lenker - tilpass disse til dine egne filer
+    const pdfLinks = [
+        { title: "Styrke m/vekter", url: "/pdf/StyrkeMedVekter.pdf" },
+        { title: "Styrke u/vekter", url: "/pdf/StyrkeUtenVekter.pdf" },
+        { title: "Styrke vinter", url: "/pdf/StyrkeVinter.pdf" },
+        { title: "Intensitetssoner", url: "/pdf/Intensitessoner.pdf" },
+    ];
+
+    function toggleMenu() {
+        menuOpen = !menuOpen;
+    }
+
+    function openPdf(url: string) {
+        window.open(url, '_blank');
+        menuOpen = false;
+    }
 </script>
 
 {#if !loggedIn}
@@ -922,24 +942,62 @@
 {#if loggedIn}
     <div class="min-h-screen bg-slate-50">
         <div class="bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white">
-            <div
-                class="mx-auto max-w-5xl px-4 py-8 flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between items-start sm:items-center"
-            >
-                <h1 class="text-3xl sm:text-5xl font-bold">TRENINGSPLAN</h1>
+            <div class="mx-auto max-w-5xl px-4 py-8">
+                <!-- Øverste rad: H1 og Hamburgermeny (PC) / H1 og Hamburgermeny (Mobil) -->
+                <div class="flex justify-between items-center mb-4 sm:mb-6 relative">
+                    <h1 class="text-3xl sm:text-5xl font-bold">TRENINGSPLAN</h1>
 
-                <button
-                    on:click={handleLogout}
-                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-xl text-sm font-medium transition-colors flex items-center gap-1"
-                >
-                    <Lock class="h-4 w-4" /> Logg ut
-                </button>
-            </div>
-
-            <div class="mx-auto max-w-5xl px-4 pb-6">
-                {#if isAdmin}
-                    <div
-                        class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full"
+                    <!-- Hamburgermeny knapp -->
+                    <button
+                        on:click={toggleMenu}
+                        class="bg-white/20 hover:bg-white/30 p-2 rounded-xl transition-colors relative"
+                        aria-label="Meny"
                     >
+                        <div class="w-6 h-6 flex flex-col justify-center items-center relative">
+                            <span
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class:rotate-45={menuOpen}
+                                class:-translate-y-2={!menuOpen}
+                            ></span>
+                            <span
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class:opacity-0={menuOpen}
+                                class:scale-0={menuOpen}
+                            ></span>
+                            <span
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class:-rotate-45={menuOpen}
+                                class:translate-y-2={!menuOpen}
+                            ></span>
+                        </div>
+                    </button>
+
+                    <!-- Dropdown meny -->
+                    {#if menuOpen}
+                        <div class="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border border-violet-200 min-w-[250px] z-50 overflow-hidden">
+                            <div class="py-2">
+                                <div class="px-4 py-2 text-sm font-semibold text-violet-700 border-b border-violet-100">
+                                    Dokumenter
+                                </div>
+                                {#each pdfLinks as link}
+                                    <button
+                                        on:click={() => openPdf(link.url)}
+                                        class="w-full text-left px-4 py-3 hover:bg-violet-50 transition-colors text-slate-700 font-medium flex items-center gap-2"
+                                    >
+                                        <svg class="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                        {link.title}
+                                    </button>
+                                {/each}
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Admin søkefelt (hvis admin) -->
+                {#if isAdmin}
+                    <div class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full">
                         <div class="flex-1 flex gap-2 w-full">
                             <input
                                 type="text"
@@ -952,8 +1010,7 @@
                             />
                             <button
                                 on:click={searchUtoverByName}
-                                disabled={isLoading ||
-                                    !currentUtoverNavn.trim()}
+                                disabled={isLoading || !currentUtoverNavn.trim()}
                                 class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {#if isLoading}
@@ -986,60 +1043,79 @@
                     </div>
 
                     {#if loginError}
-                        <div
-                            class="mb-3 rounded-lg bg-red-500/90 p-3 text-sm font-medium text-white"
-                        >
+                        <div class="mb-3 rounded-lg bg-red-500/90 p-3 text-sm font-medium text-white">
                             {loginError}
                         </div>
                     {/if}
                 {/if}
 
-                <div class="flex justify-end">
-                    <div
-                        class="relative flex bg-white/15 rounded-full w-full sm:w-[345px]"
-                        style="padding: 0.175rem;"
+                <!-- Logg ut (mobil - over slider) -->
+                <div class="sm:hidden mb-4 flex justify-start">
+                    <button
+                        on:click={handleLogout}
+                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-xl text-sm font-medium transition-colors flex items-center gap-1"
                     >
-                        <div
-                            class="absolute bg-white rounded-full shadow-md transition-all duration-[700ms]"
-                            style={`top: 0.175rem; left: 0.175rem; height: calc(100% - 0.35rem); width: calc(33.333% - 0.38rem); transform: translateX(${
-                                view === VIEWS.OVERVIEW
-                                    ? "0"
-                                    : view === VIEWS.CALENDAR
-                                      ? "calc(100% + 0.35rem)"
-                                      : "calc(200% + 0.7rem)"
-                            });`}
-                        ></div>
+                        <Lock class="h-4 w-4" /> Logg ut
+                    </button>
+                </div>
 
-                        <button
-                            on:click={() => (view = VIEWS.OVERVIEW)}
-                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
-                                view === VIEWS.OVERVIEW
-                                    ? "text-violet-600"
-                                    : "text-white/80 hover:text-white"
-                            }`}
-                        >
-                            <LineChart class="h-4 w-4 mr-1" /> Oversikt
-                        </button>
-                        <button
-                            on:click={() => (view = VIEWS.CALENDAR)}
-                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
-                                view === VIEWS.CALENDAR
-                                    ? "text-violet-600"
-                                    : "text-white/80 hover:text-white"
-                            }`}
-                        >
-                            <Calendar class="h-4 w-4 mr-1" /> Kalender
-                        </button>
-                        <button
-                            on:click={() => (view = VIEWS.TECHNIQUE)}
-                            class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
-                                view === VIEWS.TECHNIQUE
-                                    ? "text-violet-600"
-                                    : "text-white/80 hover:text-white"
-                            }`}
-                        >
-                            <Video class="h-4 w-4 mr-1" /> Teknikk
-                        </button>
+                <!-- Nederste rad: Logg ut (PC) og Slider -->
+                <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+                    <!-- Logg ut (desktop - venstre side) -->
+                    <button
+                        on:click={handleLogout}
+                        class="hidden sm:flex bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-xl text-sm font-medium transition-colors items-center gap-1"
+                    >
+                        <Lock class="h-4 w-4" /> Logg ut
+                    </button>
+
+                    <!-- Slider (høyre side på PC, full bredde på mobil) -->
+                    <div class="flex justify-end w-full sm:w-auto">
+                        <div
+                            class="relative flex bg-white/15 rounded-full w-full sm:w-[345px]"
+                            style="padding: 0.175rem;">
+                            <div
+                                class="absolute bg-white rounded-full shadow-md transition-all duration-[700ms]"
+                                style={`top: 0.175rem; left: 0.175rem; height: calc(100% - 0.35rem); width: calc(33.333% - 0.38rem); transform: translateX(${
+                                    view === VIEWS.OVERVIEW
+                                        ? "0"
+                                        : view === VIEWS.CALENDAR
+                                        ? "calc(100% + 0.35rem)"
+                                        : "calc(200% + 0.7rem)"
+                                });`}
+                            ></div>
+
+                            <button
+                                on:click={() => (view = VIEWS.OVERVIEW)}
+                                class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                    view === VIEWS.OVERVIEW
+                                        ? "text-violet-600"
+                                        : "text-white/80 hover:text-white"
+                                }`}
+                            >
+                                <LineChart class="h-4 w-4 mr-1" /> Oversikt
+                            </button>
+                            <button
+                                on:click={() => (view = VIEWS.CALENDAR)}
+                                class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                    view === VIEWS.CALENDAR
+                                        ? "text-violet-600"
+                                        : "text-white/80 hover:text-white"
+                                }`}
+                            >
+                                <Calendar class="h-4 w-4 mr-1" /> Kalender
+                            </button>
+                            <button
+                                on:click={() => (view = VIEWS.TECHNIQUE)}
+                                class={`relative z-10 w-1/3 py-2 text-sm font-medium flex items-center justify-center transition-colors ${
+                                    view === VIEWS.TECHNIQUE
+                                        ? "text-violet-600"
+                                        : "text-white/80 hover:text-white"
+                                }`}
+                                >
+                                    <Video class="h-4 w-4 mr-1" /> Teknikk
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1075,8 +1151,8 @@
 
                     <div class="rounded-2xl border border-violet-500 bg-white shadow-sm mb-3 overflow-hidden">
                         <div class="bg-violet-50 py-3 border-b border-violet-500">
-                            <p class="text-slate-900 font-semibold text-base sm:text-lg px-4 capitalize">
-                                {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                            <p class="text-slate-900 font-semibold text-base sm:text-lg px-4">
+                            <span class="capitalize"> {format(parseISO(g.date), "EEEE", { locale: nb })} </span> {" "} {format(parseISO(g.date), "d.MMMM", { locale: nb })}
                             </p>
                         </div>
                         <div class="p-4">
@@ -1245,8 +1321,7 @@
                                             <p
                                                 class="text-sm text-slate-600 italic"
                                             >
-                                                Ingen andre har planlagt økt denne
-                                                dagen.
+                                                Ingen andre er satt opp med denne økten.
                                             </p>
                                         {/if}
                                     </div>
@@ -1332,8 +1407,8 @@
 
                         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm mb-6 overflow-hidden">
                             <div class="bg-violet-50 py-3">
-                                <p class="text-slate-900 font-semibold text-base sm:text-lg px-4 capitalize">
-                                    {format(parseISO(g.date), "EEEE d.MMMM", { locale: nb })}
+                                <p class="text-slate-900 font-semibold text-base sm:text-lg px-4">
+                                    <span class="capitalize"> {format(parseISO(g.date), "EEEE", { locale: nb })} </span> {" "} {format(parseISO(g.date), "d.MMMM", { locale: nb })}
                                 </p>
                             </div>
 
@@ -1508,8 +1583,7 @@
                                                 <p
                                                     class="text-sm text-slate-600 italic"
                                                 >
-                                                    Ingen andre har planlagt økt
-                                                    denne dagen.
+                                                    Ingen andre er satt opp med denne økten.
                                                 </p>
                                             {/if}
                                         </div>
