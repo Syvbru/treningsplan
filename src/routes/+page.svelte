@@ -955,17 +955,17 @@
                     >
                         <div class="w-6 h-6 flex flex-col justify-center items-center relative">
                             <span
-                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-600 ease-out"
                                 class:rotate-45={menuOpen}
                                 class:-translate-y-2={!menuOpen}
                             ></span>
                             <span
-                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-600 ease-out"
                                 class:opacity-0={menuOpen}
                                 class:scale-0={menuOpen}
                             ></span>
                             <span
-                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-300 ease-out"
+                                class="absolute w-6 h-0.5 bg-white rounded-full transition-all duration-600 ease-out"
                                 class:-rotate-45={menuOpen}
                                 class:translate-y-2={!menuOpen}
                             ></span>
