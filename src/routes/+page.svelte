@@ -1613,7 +1613,7 @@
                             >
                                 Klassisk
                                 <ChevronDown
-                                    class="h-5 w-5 transition-transform group-open:rotate-180"
+                                    class="h-5 w-5 transition-transform group-open:rotate-180 duration-700 ease-out"
                                 />
                             </summary>
 
@@ -1622,7 +1622,7 @@
                                 <details class="group/sub bg-white rounded-2xl mt-4 overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Diagonal
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
@@ -1663,7 +1663,7 @@
                                 <details class="group/sub bg-white rounded-2xl overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Staking
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
@@ -1704,7 +1704,7 @@
                                 <details class="group/sub bg-white rounded-2xl overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Dobbeltak med fraspark
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
@@ -1736,7 +1736,7 @@
                             >
                                 Skøyting
                                 <ChevronDown
-                                    class="h-5 w-5 transition-transform group-open:rotate-180"
+                                    class="h-5 w-5 transition-transform group-open:rotate-180 duration-700 ease-out"
                                 />
                             </summary>
 
@@ -1745,7 +1745,7 @@
                                 <details class="group/sub bg-white rounded-2xl mt-4 overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Dobbeldans
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
@@ -1786,7 +1786,7 @@
                                 <details class="group/sub bg-white rounded-2xl overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Padling
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
@@ -1827,7 +1827,7 @@
                                 <details class="group/sub bg-white rounded-2xl overflow-hidden">
                                     <summary class="cursor-pointer px-2 sm:px-4 py-3 text-lg font-semibold text-violet-700 hover:bg-violet-50 group-open/sub:bg-violet-50 transition-colors flex items-center gap-2 rounded-xl">
                                         Enkeldans
-                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180" />
+                                            <ChevronDown class="h-5 w-5 stroke-[2.5] transition-transform group-open/sub:rotate-180 duration-700 ease-out" />
                                     </summary>
                                         <div class="p-1 sm:p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div
