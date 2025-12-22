@@ -67,7 +67,11 @@
                     currentEditPlanSheet = data.editPlanSheet || "";  // LEGG TIL DENNE
                     
                     if (data.isAdmin) {
-                        // Admin er innlogget, men har ikke valgt bruker ennå
+                            if (data.lastSearchName) {
+                            currentUtoverNavn = data.lastSearchName;
+                            // Automatisk søk på sist brukte navn
+                            await searchUtoverByName();
+                        }
                         isLoading = false;
                     } else {
                         // Vanlig bruker - last data
