@@ -45,6 +45,15 @@ export async function POST({ request, cookies }) {
             }, { status: 404 });
         }
         
+        // Lagre sist søkte utøver i cookie
+        cookies.set('last_search_name', searchName, {
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 365 // 1 år
+        });
+        
         return json({ 
             success: true, 
             sheetUrl: user.sheetUrl,
