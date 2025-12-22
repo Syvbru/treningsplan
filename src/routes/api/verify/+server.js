@@ -19,14 +19,24 @@ export async function GET({ cookies }) {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-        return json({ 
+        const response = {
             authenticated: true,
             isAdmin: decoded.isAdmin,
             sheetUrl: decoded.sheetUrl,
             editPlanSheet: decoded.editPlanSheet,  
             username: decoded.username,
             userKeyHash: decoded.userKeyHash
-        });
+        };
+        
+        // Hvis admin, sjekk om det finnes en sist søkt utøver
+        if (decoded.isAdmin) {
+            const lastSearchName = cookies.get('last_search_name');
+            if (lastSearchName) {
+                response.lastSearchName = lastSearchName;
+            }
+        }
+        
+        return json(response);
     } catch (error) {
         // Token er ugyldig eller utløpt
         cookies.delete('auth_token', { path: '/' });
