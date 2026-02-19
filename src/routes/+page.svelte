@@ -715,6 +715,9 @@
     let menuOpen = false;
     let showStyrkeSubmenu = false;
 
+    // ALERT!!!
+    let showAlert = true;
+
     // PDF-lenker
     const intensitetssoner = { title: "Intensitetssoner", url: "/pdf/Intensitessoner.pdf" };
     
@@ -1013,6 +1016,40 @@
 
 {#if loggedIn}
     <div class="min-h-screen bg-slate-50">
+
+
+        
+        <!-- Alert banner -->
+        {#if showAlert}
+            <div class="relative bg-amber-400 text-amber-950 px-4 py-3 shadow-md z-40">
+                <div class="mx-auto max-w-5xl flex items-start gap-3 pr-8">
+                    <div class="shrink-0 mt-0.5">
+                        <svg class="h-5 w-5 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm sm:text-base">Viktig! Overskudd til hovedlandsrennet</p>
+                        <p class="text-sm sm:text-base mt-0.5 leading-snug">
+                            Hovedlandsrennet nærmer seg og nå er alt treningsgrunnlag lagt. Nå handler alt om å få overskudd og mye energi. Spis og drikk nok, sov mye og ikke nøl med å kutte ned tiden på hver økt med 15–30 min om man ikke er fullt restituert.
+                        </p>
+                    </div>
+                </div>
+                <button
+                    on:click={() => showAlert = false}
+                    class="absolute top-2.5 right-3 text-amber-800 hover:text-amber-950 transition-colors"
+                    aria-label="Lukk varsel"
+                >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        {/if}
+        <!-- Alert banner -->
+
+
+
         <div class="bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white">
             <div class="mx-auto max-w-5xl px-4 py-8">
                 <!-- Øverste rad: H1 og Hamburgermeny (PC) / H1 og Hamburgermeny (Mobil) -->
