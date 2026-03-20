@@ -23,16 +23,6 @@
     let currentUtoverNavn = "";
     let currentEditPlanSheet = "";
 
-    // ── START: POP UP ALERT – NY VERSJON AV TRENINGSPLAN ────────────────────────
-    let showVersionAlert = false;
-
-    function startVersionAlertTimer() {
-        setTimeout(() => {
-            showVersionAlert = true;
-        }, 3500); // Vises 3,5 sekunder etter innlogging
-    }
-    // ── SLUTT: POP UP ALERT – NY VERSJON AV TRENINGSPLAN ────────────────────────
-
     type ModalType = "session" | "calendar" | "profile" | null;
     let activeModal: ModalType = null;
     let selectedSessionGroup: { date: string; sessions: Workout[] } | null = null;
@@ -106,9 +96,6 @@
                         await Promise.all([loadWorkoutPlan(data.sheetUrl), loadFellesOkter()]);
                         await tick(); scrollToAnchor();
                     }
-                    // ── START: POP UP ALERT – start timer etter verifisert sesjon ─
-                    startVersionAlertTimer();
-                    // ── SLUTT: POP UP ALERT – start timer etter verifisert sesjon ─
                 }
                 isLoading = false;
             })
@@ -131,9 +118,6 @@
                     await Promise.all([loadWorkoutPlan(data.sheetUrl), loadFellesOkter()]);
                     await tick(); scrollToAnchor();
                 }
-                // ── START: POP UP ALERT – start timer etter vellykket innlogging ─
-                startVersionAlertTimer();
-                // ── SLUTT: POP UP ALERT – start timer etter vellykket innlogging ─
             } else { loginError = data.error || "Innlogging feilet."; }
         } catch { loginError = "Kunne ikke koble til server."; }
         finally { isLoading = false; }
@@ -635,48 +619,6 @@
 
 {#if loggedIn}
 <div class="min-h-screen bg-slate-100">
-
-    <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <!-- START: POP UP ALERT – NY VERSJON AV TRENINGSPLAN                      -->
-    <!-- Vises 5 sekunder etter innlogging. Lukkes med X-knappen.               -->
-    <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    {#if showVersionAlert}
-        <div class="fixed inset-x-0 top-20 z-[200] flex justify-center px-4 pointer-events-none">
-            <div class="pointer-events-auto w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#A9D6E5] overflow-hidden"
-                role="alertdialog" aria-live="polite" aria-label="Ny versjon tilgjengelig">
-
-                <!-- Fargestripe øverst -->
-                <div class="h-2 w-full bg-gradient-to-r from-[#19747E] to-[#A9D6E5]"></div>
-
-                <div class="p-6">
-                    <!-- Tittel og lukk-knapp -->
-                    <div class="flex items-start justify-between gap-4 mb-3">
-                        <p class="sm: text-lg md:text-xl font-bold text-slate-800 leading-snug">Ny versjon av Treningsplan 🎉</p>
-
-                        <!-- Lukk-knapp -->
-                        <button
-                            on:click={() => showVersionAlert = false}
-                            class="flex-shrink-0 bg-slate-100 hover:bg-slate-200 rounded-lg p-2 text-slate-400 transition-colors"
-                            aria-label="Lukk varsling">
-                            <X class="h-5 w-5" />
-                        </button>
-                    </div>
-
-                    <!-- Tekstinnhold -->
-                    <p class="text-base text-slate-600 leading-relaxed">
-                        For å se utfyllende informasjon om økten, som kommentarer og hvem som har like økter må du
-                        trykke på en dag.
-                    </p>
-                    <p class="text-base text-slate-600 mt-4 leading-relaxed">
-                        Du kan skrolle frem og tilbake mellom dager sideveis.
-                    </p>
-                </div>
-            </div>
-        </div>
-    {/if}
-    <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <!-- SLUTT: POP UP ALERT – NY VERSJON AV TRENINGSPLAN                      -->
-    <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
     <!-- HEADER -->
     <header class="bg-slate-100 sticky top-0 z-50">
