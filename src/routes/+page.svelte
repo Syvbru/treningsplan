@@ -36,6 +36,58 @@
     let statCalendarDays: (Date | null)[] = [];
     let lineTooltip: { x: number; y: number; label: string; hours: number } | null = null;
 
+    // ── BODY SCROLL LOCK ─────────────────────────────────────────────────────────
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = (activeModal || showStatCalendar) ? 'hidden' : '';
+    }
+
+    // ── SWIPE-TO-DISMISS ACTION ───────────────────────────────────────────────────
+    function swipeToDismiss(node: HTMLElement) {
+        let startY = 0;
+        let deltaY = 0;
+
+        function onStart(e: TouchEvent) {
+            startY = e.touches[0].clientY;
+            deltaY = 0;
+            node.style.transition = 'none';
+        }
+
+        function onMove(e: TouchEvent) {
+            deltaY = e.touches[0].clientY - startY;
+            if (deltaY > 0 && node.scrollTop === 0) {
+                e.preventDefault();
+                node.style.transform = `translateY(${deltaY}px)`;
+                node.style.opacity = `${1 - deltaY / 400}`;
+            }
+        }
+
+        function onEnd() {
+            node.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+            if (deltaY > 100 && node.scrollTop === 0) {
+                node.style.transform = `translateY(100%)`;
+                node.style.opacity = '0';
+                setTimeout(() => { activeModal = null; }, 220);
+            } else {
+                node.style.transform = '';
+                node.style.opacity = '';
+            }
+            deltaY = 0;
+        }
+
+        node.addEventListener('touchstart', onStart, { passive: true });
+        node.addEventListener('touchmove', onMove, { passive: false });
+        node.addEventListener('touchend', onEnd, { passive: true });
+
+        return {
+            destroy() {
+                node.removeEventListener('touchstart', onStart);
+                node.removeEventListener('touchmove', onMove);
+                node.removeEventListener('touchend', onEnd);
+                document.body.style.overflow = '';
+            }
+        };
+    }
+
     // ── CARD SCROLL STATE ────────────────────────────────────────────────────────
     let cardScrollEl: HTMLElement | null = null;
     let cardAnchor: Date = startOfDay(new Date());
@@ -1176,7 +1228,13 @@
             on:click={() => activeModal = null} role="button" tabindex="0"
             on:keydown={(e) => e.key === "Escape" && (activeModal = null)} aria-label="Lukk">
             <div class="bg-white w-full max-w-lg sm:rounded-3xl rounded-t-3xl max-h-[88vh] min-h-[50vh] sm:min-h-0 overflow-y-auto p-5 pb-8 relative sm:mx-4"
+                use:swipeToDismiss
                 on:click|stopPropagation role="dialog" aria-modal="true">
+
+                <!-- Drag handle (synlig kun på mobil) -->
+                <div class="sm:hidden flex justify-center mb-3 -mt-1">
+                    <div class="w-10 h-1 rounded-full bg-slate-300"></div>
+                </div>
 
                 <button on:click={() => activeModal = null}
                     class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 rounded-lg p-1.5 text-slate-500 transition-colors">
