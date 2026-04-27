@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { JWT_SECRET, USER_CREDENTIALS } from '$env/static/private';
 
 function sha256(str) {
     return crypto.createHash('sha256').update(str).digest('hex');
 }
 
-const USER_CREDENTIALS = JSON.parse(process.env.USER_CREDENTIALS || '{}');
-const JWT_SECRET = process.env.JWT_SECRET;
+const USER_CREDS = JSON.parse(USER_CREDENTIALS || '{}');
 
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is not set');
@@ -36,7 +36,7 @@ export async function POST({ request, cookies }) {
         
         const { searchName } = await request.json();
         const nameHash = sha256(searchName.toLowerCase());
-        const user = USER_CREDENTIALS[nameHash];
+        const user = USER_CREDS[nameHash];
         
         if (!user) {
             return json({ 
@@ -46,12 +46,20 @@ export async function POST({ request, cookies }) {
         }
         
         // Lagre sist søkte utøver i cookie
+        cookies.set('last_search_hash', nameHash, {
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 365
+        });
+
         cookies.set('last_search_name', searchName, {
             path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 60 * 60 * 24 * 365 // 1 år
+            maxAge: 60 * 60 * 24 * 365
         });
         
         return json({ 
