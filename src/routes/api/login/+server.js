@@ -1,20 +1,24 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { 
+    JWT_SECRET, 
+    USER_CREDENTIALS, 
+    ADMIN_USERNAME_HASH, 
+    ADMIN_PASSWORD_HASH 
+} from '$env/static/private';
 
 function sha256(str) {
     return crypto.createHash('sha256').update(str).digest('hex');
 }
 
 // Last brukerdata fra miljøvariabel
-const USER_CREDENTIALS = JSON.parse(process.env.USER_CREDENTIALS || '{}');
+const USER_CREDS = JSON.parse(USER_CREDENTIALS || '{}');
 
 const ADMIN_USER = {
-    usernameHash: process.env.ADMIN_USERNAME_HASH,
-    passwordHash: process.env.ADMIN_PASSWORD_HASH,
+    usernameHash: ADMIN_USERNAME_HASH,
+    passwordHash: ADMIN_PASSWORD_HASH,
 };
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is not set');
@@ -61,7 +65,7 @@ export async function POST({ request, cookies }) {
         }
         
         // Vanlig bruker
-        const user = USER_CREDENTIALS[userKeyHash];
+        const user = USER_CREDS[userKeyHash];
         
         if (!user) {
             return json({ 
