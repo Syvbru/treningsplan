@@ -1,7 +1,6 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET;
+import { JWT_SECRET } from '$env/static/private';
 
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is not set');
