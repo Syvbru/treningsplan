@@ -10,7 +10,7 @@
     } from "date-fns";
     import { nb } from "date-fns/locale";
     import {
-        Calendar, Clock, Zap, Dumbbell, BookOpen, Timer, Heart,
+        Calendar, Zap, Dumbbell, BookOpen, Timer, Heart,
         BatteryCharging, User, Lock, ChevronDown, ChevronUp, Users,
         ChevronLeft, ChevronRight, X, LogOut, ArrowLeft, SquarePen,
         FileText, Video, NotepadText, LineChart, MessageSquare, Moon, Plus, Trash2
@@ -1152,35 +1152,34 @@
 </style>
 
 {#if !loggedIn}
-<div class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0D1B2A] via-[#0D1B2A]/95 to-[#132030] p-4">
-    <div class="w-full max-w-sm bg-[#132030] rounded-3xl p-8 shadow-2xl border border-[#1E3448]">
+<div class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#ffe6f7] via-[#fff5fc] to-[#ffe6f7] p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl border border-[#fd98dd]/40">
         <h2 class="text-center font-bold text-3xl mb-1">
-            <span class="text-[#c7ef83] italic">TRENINGS</span><span class="text-[#8bdc12] italic">PLAN</span>
+            <span class="text-[#fd98dd] italic">TRENINGS</span><span class="text-[#eb26ad] italic">PLAN</span>
         </h2>
-        <p class="text-center text-[#64748B] text-sm mb-8">Logg inn for å se din treningsplan</p>
 
         <div class="mb-4">
-            <label for="username" class="block text-xs font-semibold text-[#CBD5E1] uppercase tracking-widest mb-1.5">Brukernavn</label>
+            <label for="username" class="block text-xs font-semibold text-[#334155] uppercase tracking-widest mb-1.5">Brukernavn</label>
             <input id="username" type="text" bind:value={username} disabled={isLoading}
-                class="w-full rounded-xl border border-[#1E3448] bg-[#1E3045] text-[#F1F5F9] px-4 py-3 text-base focus:border-[#8bdc12]/60 focus:ring-2 focus:ring-[#8bdc12] outline-none transition disabled:opacity-60 placeholder-slate-500"
+                class="w-full rounded-xl border border-[#E2E8F0] bg-[#F1F5F9] text-[#334155] px-4 py-3 text-base focus:border-[#eb26ad]/60 focus:ring-2 focus:ring-[#eb26ad] outline-none transition disabled:opacity-60 placeholder-slate-400"
                 placeholder="Ditt brukernavn" autocomplete="username" />
         </div>
         <div class="mb-6">
-            <label for="password" class="block text-xs font-semibold text-[#CBD5E1] uppercase tracking-widest mb-1.5">Passord</label>
+            <label for="password" class="block text-xs font-semibold text-[#334155] uppercase tracking-widest mb-1.5">Passord</label>
             <input id="password" type="password" bind:value={password} disabled={isLoading}
                 on:keydown={(e) => { if (e.key === "Enter") handleLogin(); }}
-                class="w-full rounded-xl border border-[#1E3448] bg-[#1E3045] text-[#F1F5F9] px-4 py-3 text-base focus:border-[#8bdc12]/60 focus:ring-2 focus:ring-[#8bdc12] outline-none transition disabled:opacity-60 placeholder-slate-500"
+                class="w-full rounded-xl border border-[#E2E8F0] bg-[#F1F5F9] text-[#334155] px-4 py-3 text-base focus:border-[#eb26ad]/60 focus:ring-2 focus:ring-[#eb26ad] outline-none transition disabled:opacity-60 placeholder-slate-400"
                 placeholder="••••••••" autocomplete="current-password" />
         </div>
 
         {#if loginError}
-            <div class="mb-4 rounded-xl bg-red-900/30 border border-red-800 p-3 text-sm text-red-200">{loginError}</div>
+            <div class="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">{loginError}</div>
         {/if}
 
         <button on:click={handleLogin} disabled={isLoading || !username || !password}
-            class="w-full flex items-center justify-center gap-2 rounded-xl bg-[#8bdc12] text-[#132030] py-3 text-base font-bold tracking-wide transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#c7ef83]">
+            class="w-full flex items-center justify-center gap-2 rounded-xl bg-[#eb26ad] text-white py-3 text-base font-bold tracking-wide transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#fd98dd]">
             {#if isLoading}
-                <svg class="h-5 w-5 animate-spin text-[#132030]" fill="none" viewBox="0 0 24 24">
+                <svg class="h-5 w-5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -1192,7 +1191,6 @@
     </div>
 </div>
 {/if}
-
 {#if loggedIn}
 <div class="min-h-screen {darkMode?'dk':'lt'}" style="background-color:var(--bg)">
 
@@ -1242,12 +1240,12 @@
             </div>
 
             {#if isAdmin}
-                <div class="mt-3">
+                <div class="mt-3 relative">
                     <select
                         bind:value={currentUtoverNavn}
                         on:change={searchUtoverByName}
                         disabled={isLoading || utoverListe.length === 0}
-                        class="w-full rounded-full border px-4 py-2 text-sm focus:ring-2 focus:ring-[color:var(--p1)] outline-none transition bg-[var(--card)] border-[var(--p1)/40] text-[var(--p1)] disabled:opacity-50">
+                        class="w-full appearance-none rounded-full border px-4 py-2 pr-9 text-sm focus:ring-1 focus:ring-[color:var(--p1)] outline-none transition bg-[var(--card)] border-[var(--p1)/40] text-[var(--p1)] disabled:opacity-50">
                         <option value="">— Velg utøver —</option>
                         {#each utoverListe as namn}
                             <option value={namn}>
@@ -1257,6 +1255,7 @@
                             </option>
                         {/each}
                     </select>
+                    <ChevronDown class="h-4 w-4 text-[var(--p1)] absolute right-3.5 top-1/2 translate-y-[calc(-50%+0px)] pointer-events-none" />
                 </div>
                 {#if loginError}
                     <div class="mt-2 rounded-lg bg-red-500/80 text-white text-sm px-3 py-2">{loginError}</div>
@@ -1307,7 +1306,6 @@
                         {@const dayIso = format(day, "yyyy-MM-dd")}
                         {@const dw = workouts.filter(w => w.date === dayIso)}
                         {@const isT = isSameDay(day, today)}
-                        {@const isAct = isSameDay(day, activeDate)}
                         {@const isRest = dw.length === 0 || dw.every(w => w.title.toLowerCase().includes("hvile"))}
                         {@const hasComment = dw.some(w => w.description && w.description.trim().length > 0)}
                         {@const isDouble = dw.length >= 2}
@@ -1316,8 +1314,6 @@
                             class="flex-shrink-0 snap-start w-36 rounded-2xl p-3 text-left transition-all duration-150 flex flex-col
                                 {isT
                                     ? 'bg-[var(--p3)] border-2 border-[var(--p1)]'
-                                    : isAct
-                                        ? 'bg-[var(--card)] border-2 border-[var(--p1)]'
                                         : 'bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)]'}"
                             on:click={() => {
                                 selectedDate = startOfDay(day);
@@ -1395,7 +1391,7 @@
         </section>
 
         <!-- LOGG TEKNIKKØKT -->
-        <section class="mt-20">
+        <section>
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-base font-bold text-[var(--p1)]">Teknikklogg:</h2>
                 {#if !isAdmin}
@@ -1599,7 +1595,7 @@
 
             <!-- Stat Calendar Picker -->
             {#if showStatCalendar}
-                <div class="fixed inset-0 z-40 flex items-center justify-center pt-24 bg-slate-900/40 backdrop-blur-sm"
+                <div class="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-slate-900/40 backdrop-blur-sm"
                     transition:fly={{ x: 300, duration: 300 }}
                     on:click={() => showStatCalendar = false}
                     role="button" tabindex="0"
@@ -1675,7 +1671,7 @@
                     <!-- Antall økter at the bottom -->
                     <div class="text-center pt-2 border-t border-[var(--br)]">
                         <span class="text-sm text-[var(--text2)] font-medium ml-1.5">Antall økter: </span>
-                        <span class="text-md font-bold text-[var(--p1)]">{barStats.total}</span>
+                        <span class="text-sm font-medium text-[var(--p1)]">{barStats.total}</span>
                     </div>
                 </div>
 
@@ -1736,8 +1732,8 @@
                     {/if}
                     <!-- Timer totalt at the bottom -->
                     <div class="text-center mt-1 pt-2 border-t border-[var(--br)]">
-                    <span class="text-sm text-[var(--text2)] font-medium ml-1.5">Timer totalt:</span>
-                        <span class="text-md font-bold text-[var(--p1)]">{barStats.totalHours}t{barStats.totalMins > 0 ? ` ${barStats.totalMins}min` : ""}</span>
+                        <span class="text-sm text-[var(--text2)] font-medium ml-1.5">Timer totalt:</span>
+                        <span class="text-sm font-medium text-[var(--p1)]">{barStats.totalHours}t{barStats.totalMins > 0 ? ` ${barStats.totalMins}min` : ""}</span>
                     </div>
                 </div>
             </div>
@@ -1746,65 +1742,59 @@
         <!-- TEKNIKKVIDEOER -->
         <section>
             <h2 class="text-base font-bold text-[var(--p1)] mb-3">Teknikkvideoer:</h2>
-
-            <div class="flex items-center gap-2 md:gap-4">
-                <!-- Venstre pil: ligger utenfor videoen på stor skjerm, ikke over den -->
-                {#if teknikkVideoer.length > 1}
+ 
+            <div class="flex-1 min-w-0">
+                <!-- Horisontal karusell: én video av gangen, bla sidelengs -->
+                <div bind:this={teknikkScrollEl} on:scroll={onTeknikkScroll}
+                    class="no-scrollbar flex overflow-x-auto snap-x snap-mandatory scroll-smooth">
+                    {#each teknikkVideoer as video, i (video.url + i)}
+                        <div class="m-2 snap-center shrink-0 w-full">
+                            <p class="text-md font-bold text-[var(--p2)] mb-3">
+                                {video.stilart} <span class="italic"> - {video.teknikk} </span>
+                            </p>
+                            <div class="rounded-2xl overflow-hidden">
+                                <button type="button" class="aspect-video relative w-full block group" on:click={() => activateVideo(video.url)}>
+                                    {#if activeVideos.has(video.url)}
+                                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/{video.url}?autoplay=1" title={video.teknikk} frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                                    {:else}
+                                        <img class="w-full h-full object-cover" src="https://img.youtube.com/vi/{video.url}/hqdefault.jpg" alt={video.teknikk} loading="lazy" />
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <svg viewBox="0 0 68 48" class="w-16 h-11 drop-shadow-lg group-hover:scale-110 transition-transform" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="68" height="48" rx="12" fill="#FF0000"/>
+                                                <polygon points="26,14 26,34 46,24" fill="white"/>
+                                            </svg>
+                                        </div>
+                                    {/if}
+                                </button>
+                            </div>
+                        </div>
+                    {/each}
+                </div>
+            </div>
+ 
+            {#if teknikkVideoer.length > 1}
+                <!-- Frem/tilbake-piler på hver sin side av punkt-indikatorene -->
+                <div class="flex justify-center items-center gap-3 mt-3">
                     <button type="button" on:click={teknikkForrige} disabled={teknikkAktivIndeks === 0}
                         aria-label="Forrige video"
-                        class="hidden sm:flex flex-shrink-0 items-center justify-center w-9 h-9 rounded-full bg-[var(--card)] border border-[var(--br)] shadow-sm text-[var(--p1)] hover:border-[var(--p1)] disabled:opacity-30 disabled:pointer-events-none transition-opacity">
-                        <ChevronLeft class="h-5 w-5" />
+                        class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-[var(--p1)] hover:text-[var(--p1)]/70 disabled:opacity-30 disabled:pointer-events-none transition-colors">
+                        <ChevronLeft class="h-7 w-7" strokeWidth={3} />
                     </button>
-                {/if}
-
-                <div class="flex-1 min-w-0">
-                    <!-- Horisontal karusell: én video av gangen, bla sidelengs -->
-                    <div bind:this={teknikkScrollEl} on:scroll={onTeknikkScroll}
-                        class="no-scrollbar flex overflow-x-auto snap-x snap-mandatory scroll-smooth">
-                        {#each teknikkVideoer as video, i (video.url + i)}
-                            <div class="snap-center shrink-0 w-full">
-                                <p class="text-md font-bold text-[var(--p1)] mb-3">
-                                    {video.stilart} <span class="text-[var(--p2)] italic"> - {video.teknikk} </span>
-                                </p>
-                                <div class="rounded-xl overflow-hidden">
-                                    <button type="button" class="aspect-video relative w-full block group" on:click={() => activateVideo(video.url)}>
-                                        {#if activeVideos.has(video.url)}
-                                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/{video.url}?autoplay=1" title={video.teknikk} frameborder="0" allowfullscreen allow="autoplay"></iframe>
-                                        {:else}
-                                            <img class="w-full h-full object-cover" src="https://img.youtube.com/vi/{video.url}/hqdefault.jpg" alt={video.teknikk} loading="lazy" />
-                                            <div class="absolute inset-0 flex items-center justify-center">
-                                                <svg viewBox="0 0 68 48" class="w-16 h-11 drop-shadow-lg group-hover:scale-110 transition-transform" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <rect width="68" height="48" rx="12" fill="#FF0000"/>
-                                                    <polygon points="26,14 26,34 46,24" fill="white"/>
-                                                </svg>
-                                            </div>
-                                        {/if}
-                                    </button>
-                                </div>
-                            </div>
+ 
+                    <div class="flex items-center gap-1.5">
+                        {#each teknikkVideoer as _, i}
+                            <button type="button" on:click={() => scrollTeknikkTil(i)}
+                                aria-label={`Gå til video ${i + 1}`}
+                                class="h-2 rounded-full transition-all {i === teknikkAktivIndeks ? 'w-5 bg-[var(--p1)]' : 'w-2 bg-[var(--br)]'}">
+                            </button>
                         {/each}
                     </div>
-                </div>
-
-                
-                {#if teknikkVideoer.length > 1}
+ 
                     <button type="button" on:click={teknikkNeste} disabled={teknikkAktivIndeks === teknikkVideoer.length - 1}
                         aria-label="Neste video"
-                        class="hidden sm:flex flex-shrink-0 items-center justify-center w-9 h-9 rounded-full bg-[var(--card)] border border-[var(--br)] shadow-sm text-[var(--p1)] hover:border-[var(--p1)] disabled:opacity-30 disabled:pointer-events-none transition-opacity">
-                        <ChevronRight class="h-5 w-5" />
+                        class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-[var(--p1)] hover:text-[var(--p1)]/70 disabled:opacity-30 disabled:pointer-events-none transition-colors">
+                        <ChevronRight class="h-7 w-7" strokeWidth={3} />
                     </button>
-                {/if}
-            </div>
-
-            {#if teknikkVideoer.length > 1}
-                <!-- Punkt-indikatorer -->
-                <div class="flex justify-center items-center gap-1.5 mt-3">
-                    {#each teknikkVideoer as _, i}
-                        <button type="button" on:click={() => scrollTeknikkTil(i)}
-                            aria-label={`Gå til video ${i + 1}`}
-                            class="h-2 rounded-full transition-all {i === teknikkAktivIndeks ? 'w-5 bg-[var(--p1)]' : 'w-2 bg-[var(--br)]'}">
-                        </button>
-                    {/each}
                 </div>
             {/if}
         </section>
@@ -1852,7 +1842,7 @@
                                     {#if s.durationMin}
                                         <span class="flex items-center gap-1 font-bold text-sm"
                                         style="color:{darkMode ? 'var(--card)' : 'var(--text2)'}">
-                                            <Clock class="h-4 w-4" /> {formatTime(s.durationMin)}
+                                            {formatTime(s.durationMin)}
                                         </span>
                                     {/if}
                                 </div>
@@ -2112,7 +2102,7 @@
 
     <!-- CALENDAR MODAL -->
     {#if activeModal === "calendar"}
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
+        <div class="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-slate-900/40 backdrop-blur-sm p-4"
             transition:fly={{ y: -300, duration: 300 }}
             on:click={() => activeModal = null} role="button" tabindex="0"
             on:keydown={(e) => e.key === "Escape" && (activeModal = null)} aria-label="Lukk">
