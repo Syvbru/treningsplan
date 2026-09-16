@@ -15,6 +15,9 @@
         ChevronLeft, ChevronRight, X, LogOut, ArrowLeft, SquarePen,
         FileText, Video, NotepadText, LineChart, MessageSquare, Moon, Plus, Trash2
     } from "lucide-svelte";
+    import { dev } from '$app/environment';
+    import { injectAnalytics } from '@vercel/analytics/sveltekit';
+    injectAnalytics({ mode: dev ? 'development' : 'production' });
 
     let username = "";
     let password = "";
