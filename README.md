@@ -1,4 +1,3 @@
-```sh
 # Treningsplan for langrenn
 
 En webapp for planlegging, oppfølging og treningsloggføring for langrennsutøvere. Jeg utviklet løsningen i jobben som trener i Asker Skiklubb Langrenn etter at oppfølgingen ble stadig mer tidkrevende da gruppen vokste fra fem til fjorten utøvere.
