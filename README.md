@@ -6,7 +6,7 @@ Målet var å samle treningsplaner og oppfølging på ett sted, slik at treneren
 
 ## Effekt i bruk
 
-- Som trener har jeg halvert tiden jeg bruker på oppfølging ved å samle utøverne i ett dashboard.
+- Som trener har jeg halvert tiden jeg bruker på oppfølging i hverdagen ved å samle utøverne i ett dashboard.
 - Utøverne bruker over halvparten mindre tid på å finne dagens økter enn med regnearkets mobilgrensesnitt.
 - Oversikten over fellesøkter gjør det enklere for utøverne å koordinere egentrening med hverandre.
 
@@ -57,10 +57,9 @@ Løsningen er laget for en lukket gruppe med kjente brukere og er et praktisk ve
 
 ## Videre arbeid
 
+- Integrering med AI (MCP) for å undersøke hvordan dette kan gi merverdi i treningshverdagen.
 - Gjøre sammenligning av økter mindre avhengig av fritekst og lik øktbeskrivelse.
 - Videreutvikle struktur og tilgangsstyring for mulig bruk på tvers av trenere og treningsgrupper.
 
 ## Demo
-| | | |
-|---|---|---|
-| <img src="static/images/dashboard-mobil1.jpeg" width="160" alt="Dashboard på mobil, visning 1"> | <img src="static/images/dashboard-mobil2.jpeg" width="160" alt="Dashboard på mobil, visning 2"> | <img src="static/images/dashboard-mobil3.jpeg" width="160" alt="Dashboard på mobil, visning 3"> |
+ <img src="static/images/dashboard-mobil1.jpeg" width="250" alt="Dashboard på mobil, visning 1">  <img src="static/images/dashboard-mobil2.jpeg" width="250" alt="Dashboard på mobil, visning 2">  <img src="static/images/dashboard-mobil3.jpeg" width="250" alt="Dashboard på mobil, visning 3">
