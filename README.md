@@ -62,5 +62,6 @@ Løsningen er laget for en lukket gruppe med kjente brukere og er et praktisk ve
 - Videreutvikle struktur og tilgangsstyring for mulig bruk på tvers av trenere og treningsgrupper.
 
 ## Demo
-
-Skjermbilder kan legges i `static/images/` og vises her med relative Markdown-lenker. Bruk anonymiserte eksempeldata i bilder som deles offentlig.
+![Dashboard på mobil](static/images/dashboard-mobil1.jpeg)
+![Dashboard på mobil](static/images/dashboard-mobil2.jpeg)
+![Dashboard på mobil](static/images/dashboard-mobil3.jpeg)
