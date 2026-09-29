@@ -1,34 +1,3 @@
-# sv
-
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
 ```sh
 # Treningsplan for langrenn
 
@@ -93,5 +62,6 @@ Løsningen er laget for en lukket gruppe med kjente brukere og er et praktisk ve
 - Videreutvikle struktur og tilgangsstyring for mulig bruk på tvers av trenere og treningsgrupper.
 
 ## Demo
-
-Skjermbilder kan legges i `static/images/` og vises her med relative Markdown-lenker. Bruk anonymiserte eksempeldata i bilder som deles offentlig.
+![Dashboard på mobil](static/images/dashboard-mobil1.jpeg)
+![Dashboard på mobil](static/images/dashboard-mobil2.jpeg)
+![Dashboard på mobil](static/images/dashboard-mobil3.jpeg)
