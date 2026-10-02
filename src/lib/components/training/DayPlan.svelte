@@ -22,7 +22,11 @@
 			{#each sessions as session, index (index)}
 				<div class="session" style="--session-color:{getWorkoutColor(session.title)}">
 					<h3>{session.title}</h3>
-					{#if session.durationMin}<p class="duration">{formatTime(session.durationMin)}</p>{/if}
+					{#if session.durationMin === null}
+						<p class="duration duration-error">Feil i tidsformat, må endres i regneark</p>
+					{:else if session.durationMin}
+						<p class="duration">{formatTime(session.durationMin)}</p>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -84,6 +88,10 @@
 		margin-top: 0.25rem;
 		color: var(--text2);
 		font-size: 0.875rem;
+	}
+	.duration-error {
+		color: var(--workout-hard);
+		overflow-wrap: anywhere;
 	}
 	.day-comment,
 	.companions {

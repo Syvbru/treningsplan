@@ -32,9 +32,10 @@ export function workoutStatistics(workouts: Workout[], period: StatPeriod, ancho
 					: classifyWorkout(w.title);
 		if (kind in counts) counts[kind as keyof typeof counts]++;
 	}
-	const minutes = selected.reduce((sum, w) => sum + w.durationMin, 0);
+	const minutes = selected.reduce((sum, w) => sum + (w.durationMin ?? 0), 0);
 	return {
 		counts,
+		invalidDurationCount: selected.filter((w) => w.durationMin === null).length,
 		total: selected.length - counts.rest,
 		totalHours: Math.floor(minutes / 60),
 		totalMins: minutes % 60

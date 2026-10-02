@@ -39,11 +39,11 @@ export function parseWorkoutCSV(csv: string, anchor = new Date()): Workout[] {
 			[second, time2]
 		]) {
 			if (titleIndex < 0 || !row[titleIndex]?.trim()) continue;
-			let durationMin: number;
+			let durationMin: number | null;
 			try {
 				durationMin = toMin(row[timeIndex] ?? '');
 			} catch {
-				throw new SheetFormatError(`Rad ${index + 2}: ugyldig varighet, forventet timer:minutter.`);
+				durationMin = null;
 			}
 			workouts.push({
 				date: iso,

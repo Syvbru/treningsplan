@@ -12,7 +12,8 @@ export interface Athlete {
 export interface Workout {
 	date: string;
 	title: string;
-	durationMin: number;
+	/** null means the sheet contains an invalid duration; an empty cell remains 0. */
+	durationMin: number | null;
 	description: string;
 }
 export interface SharedWorkout {

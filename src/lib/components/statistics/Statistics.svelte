@@ -348,6 +348,13 @@
 				<span class="text-sm font-medium text-[var(--p1)]"
 					>{barStats.totalHours}t{barStats.totalMins > 0 ? ` ${barStats.totalMins}min` : ''}</span
 				>
+				{#if summary.invalidDurationCount > 0}
+					<p class="mt-2 text-xs text-[var(--text2)]">
+						{summary.invalidDurationCount}
+						{summary.invalidDurationCount === 1 ? 'økt har' : 'økter har'} feil i tidsformat og er ikke
+						med i beregnet treningstid.
+					</p>
+				{/if}
 			</div>
 		</div>
 	</div>
