@@ -353,7 +353,7 @@
 		background: var(--calendar-dot);
 	}
 	.day-content {
-		min-height: 18.5rem;
+		min-height: 17rem;
 		border-top: 1px solid var(--br);
 	}
 	@media (max-width: 767px) {
