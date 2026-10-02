@@ -62,4 +62,5 @@ Løsningen er laget for en lukket gruppe med kjente brukere og er et praktisk ve
 - Videreutvikle struktur og tilgangsstyring for mulig bruk på tvers av trenere og treningsgrupper.
 
 ## Demo
- <img src="static/images/dashboard-mobil1.jpeg" width="250" alt="Dashboard på mobil, visning 1">  <img src="static/images/dashboard-mobil2.jpeg" width="250" alt="Dashboard på mobil, visning 2">  <img src="static/images/dashboard-mobil3.jpeg" width="250" alt="Dashboard på mobil, visning 3">
+<img src="static/images/dashboard-mobil1.jpeg" width="220" alt="Dashboard på mobil, visning 1">  <img src="static/images/dashboard-mobil2.jpeg" width="220" alt="Dashboard på mobil, visning 2">  <img src="static/images/dashboard-mobil3.jpeg" width="220" alt="Dashboard på mobil, visning 3">
+<img src="static/images/dashboard-mobil4.jpeg" width="220" alt="Dashboard på mobil, visning 4">
