@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
-// All routes and static assets are hosted at the root; kit.paths.base remains empty.
+
 export default ts.config(
 	{
 		ignores: [

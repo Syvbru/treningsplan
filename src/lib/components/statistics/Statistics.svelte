@@ -36,9 +36,9 @@
 		showStatCalendar = true;
 		showStatDropdown = false;
 	}
-	// Pre-computed chart values (avoids {@const} outside block elements)
+
 	$: barMaxV = Math.max(...barStats.items.map((i) => i.value), 1);
-	$: barScale = Math.max(barMaxV, 3); // alltid minst 3 som tak
+	$: barScale = Math.max(barMaxV, 3);
 	$: barChartItems = barStats.items.map((item, idx) => {
 		const bw = 36,
 			gap = 20;
@@ -52,7 +52,7 @@
 	$: lineYTicks = (() => {
 		const maxVal = Math.max(Math.ceil(lineMaxH), 1);
 		const maxTicks = statPeriod === 'uke' ? 6 : 4;
-		// Find a "nice" step: smallest of [1,2,3,4,5,6,8,10,12,15,20,25,30] giving ≤ maxTicks ticks
+
 		const candidates = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50];
 		const step =
 			candidates.find((s) => Math.ceil(maxVal / s) <= maxTicks) ?? Math.ceil(maxVal / maxTicks);
@@ -108,12 +108,10 @@
 	})();
 </script>
 
-<!-- STATISTIKK -->
 <section>
 	<div class="mb-3">
 		<h2 class="text-base font-bold text-[var(--p1)] mb-2">Statistikk:</h2>
 		<div class="flex items-center gap-2">
-			<!-- Prev / Next navigation -->
 			<button
 				aria-label="Forrige periode"
 				on:click={prevStatPeriod}
@@ -122,7 +120,6 @@
 				<ChevronLeft class="h-4 w-4" />
 			</button>
 
-			<!-- Period dropdown -->
 			<div class="relative">
 				<button
 					on:click={() => (showStatDropdown = !showStatDropdown)}
@@ -158,7 +155,6 @@
 				<ChevronRight class="h-4 w-4" />
 			</button>
 
-			<!-- Calendar picker button -->
 			<button
 				aria-label="Velg statistikkdato"
 				on:click={(e) => {
@@ -181,7 +177,6 @@
 			}}
 		/>{/if}
 	<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-		<!-- BAR CHART -->
 		<div class="bg-[var(--card)] rounded-2xl border border-[var(--br)] p-4">
 			<svg
 				viewBox="0 0 272 110"
@@ -241,14 +236,13 @@
 				{/each}
 				<line x1="18" y1="90" x2="260" y2="90" stroke="var(--br)" stroke-width="0.8" />
 			</svg>
-			<!-- Antall økter at the bottom -->
+
 			<div class="text-center pt-2 border-t border-[var(--br)]">
 				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Antall økter: </span>
 				<span class="text-sm font-medium text-[var(--p1)]">{barStats.total}</span>
 			</div>
 		</div>
 
-		<!-- LINE CHART -->
 		<div class="bg-[var(--card)] rounded-2xl border border-[var(--br)] p-4">
 			{#if lineChartData.length > 1}
 				<svg
@@ -280,8 +274,6 @@
 						stroke-linecap="round"
 					/>
 					{#each linePts as p (p.label)}
-						<!-- Invisible wider hit area -->
-
 						<circle
 							cx={p.x}
 							cy={p.y}
@@ -316,9 +308,9 @@
 							>{p.label}</text
 						>
 					{/each}
-					<!-- Tooltip bubble -->
+
 					<line x1="28" y1="88" x2="258" y2="88" stroke="var(--br)" stroke-width="0.8" />
-					<!-- Tooltip bubble – rendered last so it's always on top -->
+
 					{#if lineTooltip}
 						{@const tx = Math.min(Math.max(lineTooltip.x, 30), 242)}
 						{@const ty = Math.max(lineTooltip.y - 18, 10)}
@@ -342,7 +334,7 @@
 					Ingen data ennå
 				</div>
 			{/if}
-			<!-- Timer totalt at the bottom -->
+
 			<div class="text-center mt-1 pt-2 border-t border-[var(--br)]">
 				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Timer totalt:</span>
 				<span class="text-sm font-medium text-[var(--p1)]"

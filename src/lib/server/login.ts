@@ -13,7 +13,7 @@ function attemptLimit(value: string | undefined, fallback: number): number {
 export async function limitLogin(username: string, ip: string): Promise<void> {
 	if (!env.AUTH_RATE_LIMIT_SECRET)
 		throw new ApiError(503, 'CONFIGURATION', 'Innlogging er ikke konfigurert.');
-	// Two atomic shared buckets, so changing usernames cannot evade the per-IP limit.
+
 	for (const [key, limit] of [
 		[`ip:${ip}`, attemptLimit(env.AUTH_LOGIN_IP_LIMIT, 30)],
 		[`user:${usernameId(username)}`, attemptLimit(env.AUTH_LOGIN_USER_LIMIT, 10)]
@@ -55,7 +55,7 @@ export async function login(body: Record<string, unknown>, ip: string, cookies: 
 			valid = await verifyPassword(password, a.passwordHash);
 		else {
 			valid = verifyLegacy(password, a.passwordHash);
-			const stronger = await hashPassword(password); // same expensive work on failed legacy/unknown logins
+			const stronger = await hashPassword(password);
 			if (valid)
 				await db()`INSERT INTO auth_passwords (user_id, credential_source, password_hash) VALUES (${a.user.id},${a.source},${stronger}) ON CONFLICT (user_id) DO UPDATE SET credential_source = EXCLUDED.credential_source, password_hash = EXCLUDED.password_hash, upgraded_at = now()`;
 		}

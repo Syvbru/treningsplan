@@ -7,12 +7,11 @@ export const styrkeProgrammer = [
 ];
 
 type TeknikkVideo = {
-	url: string; // YouTube video-ID
+	url: string;
 	stilart: 'Skate' | 'Klassisk';
-	teknikk: string; // f.eks. "Diagonal", "Staking", "Dobbeldans", "Padling"
+	teknikk: string;
 };
 
-// Legg til / fjern videoer her – visningen under bygges automatisk med #each
 export const teknikkVideoer: TeknikkVideo[] = [
 	{ url: 'Z2oNfG4eulQ', stilart: 'Klassisk', teknikk: 'Diagonal' },
 	{ url: 'NNR6YpFA7Jw', stilart: 'Klassisk', teknikk: 'Diagonal' },

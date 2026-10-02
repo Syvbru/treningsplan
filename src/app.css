@@ -64,13 +64,13 @@ body {
 [hidden] {
 	display: none !important;
 }
-/* Hover-tilstander i mørkmodus – svak bakgrunn i stedet for hvittone */
+
 @media (hover: hover) and (pointer: fine) {
 	.dk .hover\:bg-red-50:hover {
 		background-color: #2d0a0a !important;
 	}
 }
-/* Inputskjema teknikk i mørkmodus */
+
 .dk .teknikk-skjema input,
 .dk .teknikk-skjema select,
 .dk .teknikk-skjema textarea,
@@ -78,7 +78,7 @@ body {
 .dk .teknikk-skjema label {
 	color: #f1f5f9 !important;
 }
-/* Inputskjema teknikk i lysmodus */
+
 .lt .teknikk-skjema input,
 .lt .teknikk-skjema select,
 .lt .teknikk-skjema textarea,
@@ -87,7 +87,6 @@ body {
 	color: #64748b !important;
 }
 
-/* Skjuler scrollbar på teknikkvideo-karusellen (sveip sidelengs) */
 .no-scrollbar {
 	scrollbar-width: none;
 	-ms-overflow-style: none;
@@ -138,7 +137,6 @@ progress::-moz-progress-bar {
 	border-radius: 9999px;
 }
 
-/* Native mobile fields remain readable without triggering input zoom. */
 @media (max-width: 1023px), (pointer: coarse) {
 	input,
 	textarea,

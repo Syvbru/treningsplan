@@ -18,7 +18,6 @@ export function initialiseTheme(): void {
 	});
 }
 
-/** Keep browser edge areas and supported browser chrome in sync with the page. */
 export function syncPageTheme(dark: boolean, login = false): void {
 	if (typeof document === 'undefined') return;
 	const background = login ? '#ffe6f7' : dark ? '#000000' : '#f2f2f7';

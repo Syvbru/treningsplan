@@ -1,4 +1,3 @@
-/** Mobile touch navigation, while vertical scrolling and ordinary taps remain native. */
 export function horizontalSwipe(node: HTMLElement, onSwipe: (direction: -1 | 1) => void) {
 	let start: { id: number; x: number; y: number } | null = null;
 	let suppressClickUntil = 0;

@@ -5,9 +5,9 @@
 
 <header
 	class="relative md:sticky md:top-0 z-40"
-	style="background-color:var(--bg);padding-top:env(safe-area-inset-top)"
+	style="background-color:var(--bg);padding-top:env(safe-area-inset-top, 0px)"
 >
-	<div class="mx-auto max-w-5xl px-4 pt-0 md:pt-3 pb-2">
+	<div class="header-content mx-auto max-w-5xl px-4 pt-0 md:pt-3 pb-2">
 		<div class="flex justify-between items-center gap-3">
 			<div>
 				<h1
@@ -33,3 +33,11 @@
 		<slot />
 	</div>
 </header>
+
+<style>
+	@media (display-mode: standalone) {
+		.header-content {
+			padding-top: 1.25rem;
+		}
+	}
+</style>

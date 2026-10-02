@@ -29,7 +29,6 @@ export function sheetURL(value: string): URL {
 	return url;
 }
 async function fetchCSV(owner: string, url: URL, refresh = false): Promise<string> {
-	// Include the reader and target in the scope. Private data is never shared across users.
 	const key = `${owner}:${url.href}`;
 	const entry = cache.get(key);
 	if (!refresh && entry && entry.expires > Date.now()) return entry.text;

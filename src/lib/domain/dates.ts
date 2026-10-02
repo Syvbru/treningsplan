@@ -10,7 +10,6 @@ import {
 import { nb } from 'date-fns/locale';
 import type { StatPeriod } from './types';
 
-/** Training seasons run from 1 May through 30 April. Dates without years use this season. */
 export function seasonYear(anchor: Date): number {
 	return anchor.getMonth() >= 4 ? anchor.getFullYear() : anchor.getFullYear() - 1;
 }
@@ -26,7 +25,7 @@ export function parseDate(value: string, anchor = new Date()): string {
 	let d = parse(`${spaced} ${2024}`, 'd. MMMM yyyy', anchor, { locale: nb });
 	if (Number.isNaN(d.getTime())) d = parse(`${spaced}.${2024}`, 'd.M.yyyy', anchor);
 	if (Number.isNaN(d.getTime())) return '';
-	// Reparse after choosing the year so a leap day is validated against its actual year.
+
 	const year = seasonYear(anchor) + (d.getMonth() < 4 ? 1 : 0);
 	d = parse(`${format(d, 'd.M')}.${year}`, 'd.M.yyyy', anchor);
 	return Number.isNaN(d.getTime()) ? '' : format(startOfDay(d), 'yyyy-MM-dd');

@@ -40,7 +40,7 @@ export async function reserveUpload(
  window_start = CASE WHEN auth_login_attempts.window_start < now() - interval '1 hour' THEN now() ELSE auth_login_attempts.window_start END RETURNING attempts`;
 	if (Number(quota.attempts) > 30)
 		throw new ApiError(429, 'UPLOAD_LIMIT', 'For mange videoopplastinger. Prøv igjen senere.');
-	// Reserve an audit record first: even interrupted uploads can be reconciled later.
+
 	await db()`INSERT INTO video_uploads (id,user_id,public_id) VALUES (${id},${owner},${publicId})`;
 	const params: Record<string, string> = {
 		public_id: publicId,

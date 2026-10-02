@@ -22,7 +22,7 @@ export function workoutStatistics(workouts: Workout[], period: StatPeriod, ancho
 	const counts = { hard: 0, strength: 0, long: 0, rest: 0 };
 	for (const w of selected) {
 		const lower = w.title.toLowerCase();
-		// Preserve existing statistics precedence for combined session names.
+
 		const kind = lower.includes('hvile')
 			? 'rest'
 			: /styrke|basis/.test(lower)
@@ -62,7 +62,7 @@ export function volumeSeries(workouts: Workout[], statPeriod: StatPeriod, statAn
 		let weekStart = startOfWeek(mStart, { weekStartsOn: 1 });
 		while (weekStart <= mEnd) {
 			const wEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
-			// Use full week range for the chart — days outside the month are included
+
 			const mins = workouts
 				.filter((w) => {
 					const d = parseISO(w.date);

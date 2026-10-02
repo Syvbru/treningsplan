@@ -7,7 +7,7 @@ export class ClientError extends Error {
 		super(message);
 	}
 }
-/** Compose cancellation without depending on AbortSignal.any in older mobile browsers. */
+
 export async function api<T>(url: string, init: RequestInit = {}): Promise<T> {
 	const controller = new AbortController();
 	const abort = () => controller.abort(init.signal?.reason);

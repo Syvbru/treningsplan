@@ -26,12 +26,10 @@
 	}
 </script>
 
-<!-- TEKNIKKVIDEOER -->
 <section>
 	<h2 class="text-base font-bold text-[var(--p1)] mb-3">Teknikkvideoer:</h2>
 
 	<div class="flex-1 min-w-0">
-		<!-- Horisontal karusell: én video av gangen, bla sidelengs -->
 		<div
 			bind:this={teknikkScrollEl}
 			on:scroll={onTeknikkScroll}
@@ -87,7 +85,6 @@
 	</div>
 
 	{#if teknikkVideoer.length > 1}
-		<!-- Frem/tilbake-piler på hver sin side av punkt-indikatorene -->
 		<div class="flex justify-center items-center gap-3 mt-3">
 			<button
 				type="button"

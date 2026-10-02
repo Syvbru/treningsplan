@@ -45,7 +45,7 @@ function transfer(
 		else xhr.send(data);
 	});
 }
-/** Append each confirmed upload immediately, so retries reuse it even after partial failure. */
+
 export async function uploadVideos(
 	files: File[],
 	confirmed: UploadedVideo[],
@@ -82,7 +82,6 @@ export async function uploadVideos(
 			report();
 			onConfirmed({ id: ticket.id, url });
 		} catch (error) {
-			// Best effort only: the pre-upload database reservation remains if this request fails.
 			await api('/api/uploads', {
 				method: 'DELETE',
 				body: JSON.stringify({ id: ticket.id })

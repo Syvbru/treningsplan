@@ -67,7 +67,6 @@ export function athletes(): Athlete[] {
 		.sort((a, b) => a.name.localeCompare(b.name, 'nb'));
 }
 
-/** Coaches open the first athlete in the same order as the athlete picker. */
 export function homePath(user: User): string {
 	if (user.role !== 'trener') return '/utover';
 	const first = athletes()[0];

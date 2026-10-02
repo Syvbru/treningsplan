@@ -47,7 +47,7 @@
 			(a, b) => b.dato.localeCompare(a.dato) || b.id - a.id
 		);
 		feedback = edit ? 'Loggen er oppdatert.' : 'Loggen er lagret.';
-		if (edit) selected = log; // Use the returned row, before closing the editor.
+		if (edit) selected = log;
 		creating = false;
 		editing = false;
 		mutationError = '';
@@ -193,8 +193,7 @@
 				</div>
 				{#each selected.video_urls as url, i (url)}<div class="mb-4">
 						<p class="text-xs font-semibold mb-2">Video {i + 1}</p>
-						<!-- Captions require a transcript supplied with each recording; the log provides context. -->
-						<!-- svelte-ignore a11y_media_has_caption -->
+
 						<video
 							controls
 							playsinline
