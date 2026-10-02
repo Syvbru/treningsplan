@@ -1,2 +1,163 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+@custom-variant hover {
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			@slot;
+		}
+	}
+}
+
+.lt {
+	color-scheme: light;
+	--p1: #eb26ad;
+	--p2: #fd98dd;
+	--p3: #ffe6f7;
+	--bg: #f2f2f7;
+	--card: #ffffff;
+	--br: #e5e5ea;
+	--surface: #f2f2f7;
+	--text1: #1c1c1e;
+	--text2: #6c6c70;
+	--calendar-dot: #8e8e93;
+	--nav-bg: rgb(255 255 255 / 0.42);
+	--workout-hard: #ff3b30;
+	--workout-strength: #ffcc00;
+	--workout-long: #00a99a;
+	--workout-rest: #34a853;
+	--workout-speed: #af52de;
+	--workout-technique: #c59700;
+	--workout-easy: #a9e4ff;
+}
+.dk {
+	color-scheme: dark;
+	--p1: #eb26ad;
+	--p2: #fd98dd;
+	--p3: #ffe6f7;
+	--bg: #000000;
+	--card: #1c1c1e;
+	--br: #38383a;
+	--surface: #2c2c2e;
+	--text1: #f5f5f7;
+	--text2: #98989f;
+	--calendar-dot: #636366;
+	--nav-bg: rgb(28 28 30 / 0.4);
+	--workout-hard: #ff453a;
+	--workout-strength: #ffd60a;
+	--workout-long: #64d2c5;
+	--workout-rest: #30d158;
+	--workout-speed: #bf5af2;
+	--workout-technique: #ffd60a;
+	--workout-easy: #b1e7ff;
+}
+
+html {
+	min-height: 100%;
+	background-color: var(--page-bg, #000000);
+}
+body {
+	min-height: 100svh;
+	background-color: var(--page-bg, #000000);
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+[hidden] {
+	display: none !important;
+}
+/* Hover-tilstander i mørkmodus – svak bakgrunn i stedet for hvittone */
+@media (hover: hover) and (pointer: fine) {
+	.dk .hover\:bg-red-50:hover {
+		background-color: #2d0a0a !important;
+	}
+}
+/* Inputskjema teknikk i mørkmodus */
+.dk .teknikk-skjema input,
+.dk .teknikk-skjema select,
+.dk .teknikk-skjema textarea,
+.dk .teknikk-skjema p:not(.feilmelding),
+.dk .teknikk-skjema label {
+	color: #f1f5f9 !important;
+}
+/* Inputskjema teknikk i lysmodus */
+.lt .teknikk-skjema input,
+.lt .teknikk-skjema select,
+.lt .teknikk-skjema textarea,
+.lt .teknikk-skjema p:not(.feilmelding),
+.lt .teknikk-skjema label {
+	color: #64748b !important;
+}
+
+/* Skjuler scrollbar på teknikkvideo-karusellen (sveip sidelengs) */
+.no-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+:focus-visible {
+	outline: 2px solid var(--p1, #eb26ad);
+	outline-offset: 3px;
+}
+dialog {
+	color: var(--text1);
+	border: 0;
+	padding: 0;
+}
+dialog::backdrop {
+	background: rgb(15 23 42 / 0.4);
+	backdrop-filter: blur(4px);
+}
+
+progress {
+	appearance: none;
+	border: 0;
+	border-radius: 9999px;
+	overflow: hidden;
+	background: var(--surface);
+	color: var(--p1);
+}
+progress::-webkit-progress-bar {
+	background: var(--surface);
+}
+progress::-webkit-progress-value {
+	background: var(--p1);
+	border-radius: 9999px;
+}
+progress::-moz-progress-bar {
+	background: var(--p1);
+	border-radius: 9999px;
+}
+
+/* Native mobile fields remain readable without triggering input zoom. */
+@media (max-width: 1023px), (pointer: coarse) {
+	input,
+	textarea,
+	select {
+		font-size: max(16px, 1rem) !important;
+	}
+}
+
+.quiet-focus:focus,
+.quiet-focus:focus-visible,
+.quiet-focus:active {
+	outline: none !important;
+	box-shadow: none !important;
+}
+input:not([type='file']):focus,
+textarea:focus,
+select.form-field:focus,
+#athlete-picker:focus {
+	outline: none !important;
+	box-shadow: none !important;
+	border: 1px solid var(--p1, #eb26ad);
+}

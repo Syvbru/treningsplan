@@ -1,0 +1,11 @@
+node_modules
+.svelte-kit
+.vercel
+build
+package-lock.json
+static
+migrations
+playwright-report
+test-results
+
+vite.config.js
