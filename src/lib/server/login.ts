@@ -6,25 +6,30 @@ import { ApiError } from './http';
 import { hashPassword, verifyPassword, verifyLegacy, dummyPasswordCheck } from './passwords';
 import { createSession } from './sessions';
 import type { Cookies } from '@sveltejs/kit';
+function attemptLimit(value: string | undefined, fallback: number): number {
+	const parsed = Number(value);
+	return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
 export async function limitLogin(username: string, ip: string): Promise<void> {
 	if (!env.AUTH_RATE_LIMIT_SECRET)
 		throw new ApiError(503, 'CONFIGURATION', 'Innlogging er ikke konfigurert.');
 	// Two atomic shared buckets, so changing usernames cannot evade the per-IP limit.
 	for (const [key, limit] of [
-		[`ip:${ip}`, 30],
-		[`user:${usernameId(username)}`, 10]
+		[`ip:${ip}`, attemptLimit(env.AUTH_LOGIN_IP_LIMIT, 30)],
+		[`user:${usernameId(username)}`, attemptLimit(env.AUTH_LOGIN_USER_LIMIT, 10)]
 	] as const) {
 		const bucket = createHmac('sha256', env.AUTH_RATE_LIMIT_SECRET).update(key).digest('hex');
 		const [row] =
 			await db()`INSERT INTO auth_login_attempts (bucket, window_start, attempts) VALUES (${bucket}, now(), 1)
       ON CONFLICT (bucket) DO UPDATE SET
       attempts = CASE WHEN auth_login_attempts.window_start < now() - interval '15 minutes' THEN 1 ELSE auth_login_attempts.attempts + 1 END,
-      window_start = CASE WHEN auth_login_attempts.window_start < now() - interval '15 minutes' THEN now() ELSE auth_login_attempts.window_start END RETURNING attempts`;
+      window_start = CASE WHEN auth_login_attempts.window_start < now() - interval '15 minutes' THEN now() ELSE auth_login_attempts.window_start END RETURNING attempts, GREATEST(1, CEIL(EXTRACT(EPOCH FROM (window_start + interval '15 minutes' - now())))) AS retry_after`;
 		if (Number(row.attempts) > limit)
 			throw new ApiError(
 				429,
 				'RATE_LIMITED',
-				'For mange innloggingsforsøk. Prøv igjen om 15 minutter.'
+				'For mange innloggingsforsøk.',
+				Number(row.retry_after)
 			);
 	}
 }

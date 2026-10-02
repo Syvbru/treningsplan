@@ -1,17 +1,29 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Field from '$lib/components/ui/Field.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import State from '$lib/components/ui/State.svelte';
-	import { api, message } from '$lib/client/api';
+	import { api, message, ClientError } from '$lib/client/api';
 	import type { PageData } from './$types';
 	export let data: PageData;
 	let username = '',
 		password = '',
 		loading = false,
 		error = '';
+	let blockedUntil = 0;
+	let remaining = 0;
+	$: countdown = [Math.floor(remaining / 3600), Math.floor((remaining % 3600) / 60), remaining % 60]
+		.map((value) => String(value).padStart(2, '0'))
+		.join(':');
+	onMount(() => {
+		const timer = setInterval(() => {
+			remaining = Math.max(0, Math.ceil((blockedUntil - Date.now()) / 1000));
+		}, 1000);
+		return () => clearInterval(timer);
+	});
 	async function login() {
-		if (loading) return;
+		if (loading || remaining > 0) return;
 		loading = true;
 		error = '';
 		try {
@@ -23,6 +35,10 @@
 			await goto(result.redirectTo, { invalidateAll: true });
 		} catch (cause) {
 			error = message(cause);
+			if (cause instanceof ClientError && cause.status === 429 && cause.retryAfterSeconds) {
+				remaining = cause.retryAfterSeconds;
+				blockedUntil = Date.now() + remaining * 1000;
+			}
 		} finally {
 			loading = false;
 		}
@@ -70,8 +86,13 @@
 					? 'Innloggingstjenesten er midlertidig utilgjengelig. Prøv igjen.'
 					: '')}
 		/>
+		{#if remaining > 0}
+			<p class="text-sm text-center" role="status">
+				Prøv igjen om {countdown} (timer:minutter:sekunder).
+			</p>
+		{/if}
 		<div class="grid pt-2">
-			<Button type="submit" disabled={loading || !username || !password}
+			<Button type="submit" disabled={loading || remaining > 0 || !username || !password}
 				>{loading ? 'Logger inn…' : 'Logg inn'}</Button
 			>
 		</div>

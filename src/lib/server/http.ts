@@ -4,7 +4,8 @@ export class ApiError extends Error {
 	constructor(
 		public status: number,
 		public code: string,
-		message: string
+		message: string,
+		public retryAfterSeconds?: number
 	) {
 		super(message);
 	}
@@ -19,7 +20,12 @@ export function failure(error: unknown): Response {
 	};
 	return json(body, {
 		status: known ? error.status : 503,
-		headers: { 'Cache-Control': 'private, no-store' }
+		headers: {
+			'Cache-Control': 'private, no-store',
+			...(known && error.retryAfterSeconds
+				? { 'Retry-After': String(error.retryAfterSeconds) }
+				: {})
+		}
 	});
 }
 export async function endpoint(fn: () => Promise<unknown>): Promise<Response> {

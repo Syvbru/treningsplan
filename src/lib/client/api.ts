@@ -1,7 +1,8 @@
 export class ClientError extends Error {
 	constructor(
 		message: string,
-		public status: number
+		public status: number,
+		public retryAfterSeconds?: number
 	) {
 		super(message);
 	}
@@ -29,7 +30,10 @@ export async function api<T>(url: string, init: RequestInit = {}): Promise<T> {
 				'error' in body && typeof body.error === 'string'
 					? body.error
 					: 'Tjenesten svarte ikke som forventet. Prøv igjen.',
-				response.status
+				response.status,
+				response.status === 429
+					? Number(response.headers.get('Retry-After')) || undefined
+					: undefined
 			);
 		if (!('data' in body))
 			throw new ClientError('Tjenesten svarte ikke som forventet. Prøv igjen.', response.status);
