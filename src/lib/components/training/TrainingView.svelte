@@ -14,6 +14,7 @@
 	import { darkTheme, initialiseTheme } from '$lib/client/theme';
 	import { api, message } from '$lib/client/api';
 	import type { User, Athlete, PlanData, SharedWorkout } from '$lib/domain/types';
+	import type { TrainingSection } from './presentation';
 	export let user: User;
 	export let athlete: Athlete;
 	export let athletes: Athlete[] = [];
@@ -25,7 +26,7 @@
 		sharedError = '';
 	let noticeDismissed = false,
 		profile = false;
-	let activeSection: 'plan' | 'logg' | 'statistikk' | 'film' = 'plan';
+	let activeSection: TrainingSection = 'plan';
 	let activeDate = startOfDay(new Date());
 	const controller = new AbortController();
 	let generation = 0;

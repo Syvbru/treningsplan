@@ -3,7 +3,7 @@ import type { Cookies } from '@sveltejs/kit';
 import { db } from './db';
 import { account, sha256, type Account } from './users';
 export const SESSION_COOKIE = 'training_session';
-export const SESSION_SECONDS = 365 * 24 * 60 * 60;
+const SESSION_SECONDS = 365 * 24 * 60 * 60;
 export async function createSession(a: Account, cookies: Cookies): Promise<void> {
 	const token = randomBytes(32).toString('hex');
 	const expires = new Date(Date.now() + SESSION_SECONDS * 1000);

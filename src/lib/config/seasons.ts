@@ -1,4 +1,4 @@
-export const PERIODER: { fra: string; til: string; ark: string }[] = [
+const PERIODER: { fra: string; til: string; ark: string }[] = [
 	{ fra: '2026-05-29', til: '2026-06-11', ark: 'Uke 24-28 26/27' },
 	{ fra: '2026-07-03', til: '2026-07-16', ark: 'Uke 29-33 26/27' },
 	{ fra: '2026-08-07', til: '2026-08-20', ark: 'Uke 34-38 26/27' },

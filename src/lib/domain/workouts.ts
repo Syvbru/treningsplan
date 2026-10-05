@@ -1,11 +1,10 @@
-import type { SharedWorkout, Workout } from './types';
-export type WorkoutKind = 'hard' | 'rest' | 'long' | 'speed' | 'technique' | 'strength' | 'easy';
+import type { SharedWorkout } from './types';
+type WorkoutKind = 'hard' | 'rest' | 'long' | 'speed' | 'technique' | 'strength' | 'easy';
 export function classifyWorkout(title: string): WorkoutKind {
 	const lower = title.toLowerCase();
 	const isHard =
 		lower.includes('motbakkeløp') ||
 		lower.includes('sprint') ||
-		lower.includes('sprintøkt') ||
 		lower.includes('distanseøkt') ||
 		/(rennet|(?<!lang)renn(?!forbered))/u.test(lower) ||
 		lower.includes('dsv-cup') ||
@@ -32,11 +31,6 @@ export function classifyWorkout(title: string): WorkoutKind {
 	if (lower.includes('teknikk')) return 'technique';
 	if (lower.includes('styrke') || lower.includes('basis')) return 'strength';
 	return 'easy';
-}
-export function groupByDate(list: Workout[]) {
-	const map = new Map<string, Workout[]>();
-	for (const w of list) map.set(w.date, [...(map.get(w.date) ?? []), w]);
-	return Array.from(map, ([date, sessions]) => ({ date, sessions }));
 }
 export function sharedAthletes(
 	data: SharedWorkout[],

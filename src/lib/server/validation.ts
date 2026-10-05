@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { isISODate } from '$lib/domain/dates';
+import { VIDEO_MAX_COUNT } from '$lib/domain/videos';
 import type { TechniqueInput } from '$lib/domain/types';
 import { ApiError } from './http';
 export function logId(value: unknown): number {
@@ -44,7 +45,7 @@ export function techniqueInput(body: Record<string, unknown>): TechniqueInput {
 		Array.from(tilbakemelding).some((c) => c.charCodeAt(0) < 32 && !['\t', '\n', '\r'].includes(c))
 	)
 		throw new ApiError(400, 'INVALID_TEXT', 'Tilbakemeldingen må inneholde 1–10 000 tegn.');
-	if (!Array.isArray(video_urls) || video_urls.length > 6)
+	if (!Array.isArray(video_urls) || video_urls.length > VIDEO_MAX_COUNT)
 		throw new ApiError(400, 'INVALID_VIDEO', 'Maks 6 videoer per logg.');
 	const urls = video_urls.map(videoURL);
 	if (new Set(urls).size !== urls.length)

@@ -12,6 +12,7 @@
 	export let placeholder = '';
 	const style =
 		'form-field w-full appearance-none max-w-full min-w-0 rounded-xl border border-[var(--br)] bg-[var(--surface)] px-3 py-2.5 text-base text-[var(--text1)] outline-none focus:border-[var(--p1)] transition';
+	$: inputAttributes = type === 'date' ? {} : { autocomplete, maxlength, placeholder };
 </script>
 
 <div class="min-w-0">
@@ -32,34 +33,13 @@
 	{:else if kind === 'select'}<select {id} bind:value {disabled} {required} class={style}
 			><slot /></select
 		>
-	{:else if type === 'date'}<input
-			{id}
-			type="date"
-			bind:value
-			{disabled}
-			{required}
-			class={style}
-		/>
-	{:else if type === 'password'}<input
-			{id}
-			type="password"
-			bind:value
-			{disabled}
-			{required}
-			{autocomplete}
-			{maxlength}
-			{placeholder}
-			class={style}
-		/>
 	{:else}<input
 			{id}
-			type="text"
+			{type}
 			bind:value
 			{disabled}
 			{required}
-			{autocomplete}
-			{maxlength}
-			{placeholder}
+			{...inputAttributes}
 			class={style}
 		/>{/if}
 </div>

@@ -1,111 +1,49 @@
 <script lang="ts">
-	import {
-		format,
-		startOfDay,
-		subWeeks,
-		addWeeks,
-		subMonths,
-		addMonths,
-		subYears,
-		addYears,
-		getISOWeek
-	} from 'date-fns';
-	import { nb } from 'date-fns/locale';
+	import { startOfDay } from 'date-fns';
 	import { ChevronLeft, ChevronRight, ChevronDown, Calendar } from 'lucide-svelte';
 	import DatePicker from '$lib/components/calendar/DatePicker.svelte';
+	import { shiftPeriod } from '$lib/domain/dates';
 	import { workoutStatistics, volumeSeries } from '$lib/domain/statistics';
 	import type { Workout, StatPeriod } from '$lib/domain/types';
+	import {
+		barChartPresentation,
+		lineChartPresentation,
+		periodLabel,
+		tooltipTime
+	} from './presentation';
+
 	export let workouts: Workout[];
 	let statPeriod: StatPeriod = 'uke';
 	let statAnchor = startOfDay(new Date());
-	let showStatDropdown = false,
-		showStatCalendar = false;
+	let showStatDropdown = false;
+	let showStatCalendar = false;
 	let lineTooltip: { x: number; y: number; label: string; hours: number } | null = null;
+	const periods = [
+		{ value: 'uke', label: 'Uke' },
+		{ value: 'maaned', label: 'Måned' },
+		{ value: 'sesong', label: 'Sesong' }
+	] as const;
+
 	$: summary = workoutStatistics(workouts, statPeriod, statAnchor);
-	$: barStats = {
-		...summary,
-		items: [
-			{ label: 'Hardøkter', value: summary.counts.hard, barColor: 'var(--workout-hard)' },
-			{ label: 'Styrke', value: summary.counts.strength, barColor: 'var(--workout-strength)' },
-			{ label: 'Langturer', value: summary.counts.long, barColor: 'var(--workout-long)' },
-			{ label: 'Hvile', value: summary.counts.rest, barColor: 'var(--workout-rest)' }
-		]
-	};
+	$: barChart = barChartPresentation(summary.counts);
 	$: lineChartData = volumeSeries(workouts, statPeriod, statAnchor);
+	$: lineChart = lineChartPresentation(lineChartData, statPeriod);
+	$: statPeriodLabel = periodLabel(statPeriod, statAnchor);
+
 	function openStatCalendar() {
 		showStatCalendar = true;
 		showStatDropdown = false;
 	}
 
-	$: barMaxV = Math.max(...barStats.items.map((i) => i.value), 1);
-	$: barScale = Math.max(barMaxV, 3);
-	$: barChartItems = barStats.items.map((item, idx) => {
-		const bw = 36,
-			gap = 20;
-		const x = idx * (bw + gap) + 24;
-		const bh = Math.max((item.value / barScale) * 70, item.value > 0 ? 2 : 0);
-		const y = 90 - bh;
-		return { ...item, bw, x, bh, y };
-	});
-
-	$: lineMaxH = Math.max(...lineChartData.map((d) => d.hours), 0.1);
-	$: lineYTicks = (() => {
-		const maxVal = Math.max(Math.ceil(lineMaxH), 1);
-		const maxTicks = statPeriod === 'uke' ? 6 : 4;
-
-		const candidates = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50];
-		const step =
-			candidates.find((s) => Math.ceil(maxVal / s) <= maxTicks) ?? Math.ceil(maxVal / maxTicks);
-		const top = Math.ceil(maxVal / step) * step;
-		const ticks: number[] = [];
-		for (let v = step; v <= top; v += step) ticks.push(v);
-		return ticks;
-	})();
-	$: lineMaxCeil = lineYTicks[lineYTicks.length - 1] ?? 1;
-	$: linePts =
-		lineChartData.length > 1
-			? lineChartData.map((d, i) => ({
-					x: (i / (lineChartData.length - 1)) * 224 + 30,
-					y: 82 - (d.hours / lineMaxCeil) * 62,
-					label: d.label,
-					hours: d.hours
-				}))
-			: [];
-
-	$: linePoly = linePts.map((p) => `${p.x},${p.y}`).join(' ');
-	$: lineArea =
-		linePts.length > 0
-			? `M ${linePts[0].x},88 ` +
-				linePts.map((p) => `L ${p.x},${p.y}`).join(' ') +
-				` L ${linePts[linePts.length - 1].x},88 Z`
-			: '';
-
-	function setPeriod(val: string) {
-		statPeriod = val as 'uke' | 'maaned' | 'sesong';
+	function setPeriod(period: StatPeriod) {
+		statPeriod = period;
 		statAnchor = startOfDay(new Date());
 		showStatDropdown = false;
 	}
 
-	function prevStatPeriod() {
-		if (statPeriod === 'uke') statAnchor = subWeeks(statAnchor, 1);
-		else if (statPeriod === 'maaned') statAnchor = subMonths(statAnchor, 1);
-		else statAnchor = subYears(statAnchor, 1);
+	function navigatePeriod(direction: -1 | 1) {
+		statAnchor = shiftPeriod(statPeriod, statAnchor, direction);
 	}
-
-	function nextStatPeriod() {
-		if (statPeriod === 'uke') statAnchor = addWeeks(statAnchor, 1);
-		else if (statPeriod === 'maaned') statAnchor = addMonths(statAnchor, 1);
-		else statAnchor = addYears(statAnchor, 1);
-	}
-
-	$: statPeriodLabel = (() => {
-		const t = statAnchor;
-		if (statPeriod === 'uke') return `Uke ${getISOWeek(t)}`;
-		if (statPeriod === 'maaned') return format(t, 'MMMM yyyy', { locale: nb });
-		const isAfterMay = t.getMonth() >= 4;
-		const sYear = isAfterMay ? t.getFullYear() : t.getFullYear() - 1;
-		return `Sesong ${sYear}/${sYear + 1}`;
-	})();
 </script>
 
 <section>
@@ -114,7 +52,7 @@
 		<div class="flex items-center gap-2">
 			<button
 				aria-label="Forrige periode"
-				on:click={prevStatPeriod}
+				on:click={() => navigatePeriod(-1)}
 				class="bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] text-[var(--text2)] hover:text-[var(--p1)] rounded-lg p-1.5 transition-colors"
 			>
 				<ChevronLeft class="h-4 w-4" />
@@ -132,15 +70,15 @@
 					<div
 						class="absolute left-0 top-full mt-1 z-30 bg-[var(--card)] border border-[var(--br)] rounded-xl shadow-lg overflow-hidden min-w-[120px]"
 					>
-						{#each [['uke', 'Uke'], ['maaned', 'Måned'], ['sesong', 'Sesong']] as [val, lbl] (val)}
+						{#each periods as period (period.value)}
 							<button
-								on:click={() => setPeriod(val)}
+								on:click={() => setPeriod(period.value)}
 								class="w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors {statPeriod ===
-								val
+								period.value
 									? 'bg-[var(--p1)] text-white'
 									: 'text-[var(--text1)] hover:bg-[var(--surface)]'}"
 							>
-								{lbl}
+								{period.label}
 							</button>
 						{/each}
 					</div>
@@ -149,7 +87,7 @@
 
 			<button
 				aria-label="Neste periode"
-				on:click={nextStatPeriod}
+				on:click={() => navigatePeriod(1)}
 				class="bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] text-[var(--text2)] hover:text-[var(--p1)] rounded-lg p-1.5 transition-colors"
 			>
 				<ChevronRight class="h-4 w-4" />
@@ -185,7 +123,7 @@
 				aria-label="Antall økter etter type"
 			>
 				{#each [1 / 3, 2 / 3, 1] as frac (frac)}
-					{@const scale = Math.max(barMaxV, 3)}
+					{@const scale = barChart.scale}
 					<line
 						x1="18"
 						y1={90 - frac * 70}
@@ -198,12 +136,12 @@
 						>{Math.round(frac * scale)}</text
 					>
 				{/each}
-				{#each barChartItems as item (item.label)}
+				{#each barChart.items as item (item.label)}
 					<rect
 						x={item.x + 1}
 						y={item.y + 1}
-						width={item.bw}
-						height={item.bh}
+						width={item.width}
+						height={item.height}
 						fill="rgba(0,0,0,0.05)"
 						rx="5"
 						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1);"
@@ -211,14 +149,14 @@
 					<rect
 						x={item.x}
 						y={item.y}
-						width={item.bw}
-						height={item.bh}
+						width={item.width}
+						height={item.height}
 						fill={item.barColor}
 						rx="5"
 						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1);"
 					/>
 					<text
-						x={item.x + item.bw / 2}
+						x={item.x + item.width / 2}
 						y={item.y - 3}
 						text-anchor="middle"
 						font-size="8"
@@ -227,7 +165,7 @@
 						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1);">{item.value}</text
 					>
 					<text
-						x={item.x + item.bw / 2}
+						x={item.x + item.width / 2}
 						y="106"
 						text-anchor="middle"
 						font-size="6.5"
@@ -239,7 +177,7 @@
 
 			<div class="text-center pt-2 border-t border-[var(--br)]">
 				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Antall økter: </span>
-				<span class="text-sm font-medium text-[var(--p1)]">{barStats.total}</span>
+				<span class="text-sm font-medium text-[var(--p1)]">{summary.total}</span>
 			</div>
 		</div>
 
@@ -257,23 +195,23 @@
 							<stop offset="100%" stop-color="var(--p1)" stop-opacity="0.02" />
 						</linearGradient>
 					</defs>
-					<path d={lineArea} fill="url(#lg)" />
-					{#each lineYTicks as tick (tick)}
-						{@const ty = 82 - (tick / lineMaxCeil) * 62}
+					<path d={lineChart.area} fill="url(#lg)" />
+					{#each lineChart.ticks as tick (tick)}
+						{@const ty = 82 - (tick / lineChart.maximum) * 62}
 						<line x1="28" y1={ty} x2="258" y2={ty} stroke="var(--br)" stroke-width="0.7" />
 						<text x="26" y={ty + 2} font-size="6" fill="var(--text2)" text-anchor="end"
 							>{tick}t</text
 						>
 					{/each}
 					<polyline
-						points={linePoly}
+						points={lineChart.polyline}
 						fill="none"
 						stroke="var(--p1)"
 						stroke-width="2"
 						stroke-linejoin="round"
 						stroke-linecap="round"
 					/>
-					{#each linePts as p (p.label)}
+					{#each lineChart.points as p (p.label)}
 						<circle
 							cx={p.x}
 							cy={p.y}
@@ -314,10 +252,7 @@
 					{#if lineTooltip}
 						{@const tx = Math.min(Math.max(lineTooltip.x, 30), 242)}
 						{@const ty = Math.max(lineTooltip.y - 18, 10)}
-						{@const totalMin = Math.round(lineTooltip.hours * 60)}
-						{@const hh = Math.floor(totalMin / 60)}
-						{@const mm = totalMin % 60}
-						{@const lbl = hh > 0 && mm > 0 ? `${hh}t ${mm}m` : hh > 0 ? `${hh}t` : `${mm}m`}
+						{@const lbl = tooltipTime(lineTooltip.hours)}
 						<rect x={tx - 16} y={ty - 8} width="32" height="12" rx="4" fill="var(--p1)" />
 						<text
 							x={tx}
@@ -338,7 +273,7 @@
 			<div class="text-center mt-1 pt-2 border-t border-[var(--br)]">
 				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Timer totalt:</span>
 				<span class="text-sm font-medium text-[var(--p1)]"
-					>{barStats.totalHours}t{barStats.totalMins > 0 ? ` ${barStats.totalMins}min` : ''}</span
+					>{summary.totalHours}t{summary.totalMins > 0 ? ` ${summary.totalMins}min` : ''}</span
 				>
 				{#if summary.invalidDurationCount > 0}
 					<p class="mt-2 text-xs text-[var(--text2)]">

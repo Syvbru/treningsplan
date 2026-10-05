@@ -10,7 +10,7 @@ import type { PlanData, PlanStatus } from '$lib/domain/types';
 import type { Account } from './users';
 import { ApiError } from './http';
 const cache = new Map<string, { text: string; expires: number }>();
-export function sheetURL(value: string): URL {
+function sheetURL(value: string): URL {
 	let url: URL;
 	try {
 		url = new URL(value);

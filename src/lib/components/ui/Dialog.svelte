@@ -37,6 +37,22 @@
 	let startX = 0,
 		startY = 0,
 		atTop = false;
+	function blocksSwipe(target: EventTarget | null): boolean {
+		const selector =
+			variant === 'sidebar'
+				? 'input,textarea,select,video,iframe'
+				: 'input,textarea,select,video,iframe,button,a';
+		return Boolean((target as Element).closest(selector));
+	}
+	function touchOffset(touch: Touch) {
+		return { dx: touch.clientX - startX, dy: touch.clientY - startY };
+	}
+	function animateClose(): boolean {
+		return (
+			(variant === 'sidebar' || (animateSwipe && variant === 'sheet')) &&
+			!window.matchMedia('(prefers-reduced-motion: reduce)').matches
+		);
+	}
 	onMount(() => {
 		previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		const overflow = document.body.style.overflow;
@@ -69,15 +85,7 @@
 		dragY = 0;
 		dragX = 0;
 		gestureActive = false;
-		if (
-			!swipeToClose ||
-			e.touches.length !== 1 ||
-			(e.target as Element).closest(
-				variant === 'sidebar'
-					? 'input,textarea,select,video,iframe'
-					: 'input,textarea,select,video,iframe,button,a'
-			)
-		) {
+		if (!swipeToClose || e.touches.length !== 1 || blocksSwipe(e.target)) {
 			atTop = false;
 			return;
 		}
@@ -89,8 +97,7 @@
 	}
 	function touchMove(e: TouchEvent) {
 		if (!gestureActive || !swipeToClose || closing || e.touches.length !== 1) return;
-		const dx = e.touches[0].clientX - startX;
-		const dy = e.touches[0].clientY - startY;
+		const { dx, dy } = touchOffset(e.touches[0]);
 		if (variant === 'sidebar') {
 			if (!dragging && (dx < -8 || Math.abs(dy) > Math.max(24, dx))) {
 				gestureActive = false;
@@ -126,24 +133,16 @@
 			!swipeToClose ||
 			!e.changedTouches.length ||
 			e.touches.length ||
-			(e.target as Element).closest(
-				variant === 'sidebar'
-					? 'input,textarea,select,video,iframe'
-					: 'input,textarea,select,video,iframe,button,a'
-			)
+			blocksSwipe(e.target)
 		) {
 			resetDrag();
 			return;
 		}
-		const dx = e.changedTouches[0].clientX - startX,
-			dy = e.changedTouches[0].clientY - startY;
+		const { dx, dy } = touchOffset(e.changedTouches[0]);
 		if (
 			variant === 'sidebar' ? dx > 80 && Math.abs(dy) < dx : atTop && dy > 100 && Math.abs(dx) < dy
 		) {
-			if (
-				(variant === 'sidebar' || (animateSwipe && variant === 'sheet')) &&
-				!window.matchMedia('(prefers-reduced-motion: reduce)').matches
-			) {
+			if (animateClose()) {
 				dragging = false;
 				closing = true;
 				if (variant === 'sidebar') dragX = content.offsetWidth + 32;

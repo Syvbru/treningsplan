@@ -10,7 +10,7 @@ function attemptLimit(value: string | undefined, fallback: number): number {
 	const parsed = Number(value);
 	return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
-export async function limitLogin(username: string, ip: string): Promise<void> {
+async function limitLogin(username: string, ip: string): Promise<void> {
 	if (!env.AUTH_RATE_LIMIT_SECRET)
 		throw new ApiError(503, 'CONFIGURATION', 'Innlogging er ikke konfigurert.');
 

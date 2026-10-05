@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CalendarDays, NotebookPen, ChartNoAxesCombined, Clapperboard } from 'lucide-svelte';
-	export let active: 'plan' | 'logg' | 'statistikk' | 'film';
+	import type { TrainingSection } from './presentation';
+	export let active: TrainingSection;
 	export let onSelect: (section: typeof active) => void;
 	const sections = [
 		{ id: 'plan', label: 'Plan', icon: CalendarDays },

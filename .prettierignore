@@ -7,5 +7,7 @@ static
 migrations
 playwright-report
 test-results
+tests
+coverage
 
 vite.config.js

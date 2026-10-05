@@ -13,11 +13,16 @@ Thumbs.db
 .env
 .env.*
 !.env.example
-!.env.test
 
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-test-results
-playwright-report
-tests/preview/dist
+# Local tests, configuration, fixtures, snapshots and reports
+/tests/
+**/*.test.*
+**/*.spec.*
+/vitest.config.*
+/playwright.config.*
+/test-results/
+/playwright-report/
+/coverage/

@@ -5,8 +5,6 @@
 		addMonths,
 		addWeeks,
 		addYears,
-		endOfMonth,
-		endOfWeek,
 		format,
 		getISOWeek,
 		isSameDay,
@@ -20,6 +18,7 @@
 	import DayPlan from '$lib/components/training/DayPlan.svelte';
 	import { horizontalSwipe } from '$lib/client/swipe';
 	import type { Workout, SharedWorkout } from '$lib/domain/types';
+	import { calendarDays, workoutsByDate } from './calendar';
 	export let workouts: Workout[];
 	export let shared: SharedWorkout[];
 	export let athleteName: string;
@@ -30,10 +29,7 @@
 	const today = startOfDay(new Date());
 	const weekdays = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
 	const weekdayNames = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
-	$: byDate = workouts.reduce((map, workout) => {
-		map.set(workout.date, [...(map.get(workout.date) ?? []), workout]);
-		return map;
-	}, new Map<string, Workout[]>());
+	$: byDate = workoutsByDate(workouts);
 	$: selectedISO = format(selected, 'yyyy-MM-dd');
 	$: sessions = byDate.get(selectedISO) ?? [];
 	$: weekStart = startOfWeek(selected, { weekStartsOn: 1 });
@@ -43,13 +39,6 @@
 	const yearOptions = Array.from({ length: 101 }, (_, index) => today.getFullYear() - 80 + index);
 	$: if (selected) cursor = startOfMonth(selected);
 
-	function calendarDays(month: Date) {
-		const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
-		const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
-		const days: Date[] = [];
-		for (let day = start; day <= end; day = addDays(day, 1)) days.push(day);
-		return days;
-	}
 	function navigate(direction: number) {
 		if (view === 'week') selected = addWeeks(selected, direction);
 		else if (view === 'month') cursor = addMonths(cursor, direction);

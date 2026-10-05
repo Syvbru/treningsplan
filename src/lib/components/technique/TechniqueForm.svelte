@@ -60,6 +60,35 @@
 		await discard();
 		onCancel();
 	}
+	async function uploadSelectedVideos(signal: AbortSignal): Promise<void> {
+		await uploadVideos(
+			files,
+			uploaded,
+			signal,
+			(total, each) => {
+				progress = total;
+				perFile = each;
+			},
+			(video) => {
+				uploaded = [...uploaded, video];
+			}
+		);
+	}
+	function logPayload() {
+		return {
+			...(initial ? { id: initial.id } : {}),
+			dato,
+			stilart,
+			tilbakemelding: text,
+			video_urls: [...existing, ...uploaded.map((video) => video.url)]
+		};
+	}
+	async function persistLog(): Promise<TechniqueLog> {
+		return api<TechniqueLog>('/api/teknikk', {
+			method: initial ? 'PUT' : 'POST',
+			body: JSON.stringify(logPayload())
+		});
+	}
 	async function save() {
 		if (stage !== 'idle') return;
 		error = '';
@@ -68,30 +97,10 @@
 		stage = 'uploading';
 		try {
 			validateVideoFiles(files, existing.length);
-			await uploadVideos(
-				files,
-				uploaded,
-				controller.signal,
-				(total, each) => {
-					progress = total;
-					perFile = each;
-				},
-				(video) => {
-					uploaded = [...uploaded, video];
-				}
-			);
+			await uploadSelectedVideos(controller.signal);
 			controller.signal.throwIfAborted();
 			stage = 'saving';
-			const log = await api<TechniqueLog>('/api/teknikk', {
-				method: initial ? 'PUT' : 'POST',
-				body: JSON.stringify({
-					...(initial ? { id: initial.id } : {}),
-					dato,
-					stilart,
-					tilbakemelding: text,
-					video_urls: [...existing, ...uploaded.map((v) => v.url)]
-				})
-			});
+			const log = await persistLog();
 			uploaded = [];
 			if (!destroyed) onSaved(log);
 		} catch (cause) {

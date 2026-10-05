@@ -16,40 +16,40 @@ export function parseWorkoutCSV(csv: string, anchor = new Date()): Workout[] {
 	const data = rows(csv);
 	if (!data.length) throw new SheetFormatError('Regnearket mangler kolonneoverskrifter.');
 	const header = data[0].map((h) => h.trim().toLowerCase());
-	const date = header.findIndex((h) => h.includes('dato'));
-	const first = header.findIndex((h) => h.includes('hva økt 1'));
-	const time1 = header.indexOf('tid');
-	const second = header.findIndex((h) => h.includes('hva økt 2'));
-	const time2 = header.indexOf('tid', time1 + 1);
-	const comment = header.findIndex((h) => h.includes('kommentar'));
+	const dateColumn = header.findIndex((h) => h.includes('dato'));
+	const firstSessionColumn = header.findIndex((h) => h.includes('hva økt 1'));
+	const firstDurationColumn = header.indexOf('tid');
+	const secondSessionColumn = header.findIndex((h) => h.includes('hva økt 2'));
+	const secondDurationColumn = header.indexOf('tid', firstDurationColumn + 1);
+	const commentColumn = header.findIndex((h) => h.includes('kommentar'));
 	const missing = [
-		date < 0 ? 'Dato' : '',
-		first < 0 ? 'Hva økt 1' : '',
-		time1 < 0 ? 'Tid' : '',
-		second >= 0 && time2 < 0 ? 'Tid for økt 2' : ''
+		dateColumn < 0 ? 'Dato' : '',
+		firstSessionColumn < 0 ? 'Hva økt 1' : '',
+		firstDurationColumn < 0 ? 'Tid' : '',
+		secondSessionColumn >= 0 && secondDurationColumn < 0 ? 'Tid for økt 2' : ''
 	].filter(Boolean);
 	if (missing.length) throw new SheetFormatError(`Manglende kolonner: ${missing.join(', ')}.`);
 	const workouts: Workout[] = [];
 	for (const [index, row] of data.slice(1).entries()) {
-		if (!row[first]?.trim() && !row[second]?.trim()) continue;
-		const iso = parseDate(row[date] ?? '', anchor);
+		if (!row[firstSessionColumn]?.trim() && !row[secondSessionColumn]?.trim()) continue;
+		const iso = parseDate(row[dateColumn] ?? '', anchor);
 		if (!iso) throw new SheetFormatError(`Rad ${index + 2}: ugyldig dato.`);
-		for (const [titleIndex, timeIndex] of [
-			[first, time1],
-			[second, time2]
+		for (const [titleColumn, durationColumn] of [
+			[firstSessionColumn, firstDurationColumn],
+			[secondSessionColumn, secondDurationColumn]
 		]) {
-			if (titleIndex < 0 || !row[titleIndex]?.trim()) continue;
+			if (titleColumn < 0 || !row[titleColumn]?.trim()) continue;
 			let durationMin: number | null;
 			try {
-				durationMin = toMin(row[timeIndex] ?? '');
+				durationMin = toMin(row[durationColumn] ?? '');
 			} catch {
 				durationMin = null;
 			}
 			workouts.push({
 				date: iso,
-				title: row[titleIndex].trim(),
+				title: row[titleColumn].trim(),
 				durationMin,
-				description: row[comment]?.trim() ?? ''
+				description: row[commentColumn]?.trim() ?? ''
 			});
 		}
 	}

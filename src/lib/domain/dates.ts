@@ -5,7 +5,10 @@ import {
 	startOfWeek,
 	endOfWeek,
 	startOfMonth,
-	endOfMonth
+	endOfMonth,
+	addWeeks,
+	addMonths,
+	addYears
 } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import type { StatPeriod } from './types';
@@ -18,24 +21,24 @@ export function parseDate(value: string, anchor = new Date()): string {
 	if (!clean) return '';
 	if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) return isISODate(clean) ? clean : '';
 	if (/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(clean)) {
-		const d = parse(clean, 'd.M.yyyy', anchor);
-		return Number.isNaN(d.getTime()) ? '' : format(d, 'yyyy-MM-dd');
+		const date = parse(clean, 'd.M.yyyy', anchor);
+		return Number.isNaN(date.getTime()) ? '' : format(date, 'yyyy-MM-dd');
 	}
 	const spaced = clean.replace(/(\d+)\.(\p{L}+)/u, '$1. $2').replace(/\.$/, '');
-	let d = parse(`${spaced} ${2024}`, 'd. MMMM yyyy', anchor, { locale: nb });
-	if (Number.isNaN(d.getTime())) d = parse(`${spaced}.${2024}`, 'd.M.yyyy', anchor);
-	if (Number.isNaN(d.getTime())) return '';
+	let date = parse(`${spaced} ${2024}`, 'd. MMMM yyyy', anchor, { locale: nb });
+	if (Number.isNaN(date.getTime())) date = parse(`${spaced}.${2024}`, 'd.M.yyyy', anchor);
+	if (Number.isNaN(date.getTime())) return '';
 
-	const year = seasonYear(anchor) + (d.getMonth() < 4 ? 1 : 0);
-	d = parse(`${format(d, 'd.M')}.${year}`, 'd.M.yyyy', anchor);
-	return Number.isNaN(d.getTime()) ? '' : format(startOfDay(d), 'yyyy-MM-dd');
+	const year = seasonYear(anchor) + (date.getMonth() < 4 ? 1 : 0);
+	date = parse(`${format(date, 'd.M')}.${year}`, 'd.M.yyyy', anchor);
+	return Number.isNaN(date.getTime()) ? '' : format(startOfDay(date), 'yyyy-MM-dd');
 }
 export function isISODate(value: string): boolean {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-	const d = new Date(`${value}T12:00:00Z`);
+	const date = new Date(`${value}T12:00:00Z`);
 	return (
-		!Number.isNaN(d.getTime()) &&
-		d.toISOString().slice(0, 10) === value &&
+		!Number.isNaN(date.getTime()) &&
+		date.toISOString().slice(0, 10) === value &&
 		Number(value.slice(0, 4)) >= 1900
 	);
 }
@@ -49,9 +52,15 @@ export function toMin(value: string): number {
 }
 export function formatTime(mins: number): string {
 	if (!mins) return '';
-	const h = Math.floor(mins / 60),
-		m = mins % 60;
-	return h && m ? `${h}t ${m}min` : h ? `${h}t` : `${m}min`;
+	const hours = Math.floor(mins / 60);
+	const minutes = mins % 60;
+	if (hours && minutes) return `${hours}t ${minutes}min`;
+	return hours ? `${hours}t` : `${minutes}min`;
+}
+export function shiftPeriod(period: StatPeriod, anchor: Date, direction: -1 | 1): Date {
+	if (period === 'uke') return addWeeks(anchor, direction);
+	if (period === 'maaned') return addMonths(anchor, direction);
+	return addYears(anchor, direction);
 }
 export function periodRange(period: StatPeriod, anchor: Date): { start: Date; end: Date } {
 	if (period === 'uke')

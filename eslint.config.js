@@ -12,7 +12,7 @@ export default ts.config(
 			'build/**',
 			'test-results/**',
 			'playwright-report/**',
-			'tests/preview/dist/**'
+			'tests/**'
 		]
 	},
 	js.configs.recommended,
