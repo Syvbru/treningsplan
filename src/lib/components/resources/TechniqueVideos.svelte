@@ -27,7 +27,7 @@
 </script>
 
 <section>
-	<h2 class="text-base font-bold uppercase text-[var(--p1)] mb-3">Teknikkvideoer:</h2>
+	<h2 class="text-base font-bold uppercase text-primary mb-3">Teknikkvideoer:</h2>
 
 	<div class="flex-1 min-w-0">
 		<div
@@ -37,7 +37,7 @@
 		>
 			{#each teknikkVideoer as video, i (video.url + i)}
 				<div class="snap-center shrink-0 w-full p-2">
-					<p class="text-md font-bold text-[var(--p2)] mb-3">
+					<p class="text-md font-bold text-secondary mb-3">
 						{video.stilart} <span class="italic"> - {video.teknikk} </span>
 					</p>
 					<div class="rounded-2xl overflow-hidden">
@@ -91,7 +91,7 @@
 				on:click={teknikkForrige}
 				disabled={teknikkAktivIndeks === 0}
 				aria-label="Forrige video"
-				class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-[var(--p1)] hover:text-[var(--p1)]/70 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+				class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-primary hover:text-primary/70 disabled:opacity-30 disabled:pointer-events-none transition-colors"
 			>
 				<ChevronLeft class="h-7 w-7" strokeWidth={3} />
 			</button>
@@ -103,8 +103,8 @@
 						on:click={() => scrollTeknikkTil(i)}
 						aria-label={`Gå til video ${i + 1}`}
 						class="h-2 rounded-full transition-all {i === teknikkAktivIndeks
-							? 'w-5 bg-[var(--p1)]'
-							: 'w-2 bg-[var(--br)]'}"
+							? 'w-5 bg-primary'
+							: 'w-2 bg-divider'}"
 					>
 					</button>
 				{/each}
@@ -115,7 +115,7 @@
 				on:click={teknikkNeste}
 				disabled={teknikkAktivIndeks === teknikkVideoer.length - 1}
 				aria-label="Neste video"
-				class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-[var(--p1)] hover:text-[var(--p1)]/70 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+				class="hidden sm:flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full text-primary hover:text-primary/70 disabled:opacity-30 disabled:pointer-events-none transition-colors"
 			>
 				<ChevronRight class="h-7 w-7" strokeWidth={3} />
 			</button>

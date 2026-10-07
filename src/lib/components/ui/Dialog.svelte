@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { cubicOut } from 'svelte/easing';
+	import { fly } from 'svelte/transition';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import { X } from 'lucide-svelte';
 	export let title: string;
 	export let onClose: () => void;
 	export let swipeToClose = true;
 	export let animateSwipe = false;
+	export let animateEntrance = false;
 	export let hideCloseOnMobile = false;
 	let dragX = 0,
 		dragY = 0,
@@ -13,22 +15,13 @@
 		closing = false;
 	let closeTimer: ReturnType<typeof setTimeout> | undefined;
 	export let variant: 'sheet' | 'calendar' | 'sidebar' = 'sheet';
+	$: entranceSheet = animateEntrance && variant === 'sheet';
 	let element: HTMLDialogElement;
 	let content: HTMLDivElement;
 	let previous: HTMLElement | null = null;
 	let introReady = false;
 	let gestureActive = false;
 	let suppressClickUntil = 0;
-	function panelEntrance(node: Element) {
-		if (variant !== 'sidebar') return { duration: 0 };
-		const width =
-			parseFloat(getComputedStyle(node).width) || Math.min(288, window.innerWidth * 0.85);
-		return {
-			duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220,
-			easing: cubicOut,
-			css: (progress: number) => `transform: translateX(${(1 - progress) * width}px)`
-		};
-	}
 	function suppressSwipeClick(event: MouseEvent) {
 		if (Date.now() >= suppressClickUntil) return;
 		suppressClickUntil = 0;
@@ -51,7 +44,7 @@
 	function animateClose(): boolean {
 		return (
 			(variant === 'sidebar' || (animateSwipe && variant === 'sheet')) &&
-			!window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			!prefersReducedMotion.current
 		);
 	}
 	onMount(() => {
@@ -157,7 +150,12 @@
 <dialog
 	bind:this={element}
 	aria-label={title}
-	class="fixed inset-0 m-0 h-full max-h-none w-full max-w-none bg-transparent"
+	class="fixed inset-0 m-0 h-full max-h-none w-full max-w-none bg-transparent border-0 text-foreground open:flex {variant ===
+	'calendar'
+		? 'items-start justify-center pt-24 px-4 pb-4'
+		: variant === 'sidebar'
+			? 'items-end justify-end overflow-hidden p-0'
+			: 'items-end justify-center lg:items-center p-0'}"
 	class:calendar={variant === 'calendar'}
 	class:sidebar={variant === 'sidebar'}
 	on:cancel|preventDefault={onClose}
@@ -166,11 +164,23 @@
 	}}
 >
 	<div
-		class="dialog-motion"
+		class="dialog-motion {variant === 'sidebar'
+			? 'block w-72 max-w-[85vw] h-dvh shrink-0'
+			: entranceSheet
+				? 'block w-full lg:max-w-[42rem]'
+				: 'contents'}"
 		class:sidebar-motion={variant === 'sidebar'}
-		style:visibility={variant === 'sidebar' && !introReady ? 'hidden' : undefined}
+		class:sheet-motion={entranceSheet}
+		style:visibility={(variant === 'sidebar' || entranceSheet) && !introReady
+			? 'hidden'
+			: undefined}
 		on:introstart={() => (introReady = true)}
-		in:panelEntrance
+		in:fly={{
+			x: variant === 'sidebar' ? '100%' : 0,
+			y: entranceSheet ? '100%' : 0,
+			duration: prefersReducedMotion.current || !(variant === 'sidebar' || entranceSheet) ? 0 : 350,
+			opacity: 1
+		}}
 	>
 		<div
 			bind:this={content}
@@ -178,12 +188,29 @@
 			class:dragging
 			class:closing
 			class:swipe-sheet={animateSwipe}
+			class:entrance-sheet={entranceSheet}
 			style:transform={dragX
 				? `translateX(${dragX}px)`
 				: dragY
 					? `translateY(${dragY}px)`
 					: undefined}
-			class="dialog-content bg-[var(--card)] shadow-2xl text-[var(--text1)]"
+			class="dialog-content relative w-full overflow-y-auto bg-card shadow-2xl text-foreground {variant ===
+			'sidebar'
+				? 'max-w-none h-dvh max-h-dvh rounded-none touch-pan-y'
+				: variant === 'calendar'
+					? 'max-w-96 max-h-[88dvh] rounded-3xl'
+					: 'max-h-[88dvh] rounded-t-3xl lg:rounded-3xl lg:max-w-[42rem]'} {(variant ===
+				'sidebar' ||
+				animateSwipe) &&
+			!dragging
+				? 'transition-transform duration-[180ms] ease-[ease-out] motion-reduce:transition-none'
+				: 'transition-none'} {closing ? 'pointer-events-none' : ''} {variant !== 'sidebar' &&
+			!animateSwipe &&
+			!entranceSheet &&
+			!dragging &&
+			!closing
+				? 'motion-safe:animate-dialog-appear'
+				: ''}"
 			on:touchstart={touchStart}
 			on:touchmove|nonpassive={touchMove}
 			on:touchcancel={resetDrag}
@@ -193,14 +220,18 @@
 					<div class="w-16 h-[5px] rounded-full bg-slate-300"></div>
 				</div>{/if}
 			{#if $$slots.header}
-				<div class="dialog-header">
+				<div class="dialog-header flex items-start gap-4 px-5 pt-5">
 					<div class="min-w-0 flex-1"><slot name="header" /></div>
 					<button
 						type="button"
 						aria-label="Lukk dialog"
 						on:click={onClose}
-						class="quiet-focus dialog-close shrink-0 h-8 w-8 items-center justify-center text-[var(--text2)] {hideCloseOnMobile ? 'hidden lg:flex' : 'flex'}"
-						><X class="h-5 w-5" /></button
+						class="quiet-focus dialog-close shrink-0 h-8 w-8 items-center justify-center text-muted {variant ===
+						'sidebar'
+							? 'hidden'
+							: hideCloseOnMobile
+								? 'hidden lg:flex'
+								: 'flex'}"><X class="h-5 w-5" /></button
 					>
 				</div>
 			{:else}
@@ -208,108 +239,15 @@
 					type="button"
 					aria-label="Lukk dialog"
 					on:click={onClose}
-					class="quiet-focus dialog-close absolute right-5 top-4 z-10 rounded-lg bg-[var(--surface)] p-1.5 text-[var(--text2)] {hideCloseOnMobile ? 'hidden lg:flex' : 'flex'}"
-					><X class="h-5 w-5" /></button
+					class="quiet-focus dialog-close absolute right-5 top-4 z-10 rounded-lg bg-surface p-1.5 text-muted {variant ===
+					'sidebar'
+						? 'hidden'
+						: hideCloseOnMobile
+							? 'hidden lg:flex'
+							: 'flex'}"><X class="h-5 w-5" /></button
 				>
 			{/if}
 			<slot />
 		</div>
 	</div>
 </dialog>
-
-<style>
-	.dialog-motion {
-		display: contents;
-	}
-	.dialog-motion.sidebar-motion {
-		display: block;
-		width: 18rem;
-		max-width: 85vw;
-		height: 100dvh;
-		flex-shrink: 0;
-	}
-	dialog[open] {
-		display: flex;
-		align-items: end;
-		justify-content: center;
-	}
-	.dialog-header {
-		display: flex;
-		align-items: flex-start;
-		gap: 1rem;
-		padding: 1.25rem 1.25rem 0;
-	}
-	.dialog-content {
-		position: relative;
-		width: 100%;
-		max-height: 88dvh;
-		overflow-y: auto;
-		border-radius: 1.5rem 1.5rem 0 0;
-	}
-	.dialog-content.swipe-sheet {
-		animation: none;
-		transition: transform 180ms ease-out;
-	}
-	.dialog-content.dragging {
-		transition: none;
-		animation: none;
-	}
-	.dialog-content.closing {
-		pointer-events: none;
-		animation: none;
-	}
-	dialog.calendar {
-		align-items: start;
-		padding: 6rem 1rem 1rem;
-	}
-	.calendar .dialog-content {
-		max-width: 24rem;
-		border-radius: 1.5rem;
-	}
-	dialog.sidebar {
-		overflow: hidden;
-		justify-content: end;
-	}
-	.sidebar .dialog-content {
-		animation: none;
-		transition: transform 180ms ease-out;
-		touch-action: pan-y;
-		width: 100%;
-		max-width: none;
-		height: 100dvh;
-		max-height: 100dvh;
-		border-radius: 0;
-	}
-	.sidebar .dialog-content.dragging {
-		transition: none;
-	}
-	.sidebar .dialog-close {
-		display: none;
-	}
-	@media (min-width: 1024px) {
-		dialog[open]:not(.calendar):not(.sidebar) {
-			align-items: center;
-		}
-		.dialog-content {
-			max-width: 42rem;
-			border-radius: 1.5rem;
-		}
-	}
-	@media (prefers-reduced-motion: no-preference) {
-		.dialog-content {
-			animation: appear 200ms ease;
-		}
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.dialog-content.swipe-sheet,
-		.sidebar .dialog-content {
-			transition: none;
-		}
-	}
-	@keyframes appear {
-		from {
-			transform: translateY(20px);
-			opacity: 0.8;
-		}
-	}
-</style>

@@ -122,6 +122,7 @@
 	aria-busy={stage !== 'idle'}
 >
 	<Field
+		textClass="text-form"
 		id={`${prefix}-date`}
 		label="Dato"
 		type="date"
@@ -130,6 +131,7 @@
 		disabled={stage !== 'idle'}
 	/>
 	<Field
+		textClass="text-form"
 		id={`${prefix}-style`}
 		label="Stilart"
 		kind="select"
@@ -140,6 +142,7 @@
 		<option value="">Velg stilart…</option><option>Klassisk</option><option>Skate</option>
 	</Field>
 	<Field
+		textClass="text-form"
 		id={`${prefix}-text`}
 		label="Tilbakemelding / hva øvde du på"
 		kind="textarea"
@@ -150,12 +153,11 @@
 		placeholder="F.eks. fokus på armtrekket, tilbakemelding fra trener…"
 	/>
 	{#if existing.length}<div>
-			<p class="text-xs font-semibold uppercase mb-2">Videoer ({existing.length})</p>
+			<p class="text-form text-xs font-semibold uppercase mb-2">Videoer ({existing.length})</p>
 			{#each existing as url, i (url)}<div
-					class="flex items-center gap-2 rounded-xl border border-[var(--br)] bg-[var(--surface)] px-3 py-2 mb-2"
+					class="flex items-center gap-2 rounded-xl border border-divider bg-surface px-3 py-2 mb-2"
 				>
-					<Video class="h-4 w-4 text-[var(--p1)]" /><span class="flex-1 text-xs">Video {i + 1}</span
-					>
+					<Video class="h-4 w-4 text-primary" /><span class="flex-1 text-xs">Video {i + 1}</span>
 					<button
 						type="button"
 						disabled={stage !== 'idle'}
@@ -166,10 +168,10 @@
 				</div>{/each}
 		</div>{/if}
 	<div>
-		<p class="text-xs font-semibold uppercase mb-1">Video (valgfritt)</p>
+		<p class="text-form text-xs font-semibold uppercase mb-1">Video (valgfritt)</p>
 		<label
 			for={`${prefix}-video`}
-			class="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[var(--br)] p-4 cursor-pointer hover:border-[var(--p1)] focus-within:border-[var(--p1)]"
+			class="text-form relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-divider p-4 cursor-pointer hover:border-primary focus-within:border-primary"
 		>
 			<input
 				id={`${prefix}-video`}
@@ -181,9 +183,9 @@
 				disabled={stage !== 'idle' || uploaded.length > 0}
 				on:change={selectFiles}
 			/>
-			<Video class="h-5 w-5 text-[var(--text2)] mb-1" />
+			<Video class="h-5 w-5 text-muted mb-1" />
 			{#if files.length}{#each files as file, i (i)}<p
-						class="text-sm font-semibold truncate max-w-full"
+						class="text-form text-sm font-semibold truncate max-w-full"
 					>
 						{file.name}
 					</p>
@@ -191,27 +193,23 @@
 							aria-label={`Opplasting av ${file.name}`}
 							max="100"
 							value={perFile[i]}
-							class="w-full h-1.5 accent-[var(--p1)]"
+							class="w-full h-1.5 accent-primary"
 						></progress>{/if}
-				{/each}{:else}<p class="text-sm text-[var(--text2)]">
-					Trykk for å velge én eller flere videoer
-				</p>{/if}
+				{/each}{:else}<p class="text-sm text-form">Trykk for å velge én eller flere videoer</p>{/if}
 		</label>
-		<p class="text-xs text-[var(--text2)] mt-1">
-			MP4, MOV eller WebM. Maks 100 MB per video, 6 per logg.
-		</p>
+		<p class="text-xs text-form mt-1">MP4, MOV eller WebM. Maks 100 MB per video, 6 per logg.</p>
 	</div>
 	{#if stage === 'uploading' && files.length}<div role="status">
 			<progress
 				aria-label="Samlet videofremdrift"
 				value={progress}
 				max="100"
-				class="w-full h-2 accent-[var(--p1)]"
+				class="w-full h-2 accent-primary"
 			></progress>
-			<p class="text-xs text-center">Laster opp videoer… {progress}%</p>
+			<p class="text-form text-xs text-center">Laster opp videoer… {progress}%</p>
 		</div>{/if}
 	<State {error} />
-	{#if uploaded.length && error}<p class="text-xs text-[var(--text1)]">
+	{#if uploaded.length && error}<p class="text-xs text-form">
 			Videoene er lastet opp, men loggen er ikke lagret. Prøv å lagre igjen for å bruke de samme
 			videoene, eller avbryt. Ubrukte videoer registreres for senere opprydding.
 		</p>{/if}

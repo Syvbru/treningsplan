@@ -39,15 +39,15 @@
 				type="button"
 				aria-label="Forrige måned"
 				on:click={() => (cursor = subMonths(cursor, 1))}
-				class="shrink-0 bg-[var(--surface)] rounded-xl p-2"
-				><ChevronLeft class="h-4 w-4 text-[var(--p1)]" /></button
+				class="shrink-0 bg-surface rounded-xl p-2"
+				><ChevronLeft class="h-4 w-4 text-primary" /></button
 			>
 			<div class="grid grid-cols-[minmax(0,1fr)_auto] gap-2 min-w-0 flex-1">
 				<select
 					aria-label="Velg måned"
 					value={cursor.getMonth()}
 					on:change={(event) => (cursor = setMonth(cursor, Number(event.currentTarget.value)))}
-					class="min-w-0 w-full bg-[var(--surface)] text-[var(--text1)] rounded-xl px-2 py-2 text-sm font-semibold capitalize"
+					class="min-w-0 w-full bg-surface text-foreground rounded-xl px-2 py-2 text-sm font-semibold capitalize"
 				>
 					{#each months as month (month.value)}
 						<option value={month.value}>{month.label}</option>
@@ -57,7 +57,7 @@
 					aria-label="Velg år"
 					value={cursor.getFullYear()}
 					on:change={(event) => (cursor = setYear(cursor, Number(event.currentTarget.value)))}
-					class="bg-[var(--surface)] text-[var(--text1)] rounded-xl px-2 py-2 text-sm font-semibold"
+					class="bg-surface text-foreground rounded-xl px-2 py-2 text-sm font-semibold"
 				>
 					{#each years as year (year)}
 						<option value={year}>{year}</option>
@@ -68,13 +68,13 @@
 				type="button"
 				aria-label="Neste måned"
 				on:click={() => (cursor = addMonths(cursor, 1))}
-				class="shrink-0 bg-[var(--surface)] rounded-xl p-2"
-				><ChevronRight class="h-4 w-4 text-[var(--p1)]" /></button
+				class="shrink-0 bg-surface rounded-xl p-2"
+				><ChevronRight class="h-4 w-4 text-primary" /></button
 			>
 		</div>
 		<div class="grid grid-cols-7 gap-1 mb-1">
 			{#each ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'] as d (d)}<div
-					class="text-center text-xs font-bold text-[var(--text2)] py-1"
+					class="text-center text-xs font-bold text-muted py-1"
 				>
 					{d}
 				</div>{/each}
@@ -90,17 +90,17 @@
 							day,
 							selected
 						)
-							? 'bg-[var(--p1)] text-white font-bold'
+							? 'bg-primary text-white font-bold'
 							: isSameDay(day, today)
-								? 'bg-[var(--p2)] text-[var(--p1)] font-bold'
-								: 'hover:bg-[var(--surface)]'}">{format(day, 'd')}</button
+								? 'bg-secondary text-primary font-bold'
+								: 'hover:bg-surface'}">{format(day, 'd')}</button
 					>
 				{:else}<div></div>{/if}{/each}
 		</div>
 		<button
 			type="button"
 			on:click={() => onSelect(today)}
-			class="w-full mt-4 py-2.5 rounded-xl border border-[var(--p1)] bg-[var(--p3)] text-[var(--p1)] text-sm font-semibold"
+			class="w-full mt-4 py-2.5 rounded-xl border border-primary bg-primary-soft text-primary text-sm font-semibold"
 			>Gå til i dag</button
 		>
 	</div>

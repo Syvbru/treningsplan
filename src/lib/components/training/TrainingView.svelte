@@ -80,10 +80,7 @@
 
 <svelte:window on:hashchange={syncSection} />
 
-<div
-	class="min-h-screen {$darkTheme ? 'dk' : 'lt'} text-[var(--text1)]"
-	style="background-color:var(--bg)"
->
+<div class="min-h-screen {$darkTheme ? 'dk' : 'lt'} bg-page text-foreground">
 	{#if plan?.status === 'NEI' && user.role === 'utover' && !noticeDismissed}<div
 			class="fixed top-0 inset-x-0 z-[100] shadow-lg bg-[#7f1d1d] text-[#fecaca]"
 		>
@@ -105,8 +102,10 @@
 			</div>{/if}
 	</PageHeader>
 	<TrainingNavigation active={activeSection} onSelect={selectSection} />
-	<main class="training-main mx-auto max-w-5xl px-4 py-6">
-		<div hidden={activeSection !== 'plan'} class="plan-panel space-y-5">
+	<main
+		class="training-main mx-auto max-w-5xl px-4 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] md:pb-12"
+	>
+		<div hidden={activeSection !== 'plan'} class="plan-panel w-full space-y-5">
 			<State loading={planLoading} error={planError} onRetry={() => load(true)} />
 			{#if !planLoading && !planError && plan}
 				{#if plan.status}<div
@@ -151,17 +150,3 @@
 			onClose={() => (profile = false)}
 		/>{/if}
 </div>
-
-<style>
-	.training-main {
-		padding-bottom: calc(7rem + env(safe-area-inset-bottom));
-	}
-	.plan-panel {
-		width: 100%;
-	}
-	@media (min-width: 768px) {
-		.training-main {
-			padding-bottom: 3rem;
-		}
-	}
-</style>

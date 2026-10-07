@@ -1,5 +1,44 @@
 @import 'tailwindcss';
 
+@theme inline {
+	--color-primary: var(--p1);
+	--color-secondary: var(--p2);
+	--color-primary-soft: var(--p3);
+	--color-page: var(--bg);
+	--color-card: var(--card);
+	--color-divider: var(--br);
+	--color-surface: var(--surface);
+	--color-foreground: var(--text1);
+	--color-muted: var(--text2);
+	--color-calendar-dot: var(--calendar-dot);
+	--color-navigation: var(--nav-bg);
+	--color-form: var(--form-text);
+	--color-danger-hover: var(--danger-hover);
+	--color-workout-hard: var(--workout-hard);
+	--color-workout-strength: var(--workout-strength);
+	--color-workout-long: var(--workout-long);
+	--color-workout-rest: var(--workout-rest);
+	--color-workout-speed: var(--workout-speed);
+	--color-workout-technique: var(--workout-technique);
+	--color-workout-easy: var(--workout-easy);
+}
+
+@custom-variant standalone {
+	@media (display-mode: standalone) {
+		@slot;
+	}
+}
+
+@theme {
+	--animate-dialog-appear: dialog-appear 200ms ease;
+	@keyframes dialog-appear {
+		from {
+			transform: translateY(20px);
+			opacity: 0.8;
+		}
+	}
+}
+
 @custom-variant hover {
 	@media (hover: hover) and (pointer: fine) {
 		&:hover {
@@ -9,6 +48,8 @@
 }
 
 .lt {
+	--form-text: #64748b;
+	--danger-hover: var(--color-red-50);
 	color-scheme: light;
 	--p1: #eb26ad;
 	--p2: #fd98dd;
@@ -30,6 +71,8 @@
 	--workout-easy: #a9e4ff;
 }
 .dk {
+	--form-text: #f1f5f9;
+	--danger-hover: #2d0a0a;
 	color-scheme: dark;
 	--p1: #eb26ad;
 	--p2: #fd98dd;
@@ -65,28 +108,6 @@ body {
 	display: none !important;
 }
 
-@media (hover: hover) and (pointer: fine) {
-	.dk .hover\:bg-red-50:hover {
-		background-color: #2d0a0a !important;
-	}
-}
-
-.dk .teknikk-skjema input,
-.dk .teknikk-skjema select,
-.dk .teknikk-skjema textarea,
-.dk .teknikk-skjema p:not(.feilmelding),
-.dk .teknikk-skjema label {
-	color: #f1f5f9 !important;
-}
-
-.lt .teknikk-skjema input,
-.lt .teknikk-skjema select,
-.lt .teknikk-skjema textarea,
-.lt .teknikk-skjema p:not(.feilmelding),
-.lt .teknikk-skjema label {
-	color: #64748b !important;
-}
-
 .no-scrollbar {
 	scrollbar-width: none;
 	-ms-overflow-style: none;
@@ -95,22 +116,20 @@ body {
 	display: none;
 }
 
-button,
-a,
-input,
-select,
-textarea {
-	touch-action: manipulation;
-	-webkit-tap-highlight-color: transparent;
+@layer base {
+	button,
+	a,
+	input,
+	select,
+	textarea {
+		touch-action: manipulation;
+		-webkit-tap-highlight-color: transparent;
+	}
 }
+
 :focus-visible {
 	outline: 2px solid var(--p1, #eb26ad);
 	outline-offset: 3px;
-}
-dialog {
-	color: var(--text1);
-	border: 0;
-	padding: 0;
 }
 dialog::backdrop {
 	background: rgb(15 23 42 / 0.4);

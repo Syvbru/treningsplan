@@ -34,10 +34,10 @@
 	}
 </script>
 
-<div class="min-h-screen {$darkTheme ? 'dk' : 'lt'} bg-[var(--bg)] text-[var(--text1)]">
+<div class="min-h-screen {$darkTheme ? 'dk' : 'lt'} bg-page text-foreground">
 	<PageHeader onProfile={() => (profile = true)} />
 	<main class="max-w-5xl mx-auto px-4 py-6 space-y-4">
-		<h2 class="font-bold text-[var(--p1)]">Utøvere</h2>
+		<h2 class="font-bold text-primary">Utøvere</h2>
 		<State
 			{loading}
 			{error}
@@ -49,9 +49,9 @@
 				{@const state = status.find((s) => s.id === athlete.id)}
 				<a
 					href={`/trener/utovere/${athlete.id}`}
-					class="rounded-2xl bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] p-4"
-					><h3 class="font-bold text-[var(--p1)]">{athlete.name}</h3>
-					<p class="text-xs mt-2 text-[var(--text2)]">
+					class="rounded-2xl bg-card border border-divider hover:border-primary p-4"
+					><h3 class="font-bold text-primary">{athlete.name}</h3>
+					<p class="text-xs mt-2 text-muted">
 						{state?.statusError ||
 							(state?.status === 'JA'
 								? '🟢 Neste periodeplan klar'

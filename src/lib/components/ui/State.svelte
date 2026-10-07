@@ -5,9 +5,7 @@
 	export let onRetry: (() => void) | undefined = undefined;
 </script>
 
-{#if loading}<p role="status" class="rounded-xl bg-[var(--card)] p-4 text-sm text-[var(--text2)]">
-		Laster…
-	</p>
+{#if loading}<p role="status" class="rounded-xl bg-card p-4 text-sm text-muted">Laster…</p>
 {:else if error}<div
 		role="alert"
 		class="rounded-xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-500"
@@ -18,7 +16,7 @@
 			>{/if}
 	</div>
 {:else if empty}<p
-		class="rounded-2xl border border-[var(--br)] bg-[var(--card)] p-6 text-center text-sm text-[var(--text2)]"
+		class="rounded-2xl border border-divider bg-card p-6 text-center text-sm text-muted"
 	>
 		{empty}
 	</p>{/if}

@@ -40,7 +40,7 @@
 </script>
 
 <Dialog title="Profil og ressurser" variant="sidebar" {onClose}>
-	<div class="bg-[var(--p1)] px-5 py-6 flex items-center gap-3">
+	<div class="bg-primary px-5 py-6 flex items-center gap-3">
 		<User class="h-4 w-4 shrink-0 text-white" />
 		<div class="flex-1 min-w-0">
 			<p class="font-bold text-white capitalize">
@@ -71,10 +71,10 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					on:click={() => onClose()}
-					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-surface/50 transition-colors text-left mb-1"
 				>
 					<SquarePen class="h-4 w-4 shrink-0 text-green-700" />
-					<span class="text-sm font-medium text-[var(--text1)] truncate">
+					<span class="text-sm font-medium text-foreground truncate">
 						{isAdmin && currentUtoverNavn
 							? `${currentUtoverNavn} – Google Sheet`
 							: 'Min treningsplan (Rediger)'}
@@ -84,11 +84,11 @@
 
 			<button
 				on:click={() => (showStyrkeSubmenu = true)}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-surface/50 transition-colors text-left mb-1"
 			>
-				<Dumbbell class="h-4 w-4 shrink-0 text-[var(--p1)]" />
-				<span class="text-sm font-medium text-[var(--text1)] flex-1">Styrkeøkter</span>
-				<ChevronRight class="h-4 w-4 shrink-0 text-[var(--text2)]" />
+				<Dumbbell class="h-4 w-4 shrink-0 text-primary" />
+				<span class="text-sm font-medium text-foreground flex-1">Styrkeøkter</span>
+				<ChevronRight class="h-4 w-4 shrink-0 text-muted" />
 			</button>
 
 			<a
@@ -96,35 +96,37 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				on:click={() => onClose()}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-surface/50 transition-colors text-left mb-1"
 			>
-				<FileText class="h-4 w-4 shrink-0 text-[var(--p1)]" />
-				<span class="text-sm font-medium text-[var(--text1)]">Intensitetssoner</span>
+				<FileText class="h-4 w-4 shrink-0 text-primary" />
+				<span class="text-sm font-medium text-foreground">Intensitetssoner</span>
 			</a>
 
 			<div class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl mb-1">
-				<Moon class="h-4 w-4 shrink-0 text-[var(--p1)]" />
-				<span class="text-sm font-medium text-[var(--text1)] flex-1">Mørkt tema</span>
+				<Moon class="h-4 w-4 shrink-0 text-primary" />
+				<span class="text-sm font-medium text-foreground flex-1">Mørkt tema</span>
 				<button
 					on:click|stopPropagation={() => (darkMode = !darkMode)}
-					class="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
+					class="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 {darkMode
+						? 'bg-primary'
+						: 'bg-[#CBD5E1]'}"
 					aria-pressed={darkMode}
-					style="background-color:{darkMode ? 'var(--p1)' : '#CBD5E1'}"
 					aria-label="Bytt tema"
 				>
 					<span
-						class="absolute top-0.5 left-0.5 w-5 h-5 bg-[var(--card)] rounded-full shadow-sm transition-transform duration-200"
-						style="transform:translateX({darkMode ? '20px' : '0px'})"
+						class="absolute top-0.5 left-0.5 w-5 h-5 bg-card rounded-full shadow-sm transition-transform duration-200 {darkMode
+							? 'translate-x-5'
+							: 'translate-x-0'}"
 					></span>
 				</button>
 			</div>
 
-			<div class="h-px bg-[var(--surface)] my-2"></div>
+			<div class="h-px bg-surface my-2"></div>
 
 			<button
 				disabled={loggingOut}
 				on:click={handleLogout}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-red-50 transition-colors text-left"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-danger-hover transition-colors text-left"
 			>
 				<LogOut class="h-4 w-4 shrink-0 text-red-600" />
 				<span class="text-sm font-medium text-red-600">Logg ut</span>
@@ -132,23 +134,21 @@
 		{:else}
 			<button
 				on:click={() => (showStyrkeSubmenu = false)}
-				class="flex items-center gap-2 text-sm font-semibold text-[var(--p1)] px-3 py-2 mb-2 hover:bg-[var(--p2)]/20 rounded-lg transition-colors"
+				class="flex items-center gap-2 text-sm font-semibold text-primary px-3 py-2 mb-2 hover:bg-secondary/20 rounded-lg transition-colors"
 			>
 				<ArrowLeft class="h-4 w-4 shrink-0" /> Tilbake
 			</button>
-			<p class="text-xs font-bold text-[var(--text2)] uppercase tracking-widest px-3 mb-2">
-				Styrkeøkter
-			</p>
+			<p class="text-xs font-bold text-muted uppercase tracking-widest px-3 mb-2">Styrkeøkter</p>
 			{#each styrkeProgrammer as p (p.url)}
 				<a
 					href={p.url}
 					target="_blank"
 					rel="noopener noreferrer"
 					on:click={() => onClose()}
-					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-surface/50 transition-colors text-left mb-1"
 				>
-					<FileText class="h-4 w-4 shrink-0 text-[var(--p1)]" />
-					<span class="text-sm font-medium text-[var(--text1)]">{p.title}</span>
+					<FileText class="h-4 w-4 shrink-0 text-primary" />
+					<span class="text-sm font-medium text-foreground">{p.title}</span>
 				</a>
 			{/each}
 		{/if}

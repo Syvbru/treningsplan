@@ -15,7 +15,8 @@
 	} from 'date-fns';
 	import { nb } from 'date-fns/locale';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-	import DayPlan from '$lib/components/training/DayPlan.svelte';
+	import DayPlanCarousel from '$lib/components/training/DayPlanCarousel.svelte';
+	import { dragCarousel } from '$lib/client/dragCarousel';
 	import { horizontalSwipe } from '$lib/client/swipe';
 	import type { Workout, SharedWorkout } from '$lib/domain/types';
 	import { calendarDays, workoutsByDate } from './calendar';
@@ -30,10 +31,11 @@
 	const weekdays = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
 	const weekdayNames = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 	$: byDate = workoutsByDate(workouts);
-	$: selectedISO = format(selected, 'yyyy-MM-dd');
-	$: sessions = byDate.get(selectedISO) ?? [];
 	$: weekStart = startOfWeek(selected, { weekStartsOn: 1 });
-	$: weekDays = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
+	$: weeks = [-1, 0, 1].map((offset) => ({
+		offset,
+		days: Array.from({ length: 7 }, (_, index) => addDays(addWeeks(weekStart, offset), index))
+	}));
 	$: monthDays = calendarDays(cursor);
 	$: months = Array.from({ length: 12 }, (_, index) => new Date(cursor.getFullYear(), index, 1));
 	const yearOptions = Array.from({ length: 101 }, (_, index) => today.getFullYear() - 80 + index);
@@ -80,16 +82,17 @@
 
 <section
 	bind:this={calendarElement}
-	class="plan-calendar"
+	class="plan-calendar bg-card rounded-[1.75rem] px-5 pt-6 pb-7 sm:px-10 sm:pt-8 sm:pb-10 max-[360px]:px-4"
 	class:week-view={view === 'week'}
 	aria-label="Treningskalender"
 >
-	<div class="calendar-content">
-		<div class="calendar-toolbar">
+	<div class="calendar-content mx-auto max-w-[43rem]">
+		<div class="calendar-toolbar flex items-center justify-between gap-1">
 			{#if view === 'year'}
 				<label class="year-picker">
 					<span class="sr-only">Velg år</span>
 					<select
+						class="text-primary bg-card font-bold text-[1rem] min-h-11 pr-2"
 						value={cursor.getFullYear()}
 						on:change={(event) =>
 							(cursor = new Date(Number(event.currentTarget.value), cursor.getMonth(), 1))}
@@ -103,7 +106,10 @@
 			{:else}
 				<button
 					type="button"
-					class="calendar-heading"
+					class="calendar-heading flex items-center gap-0.5 text-primary text-[1.125rem] font-[650] text-left min-h-11 leading-[1.3] sm:text-[1.5rem] {view ===
+					'week'
+						? 'max-sm:text-[1rem]'
+						: 'max-[360px]:text-[1rem]'}"
 					aria-label={view === 'week' ? 'Vis måned' : 'Vis år'}
 					on:click={zoomOut}
 				>
@@ -113,11 +119,18 @@
 					{:else}<ChevronLeft size={18} /> {cursor.getFullYear()}{/if}
 				</button>
 			{/if}
-			<div class="calendar-actions">
-				<button type="button" class="today-button" on:click={goToday}>I dag</button>
+			<div class="calendar-actions flex items-center shrink-0">
 				<button
 					type="button"
-					class="arrow"
+					class="today-button px-2 min-h-11 text-primary text-[0.8125rem] hover:bg-surface {view ===
+					'week'
+						? 'max-sm:text-[0.75rem]'
+						: ''}"
+					on:click={goToday}>I dag</button
+				>
+				<button
+					type="button"
+					class="arrow flex items-center justify-center w-8 h-11 sm:w-11 text-primary rounded-xl hover:bg-surface"
 					aria-label={view === 'week'
 						? 'Forrige uke'
 						: view === 'month'
@@ -127,14 +140,14 @@
 				>
 				<button
 					type="button"
-					class="arrow"
+					class="arrow flex items-center justify-center w-8 h-11 sm:w-11 text-primary rounded-xl hover:bg-surface"
 					aria-label={view === 'week' ? 'Neste uke' : view === 'month' ? 'Neste måned' : 'Neste år'}
 					on:click={() => navigate(1)}><ChevronRight size={20} /></button
 				>
 			</div>
 		</div>
 		{#if view === 'week'}
-			<p class="date-caption">
+			<p class="date-caption mt-0.5 text-[0.75rem] max-sm:text-[0.6875rem] text-muted">
 				{format(weekStart, 'd. MMM', { locale: nb })} – {format(
 					addDays(weekStart, 6),
 					'd. MMM yyyy',
@@ -142,51 +155,89 @@
 				)}
 			</p>
 			<div
-				class="week-grid"
-				use:horizontalSwipe={(direction) => (selected = addWeeks(selected, direction))}
+				class="week-viewport overflow-hidden mt-6 sm:mt-8 -mx-1.5 mb-[1.625rem] max-md:touch-pan-y"
+				use:dragCarousel={{
+					key: selected.getTime(),
+					onChange: (direction) => (selected = addWeeks(selected, direction)),
+					allowButtons: true
+				}}
 			>
-				{#each weekDays as day, index (format(day, 'yyyy-MM-dd'))}
-					{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
-					<button
-						type="button"
-						class="week-day"
-						aria-label={dayLabel(day)}
-						aria-pressed={isSameDay(day, selected)}
-						aria-current={isSameDay(day, today) ? 'date' : undefined}
-						on:click={() => (selected = day)}
-					>
-						<span class="weekday" aria-hidden="true">{weekdays[index]}</span>
-						<span
-							class="day-number"
-							class:selected={isSameDay(day, selected)}
-							class:today={isSameDay(day, today)}>{format(day, 'd')}</span
+				<div class="week-track relative" data-carousel-track>
+					{#each weeks as week (week.offset)}
+						<div
+							class="week-grid week-panel grid grid-cols-7 top-0 left-0 w-full max-md:touch-pan-y {week.offset ===
+							0
+								? 'relative'
+								: 'absolute'}"
+							class:current={week.offset === 0}
+							style:transform={`translateX(${week.offset * 100}%)`}
+							aria-hidden={week.offset !== 0}
+							inert={week.offset !== 0}
 						>
-						<span class="session-dots" aria-hidden="true"
-							>{#each daySessions.slice(0, 3) as _, dot (dot)}<span></span>{/each}</span
-						>
-					</button>
-				{/each}
+							{#each week.days as day, index (format(day, 'yyyy-MM-dd'))}
+								{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
+								<button
+									type="button"
+									class="week-day flex flex-col items-center min-w-0 max-md:touch-pan-y"
+									aria-label={dayLabel(day)}
+									aria-pressed={isSameDay(day, selected)}
+									aria-current={isSameDay(day, today) ? 'date' : undefined}
+									on:click={() => (selected = day)}
+								>
+									<span
+										class="weekday mb-3 text-muted text-[0.9375rem] max-sm:text-[0.875rem] text-center font-[550]"
+										aria-hidden="true">{weekdays[index]}</span
+									>
+									<span
+										class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-sm:text-[1.25rem] {isSameDay(
+											day,
+											selected
+										)
+											? 'bg-primary text-white font-semibold'
+											: isSameDay(day, today)
+												? 'text-primary font-[450]'
+												: 'font-[450]'}"
+										class:selected={isSameDay(day, selected)}
+										class:today={isSameDay(day, today)}>{format(day, 'd')}</span
+									>
+									<span
+										class="session-dots flex items-center justify-center gap-[3px] h-3"
+										aria-hidden="true"
+										>{#each daySessions.slice(0, 3) as _, dot (dot)}<span
+												class="size-1 rounded-full bg-calendar-dot"
+											></span>{/each}</span
+									>
+								</button>
+							{/each}
+						</div>
+					{/each}
+				</div>
 			</div>
-			<div
-				class="day-content"
-				aria-live="polite"
-				aria-atomic="true"
-				use:horizontalSwipe={(direction) => (selected = addDays(selected, direction))}
-			>
-				<h2 class="sr-only">{format(selected, 'EEEE d. MMMM yyyy', { locale: nb })}</h2>
-				<DayPlan date={selectedISO} {sessions} {shared} {athleteName} />
+			<div class="day-content border-t border-divider max-md:touch-pan-y">
+				<DayPlanCarousel bind:selected {byDate} {shared} {athleteName} />
 			</div>
 		{:else if view === 'month'}
-			<h2 class="month-title">{format(cursor, 'MMMM', { locale: nb })}</h2>
-			<div class="month-grid" use:horizontalSwipe={navigate}>
-				{#each weekdays as day, index (index)}<span class="weekday" aria-label={weekdayNames[index]}
-						>{day}</span
+			<h2 class="month-title text-[1.875rem] font-bold capitalize mt-4 mb-6">
+				{format(cursor, 'MMMM', { locale: nb })}
+			</h2>
+			<div
+				class="month-grid grid grid-cols-7 gap-y-2 gap-x-0 -mx-1.5 max-md:touch-pan-y"
+				use:horizontalSwipe={navigate}
+			>
+				{#each weekdays as day, index (index)}<span
+						class="weekday mb-2 text-muted text-[0.9375rem] text-center font-[550]"
+						aria-label={weekdayNames[index]}>{day}</span
 					>{/each}
 				{#each monthDays as day (format(day, 'yyyy-MM-dd'))}
 					{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
 					<button
 						type="button"
-						class="month-day"
+						class="month-day flex flex-col items-center min-w-0 rounded-xl hover:bg-surface max-md:touch-pan-y {!isSameMonth(
+							day,
+							cursor
+						)
+							? 'opacity-[0.35]'
+							: ''}"
 						class:outside={!isSameMonth(day, cursor)}
 						aria-label={dayLabel(day)}
 						aria-pressed={isSameDay(day, selected)}
@@ -194,31 +245,57 @@
 						on:click={(event) => chooseDay(day, event)}
 					>
 						<span
-							class="day-number"
+							class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-[360px]:text-[1.25rem] {isSameDay(
+								day,
+								selected
+							)
+								? 'bg-primary text-white font-semibold'
+								: isSameDay(day, today)
+									? 'text-primary font-[450]'
+									: 'font-[450]'}"
 							class:selected={isSameDay(day, selected)}
 							class:today={isSameDay(day, today)}>{format(day, 'd')}</span
 						>
-						<span class="session-dots" aria-hidden="true"
-							>{#each daySessions.slice(0, 3) as _, dot (dot)}<span></span>{/each}</span
+						<span
+							class="session-dots flex items-center justify-center gap-[3px] h-3"
+							aria-hidden="true"
+							>{#each daySessions.slice(0, 3) as _, dot (dot)}<span
+									class="size-1 rounded-full bg-calendar-dot"
+								></span>{/each}</span
 						>
 					</button>
 				{/each}
 			</div>
 		{:else}
 			<h2 class="sr-only">Årsvisning {cursor.getFullYear()}</h2>
-			<div class="year-grid" use:horizontalSwipe={navigate}>
+			<div
+				class="year-grid grid grid-cols-3 max-[360px]:grid-cols-2 gap-y-6 gap-x-3 sm:gap-8 mt-6 max-md:touch-pan-y"
+				use:horizontalSwipe={navigate}
+			>
 				{#each months as month (month.getMonth())}
 					<button
 						type="button"
-						class="mini-month"
+						class="mini-month text-left rounded-lg self-start max-md:touch-pan-y"
 						aria-label={`Vis ${format(month, 'MMMM yyyy', { locale: nb })}`}
 						on:click={(event) => chooseMonth(month, event)}
 					>
-						<span class="mini-month-title">{format(month, 'MMMM', { locale: nb })}</span>
-						<span class="mini-grid" aria-hidden="true">
-							{#each weekdays as day, index (index)}<span class="mini-weekday">{day}</span>{/each}
+						<span
+							class="mini-month-title block text-primary capitalize font-semibold text-[0.8125rem] sm:text-[1rem] mb-2"
+							>{format(month, 'MMMM', { locale: nb })}</span
+						>
+						<span
+							class="mini-grid grid grid-cols-7 text-[0.5625rem] sm:text-[0.75rem] text-center gap-x-0 gap-y-[0.1875rem] sm:gap-y-1.5"
+							aria-hidden="true"
+						>
+							{#each weekdays as day, index (index)}<span
+									class="mini-weekday text-muted text-[0.5rem] sm:text-[0.625rem]">{day}</span
+								>{/each}
 							{#each calendarDays(month) as day (format(day, 'yyyy-MM-dd'))}
-								<span class="mini-day" class:mini-today={isSameDay(day, today)}
+								<span
+									class="mini-day relative py-0.5 {isSameDay(day, today)
+										? 'text-primary font-bold'
+										: ''}"
+									class:mini-today={isSameDay(day, today)}
 									>{isSameMonth(day, month) ? format(day, 'd') : ''}</span
 								>
 							{/each}
@@ -229,264 +306,3 @@
 		{/if}
 	</div>
 </section>
-
-<style>
-	.plan-calendar {
-		background: var(--card);
-		border-radius: 1.75rem;
-		padding: 1.5rem 1.25rem 1.75rem;
-	}
-	.calendar-content {
-		max-width: 43rem;
-		margin-inline: auto;
-	}
-	.calendar-toolbar {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.25rem;
-	}
-	.calendar-heading {
-		display: flex;
-		align-items: center;
-		gap: 0.125rem;
-		color: var(--p1);
-		font-size: 1.125rem;
-		font-weight: 650;
-		text-align: left;
-		min-height: 44px;
-		line-height: 1.3;
-	}
-	.calendar-actions {
-		display: flex;
-		align-items: center;
-		flex-shrink: 0;
-	}
-	.today-button {
-		padding: 0 0.5rem;
-		min-height: 44px;
-		color: var(--p1);
-		font-size: 0.8125rem;
-	}
-	.arrow {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 44px;
-		color: var(--p1);
-		border-radius: 0.75rem;
-	}
-	@media (hover: hover) and (pointer: fine) {
-		.arrow:hover,
-		.today-button:hover,
-		.month-day:hover {
-			background: var(--surface);
-		}
-	}
-	.date-caption {
-		margin-top: 0.125rem;
-		font-size: 0.75rem;
-		color: var(--text2);
-	}
-	.week-grid {
-		display: grid;
-		grid-template-columns: repeat(7, minmax(0, 1fr));
-		margin: 1.5rem -0.375rem 1.625rem;
-	}
-	.week-day,
-	.month-day {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		min-width: 0;
-	}
-	.weekday {
-		color: var(--text2);
-		font-size: 0.9375rem;
-		text-align: center;
-		font-weight: 550;
-	}
-	.week-day .weekday {
-		margin-bottom: 0.75rem;
-	}
-	.day-number {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		font-size: 1.375rem;
-		font-weight: 450;
-	}
-	.day-number.today {
-		color: var(--p1);
-	}
-	.day-number.selected {
-		background: var(--p1);
-		color: #fff;
-		font-weight: 600;
-	}
-	.session-dots {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 3px;
-		height: 12px;
-	}
-	.session-dots span {
-		width: 4px;
-		height: 4px;
-		border-radius: 50%;
-		background: var(--calendar-dot);
-	}
-	.day-content {
-		min-height: 17rem;
-		border-top: 1px solid var(--br);
-	}
-	@media (max-width: 767px) {
-		.week-grid,
-		.week-day,
-		.month-grid,
-		.month-day,
-		.year-grid,
-		.mini-month,
-		.day-content {
-			touch-action: pan-y;
-		}
-	}
-	.month-title {
-		font-size: 1.875rem;
-		font-weight: 700;
-		text-transform: capitalize;
-		margin: 1rem 0 1.5rem;
-	}
-	.month-grid {
-		display: grid;
-		grid-template-columns: repeat(7, minmax(0, 1fr));
-		gap: 0.5rem 0;
-		margin: 0 -0.375rem;
-	}
-	.month-grid > .weekday {
-		margin-bottom: 0.5rem;
-	}
-	.month-day {
-		border-radius: 0.75rem;
-	}
-	.month-day.outside {
-		opacity: 0.35;
-	}
-	.year-picker select {
-		color: var(--p1);
-		background: var(--card);
-		font-weight: 700;
-		font-size: 1rem;
-		min-height: 44px;
-		padding-right: 0.5rem;
-	}
-	.year-grid {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 1.5rem 0.75rem;
-		margin-top: 1.5rem;
-	}
-	.mini-month {
-		text-align: left;
-		border-radius: 0.5rem;
-		align-self: start;
-	}
-	.mini-month-title {
-		display: block;
-		color: var(--p1);
-		text-transform: capitalize;
-		font-weight: 600;
-		font-size: 0.8125rem;
-		margin-bottom: 0.5rem;
-	}
-	.mini-grid {
-		display: grid;
-		grid-template-columns: repeat(7, minmax(0, 1fr));
-		font-size: 0.5625rem;
-		text-align: center;
-		gap: 0.1875rem 0;
-	}
-	.mini-weekday {
-		color: var(--text2);
-		font-size: 0.5rem;
-	}
-	.mini-day {
-		position: relative;
-		padding: 0.125rem 0;
-	}
-	.mini-today {
-		color: var(--p1);
-		font-weight: 700;
-	}
-	@media (min-width: 640px) {
-		.plan-calendar {
-			padding: 2rem 2.5rem 2.5rem;
-		}
-		.calendar-heading {
-			font-size: 1.5rem;
-		}
-		.arrow {
-			width: 44px;
-		}
-		.week-grid {
-			margin-top: 2rem;
-		}
-		.day-number {
-			width: 48px;
-			height: 48px;
-			font-size: 1.625rem;
-		}
-		.year-grid {
-			gap: 2rem;
-		}
-		.mini-month-title {
-			font-size: 1rem;
-		}
-		.mini-grid {
-			font-size: 0.75rem;
-			gap: 0.375rem 0;
-		}
-		.mini-weekday {
-			font-size: 0.625rem;
-		}
-	}
-	@media (max-width: 359px) {
-		.plan-calendar {
-			padding-left: 1rem;
-			padding-right: 1rem;
-		}
-		.calendar-heading {
-			font-size: 1rem;
-		}
-		.day-number {
-			width: 34px;
-			height: 34px;
-			font-size: 1.25rem;
-		}
-		.year-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-	@media (max-width: 639px) {
-		.week-view .calendar-heading {
-			font-size: 1rem;
-		}
-		.week-view .today-button {
-			font-size: 0.75rem;
-		}
-		.week-view .date-caption {
-			font-size: 0.6875rem;
-		}
-		.week-view .week-day .weekday {
-			font-size: 0.875rem;
-		}
-		.week-view .week-day .day-number {
-			font-size: 1.25rem;
-		}
-	}
-</style>

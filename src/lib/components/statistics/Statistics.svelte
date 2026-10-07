@@ -48,12 +48,12 @@
 
 <section>
 	<div class="mb-3">
-		<h2 class="text-base font-bold uppercase text-[var(--p1)] mb-2">Statistikk:</h2>
+		<h2 class="text-base font-bold uppercase text-primary mb-2">Statistikk:</h2>
 		<div class="flex items-center gap-2">
 			<button
 				aria-label="Forrige periode"
 				on:click={() => navigatePeriod(-1)}
-				class="bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] text-[var(--text2)] hover:text-[var(--p1)] rounded-lg p-1.5 transition-colors"
+				class="bg-card border border-divider hover:border-primary text-muted hover:text-primary rounded-lg p-1.5 transition-colors"
 			>
 				<ChevronLeft class="h-4 w-4" />
 			</button>
@@ -61,22 +61,22 @@
 			<div class="relative">
 				<button
 					on:click={() => (showStatDropdown = !showStatDropdown)}
-					class="flex items-center gap-1.5 bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] rounded-lg px-3 py-1.5 text-sm font-semibold text-[var(--p1)] transition-colors min-w-[130px] justify-between"
+					class="flex items-center gap-1.5 bg-card border border-divider hover:border-primary rounded-lg px-3 py-1.5 text-sm font-semibold text-primary transition-colors min-w-[130px] justify-between"
 				>
 					<span class="capitalize">{statPeriodLabel}</span>
-					<ChevronDown class="h-3.5 w-3.5 text-[var(--text2)] flex-shrink-0" />
+					<ChevronDown class="h-3.5 w-3.5 text-muted flex-shrink-0" />
 				</button>
 				{#if showStatDropdown}
 					<div
-						class="absolute left-0 top-full mt-1 z-30 bg-[var(--card)] border border-[var(--br)] rounded-xl shadow-lg overflow-hidden min-w-[120px]"
+						class="absolute left-0 top-full mt-1 z-30 bg-card border border-divider rounded-xl shadow-lg overflow-hidden min-w-[120px]"
 					>
 						{#each periods as period (period.value)}
 							<button
 								on:click={() => setPeriod(period.value)}
 								class="w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors {statPeriod ===
 								period.value
-									? 'bg-[var(--p1)] text-white'
-									: 'text-[var(--text1)] hover:bg-[var(--surface)]'}"
+									? 'bg-primary text-white'
+									: 'text-foreground hover:bg-surface'}"
 							>
 								{period.label}
 							</button>
@@ -88,7 +88,7 @@
 			<button
 				aria-label="Neste periode"
 				on:click={() => navigatePeriod(1)}
-				class="bg-[var(--card)] border border-[var(--br)] hover:border-[var(--p1)] text-[var(--text2)] hover:text-[var(--p1)] rounded-lg p-1.5 transition-colors"
+				class="bg-card border border-divider hover:border-primary text-muted hover:text-primary rounded-lg p-1.5 transition-colors"
 			>
 				<ChevronRight class="h-4 w-4" />
 			</button>
@@ -99,7 +99,7 @@
 					e.currentTarget.focus();
 					openStatCalendar();
 				}}
-				class="quiet-focus bg-[var(--card)] border border-[var(--br)] text-[var(--text2)] rounded-lg p-1.5 transition-colors"
+				class="quiet-focus bg-card border border-divider text-muted rounded-lg p-1.5 transition-colors"
 			>
 				<Calendar class="h-4 w-4" />
 			</button>
@@ -115,7 +115,7 @@
 			}}
 		/>{/if}
 	<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-		<div class="bg-[var(--card)] rounded-2xl border border-[var(--br)] p-4">
+		<div class="bg-card rounded-2xl border border-divider p-4">
 			<svg
 				viewBox="0 0 272 110"
 				class="w-full pb-3"
@@ -144,7 +144,7 @@
 						height={item.height}
 						fill="rgba(0,0,0,0.05)"
 						rx="5"
-						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1);"
+						class="transition-[y,height] duration-400 ease-in-out"
 					/>
 					<rect
 						x={item.x}
@@ -153,7 +153,7 @@
 						height={item.height}
 						fill={item.barColor}
 						rx="5"
-						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1);"
+						class="transition-[y,height] duration-400 ease-in-out"
 					/>
 					<text
 						x={item.x + item.width / 2}
@@ -162,7 +162,7 @@
 						font-size="8"
 						font-weight="700"
 						fill={item.barColor}
-						style="transition: y 0.4s cubic-bezier(0.4,0,0.2,1);">{item.value}</text
+						class="transition-[y] duration-400 ease-in-out">{item.value}</text
 					>
 					<text
 						x={item.x + item.width / 2}
@@ -175,13 +175,13 @@
 				<line x1="18" y1="90" x2="260" y2="90" stroke="var(--br)" stroke-width="0.8" />
 			</svg>
 
-			<div class="text-center pt-2 border-t border-[var(--br)]">
-				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Antall økter: </span>
-				<span class="text-sm font-medium text-[var(--p1)]">{summary.total}</span>
+			<div class="text-center pt-2 border-t border-divider">
+				<span class="text-sm text-muted font-medium ml-1.5">Antall økter: </span>
+				<span class="text-sm font-medium text-primary">{summary.total}</span>
 			</div>
 		</div>
 
-		<div class="bg-[var(--card)] rounded-2xl border border-[var(--br)] p-4">
+		<div class="bg-card rounded-2xl border border-divider p-4">
 			{#if lineChartData.length > 1}
 				<svg
 					viewBox="0 0 272 110"
@@ -240,7 +240,7 @@
 							fill="var(--card)"
 							stroke="var(--p1)"
 							stroke-width={lineTooltip?.label === p.label ? 2.5 : 1.5}
-							style="transition: r 0.1s, stroke-width 0.1s; pointer-events: none;"
+							class="transition-[r,stroke-width] duration-100 ease-[ease] pointer-events-none"
 						/>
 						<text x={p.x} y="108" text-anchor="middle" font-size="6.5" fill="var(--text2)"
 							>{p.label}</text
@@ -265,18 +265,16 @@
 					{/if}
 				</svg>
 			{:else}
-				<div class="flex items-center justify-center h-32 text-[var(--text2)] text-sm">
-					Ingen data ennå
-				</div>
+				<div class="flex items-center justify-center h-32 text-muted text-sm">Ingen data ennå</div>
 			{/if}
 
-			<div class="text-center mt-1 pt-2 border-t border-[var(--br)]">
-				<span class="text-sm text-[var(--text2)] font-medium ml-1.5">Timer totalt:</span>
-				<span class="text-sm font-medium text-[var(--p1)]"
+			<div class="text-center mt-1 pt-2 border-t border-divider">
+				<span class="text-sm text-muted font-medium ml-1.5">Timer totalt:</span>
+				<span class="text-sm font-medium text-primary"
 					>{summary.totalHours}t{summary.totalMins > 0 ? ` ${summary.totalMins}min` : ''}</span
 				>
 				{#if summary.invalidDurationCount > 0}
-					<p class="mt-2 text-xs text-[var(--text2)]">
+					<p class="mt-2 text-xs text-muted">
 						{summary.invalidDurationCount}
 						{summary.invalidDurationCount === 1 ? 'økt har' : 'økter har'} feil i tidsformat og er ikke
 						med i beregnet treningstid.
