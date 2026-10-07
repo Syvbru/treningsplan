@@ -27,7 +27,7 @@
 </script>
 
 <section>
-	<h2 class="text-base font-bold text-[var(--p1)] mb-3">Teknikkvideoer:</h2>
+	<h2 class="text-base font-bold uppercase text-[var(--p1)] mb-3">Teknikkvideoer:</h2>
 
 	<div class="flex-1 min-w-0">
 		<div

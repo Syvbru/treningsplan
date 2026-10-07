@@ -6,6 +6,7 @@
 	export let onClose: () => void;
 	export let swipeToClose = true;
 	export let animateSwipe = false;
+	export let hideCloseOnMobile = false;
 	let dragX = 0,
 		dragY = 0,
 		dragging = false,
@@ -198,7 +199,7 @@
 						type="button"
 						aria-label="Lukk dialog"
 						on:click={onClose}
-						class="quiet-focus dialog-close shrink-0 flex h-8 w-8 items-center justify-center text-[var(--text2)]"
+						class="quiet-focus dialog-close shrink-0 h-8 w-8 items-center justify-center text-[var(--text2)] {hideCloseOnMobile ? 'hidden lg:flex' : 'flex'}"
 						><X class="h-5 w-5" /></button
 					>
 				</div>
@@ -207,7 +208,7 @@
 					type="button"
 					aria-label="Lukk dialog"
 					on:click={onClose}
-					class="quiet-focus dialog-close absolute right-4 top-4 z-10 rounded-lg bg-[var(--surface)] p-1.5 text-[var(--text2)]"
+					class="quiet-focus dialog-close absolute right-5 top-4 z-10 rounded-lg bg-[var(--surface)] p-1.5 text-[var(--text2)] {hideCloseOnMobile ? 'hidden lg:flex' : 'flex'}"
 					><X class="h-5 w-5" /></button
 				>
 			{/if}

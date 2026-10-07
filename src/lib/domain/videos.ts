@@ -10,6 +10,6 @@ export function validateVideoFiles(files: Pick<File, 'type' | 'size'>[], existin
 }
 export function cloudinaryThumb(url: string): string {
 	return url
-		.replace('/video/upload/', '/video/upload/so_0,w_640/')
+		.replace('/video/upload/', '/video/upload/so_50p,w_640/')
 		.replace(/\.(mp4|mov|avi|webm|mkv)$/i, '.jpg');
 }

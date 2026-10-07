@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { format, parseISO } from 'date-fns';
 	import { nb } from 'date-fns/locale';
-	import { Plus, Video, MessageSquare, SquarePen, Trash2 } from 'lucide-svelte';
+	import { Plus, Pen, Trash2 } from 'lucide-svelte';
 	import Dialog from '$lib/components/ui/Dialog.svelte';
 	import State from '$lib/components/ui/State.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -80,7 +80,7 @@
 
 <section>
 	<div class="flex items-center justify-between mb-3">
-		<h2 class="text-base font-bold text-[var(--p1)]">Teknikklogg:</h2>
+		<h2 class="text-base font-bold uppercase text-[var(--p1)]">Teknikklogg:</h2>
 		{#if !readOnly}<button
 				type="button"
 				on:click={() => (creating = !creating)}
@@ -129,23 +129,20 @@
 								loading="lazy"
 							/>
 						</div>{/if}
-					<div class="flex items-center gap-2 mt-auto pt-1 text-[var(--p2)]">
-						{#if log.tilbakemelding}<MessageSquare
-								class="h-5 w-5"
-							/>{/if}{#if log.video_urls.length}<Video class="h-5 w-5" />{/if}
-					</div>
 				</button>{/each}
 		</div>{/if}
 </section>
-{#if selected}<Dialog
+{#if selected}
+	<Dialog
 		title={editing ? 'Rediger teknikklogg' : 'Teknikklogg'}
+		hideCloseOnMobile={!editing && !confirmingDelete}
 		onClose={close}
 		swipeToClose={!editing && !confirmingDelete}
 		animateSwipe
 	>
-		<div slot="header">
-			<h2 class="font-bold text-lg text-[var(--p1)]">
-				{editing ? 'Rediger logg' : `Teknikk – ${selected.stilart}`}
+		<div slot="header" class="flex items-baseline justify-between">
+			<h2 class="font-bold text-lg text-[var(--p1)] uppercase">
+				{editing ? 'Rediger logg' : `Teknikk ${selected.stilart}`}
 			</h2>
 			<p class="text-sm mt-0.5 font-bold">
 				{format(parseISO(selected.dato), 'd. MMMM yyyy', { locale: nb })}
@@ -174,8 +171,8 @@
 							type="button"
 							aria-label="Rediger logg"
 							on:click={() => (editing = true)}
-							class="flex items-center gap-2 min-h-11 text-sm text-[var(--p1)]"
-							><SquarePen class="h-4 w-4" />Rediger</button
+							class="quiet-focus flex items-center gap-2 min-h-11 text-sm text-[var(--text1)]"
+							><Pen class="h-4 w-4" />Rediger</button
 						>
 						<button
 							type="button"

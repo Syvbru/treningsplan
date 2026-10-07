@@ -71,7 +71,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					on:click={() => onClose()}
-					class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
 				>
 					<SquarePen class="h-4 w-4 shrink-0 text-green-700" />
 					<span class="text-sm font-medium text-[var(--text1)] truncate">
@@ -84,7 +84,7 @@
 
 			<button
 				on:click={() => (showStyrkeSubmenu = true)}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
 			>
 				<Dumbbell class="h-4 w-4 shrink-0 text-[var(--p1)]" />
 				<span class="text-sm font-medium text-[var(--text1)] flex-1">Styrkeøkter</span>
@@ -96,13 +96,13 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				on:click={() => onClose()}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
 			>
 				<FileText class="h-4 w-4 shrink-0 text-[var(--p1)]" />
 				<span class="text-sm font-medium text-[var(--text1)]">Intensitetssoner</span>
 			</a>
 
-			<div class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl mb-1">
+			<div class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl mb-1">
 				<Moon class="h-4 w-4 shrink-0 text-[var(--p1)]" />
 				<span class="text-sm font-medium text-[var(--text1)] flex-1">Mørkt tema</span>
 				<button
@@ -124,7 +124,7 @@
 			<button
 				disabled={loggingOut}
 				on:click={handleLogout}
-				class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl hover:bg-red-50 transition-colors text-left"
+				class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-red-50 transition-colors text-left"
 			>
 				<LogOut class="h-4 w-4 shrink-0 text-red-600" />
 				<span class="text-sm font-medium text-red-600">Logg ut</span>
@@ -145,7 +145,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					on:click={() => onClose()}
-					class="flex items-center gap-3 min-h-11 w-full px-3 py-3 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
+					class="flex items-center gap-3 min-h-11 w-full px-3 py-5 rounded-xl hover:bg-[var(--surface)]/50 transition-colors text-left mb-1"
 				>
 					<FileText class="h-4 w-4 shrink-0 text-[var(--p1)]" />
 					<span class="text-sm font-medium text-[var(--text1)]">{p.title}</span>

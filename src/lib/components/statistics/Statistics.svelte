@@ -48,7 +48,7 @@
 
 <section>
 	<div class="mb-3">
-		<h2 class="text-base font-bold text-[var(--p1)] mb-2">Statistikk:</h2>
+		<h2 class="text-base font-bold uppercase text-[var(--p1)] mb-2">Statistikk:</h2>
 		<div class="flex items-center gap-2">
 			<button
 				aria-label="Forrige periode"
