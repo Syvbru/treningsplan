@@ -5,6 +5,7 @@
 	import PageHeader from '$lib/components/ui/PageHeader.svelte';
 	import State from '$lib/components/ui/State.svelte';
 	import PlanCalendar from '$lib/components/calendar/PlanCalendar.svelte';
+	import PlanSkeleton from './PlanSkeleton.svelte';
 	import TrainingNavigation from './TrainingNavigation.svelte';
 	import Statistics from '$lib/components/statistics/Statistics.svelte';
 	import TechniqueLogs from '$lib/components/technique/TechniqueLogs.svelte';
@@ -106,7 +107,11 @@
 		class="training-main mx-auto max-w-5xl px-4 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] md:pb-12"
 	>
 		<div hidden={activeSection !== 'plan'} class="plan-panel w-full space-y-5">
-			<State loading={planLoading} error={planError} onRetry={() => load(true)} />
+			{#if planLoading}
+				<PlanSkeleton />
+			{:else}
+				<State error={planError} onRetry={() => load(true)} />
+			{/if}
 			{#if !planLoading && !planError && plan}
 				{#if plan.status}<div
 						class="rounded-xl px-2 py-1 flex items-center gap-3 text-xs font-semibold {plan.status ===
