@@ -47,6 +47,20 @@
 	}
 }
 
+@utility moving-selection {
+	@apply hidden pointer-events-none absolute -z-10 rounded-full transition-[left,top,width,height] duration-250 ease-out motion-reduce:transition-none;
+	position-anchor: var(--selection-anchor);
+	left: anchor(left);
+	top: anchor(top);
+	width: anchor-size(width);
+	height: anchor-size(height);
+
+	@supports (anchor-name: --selection-active) and (left: anchor(left)) and
+		(width: anchor-size(width)) {
+		display: block;
+	}
+}
+
 .lt {
 	--form-text: #64748b;
 	--danger-hover: var(--color-red-50);
@@ -61,7 +75,8 @@
 	--text1: #1c1c1e;
 	--text2: #6c6c70;
 	--calendar-dot: #8e8e93;
-	--nav-bg: rgb(255 255 255 / 0.42);
+	--nav-bg: rgb(255 255 255 / 0.3);
+	--nav-border: #e5e5ea;
 	--workout-hard: #ff3b30;
 	--workout-strength: #ffcc00;
 	--workout-long: #00a99a;
@@ -84,7 +99,8 @@
 	--text1: #f5f5f7;
 	--text2: #98989f;
 	--calendar-dot: #636366;
-	--nav-bg: rgb(28 28 30 / 0.4);
+	--nav-bg: rgb(28 28 30 / 0.28);
+	--nav-border: #29292c;
 	--workout-hard: #ff453a;
 	--workout-strength: #ffd60a;
 	--workout-long: #64d2c5;

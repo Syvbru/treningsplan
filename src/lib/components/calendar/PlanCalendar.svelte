@@ -165,7 +165,7 @@
 				<div class="week-track relative" data-carousel-track>
 					{#each weeks as week (week.offset)}
 						<div
-							class="week-grid week-panel grid grid-cols-7 top-0 left-0 w-full max-md:touch-pan-y {week.offset ===
+							class="week-grid week-panel isolate grid grid-cols-7 top-0 left-0 w-full max-md:touch-pan-y [anchor-scope:--calendar-active] {week.offset ===
 							0
 								? 'relative'
 								: 'absolute'}"
@@ -189,7 +189,7 @@
 										aria-hidden="true">{weekdays[index]}</span
 									>
 									<span
-										class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-sm:text-[1.25rem] {isSameDay(
+										class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-sm:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
 											day,
 											selected
 										)
@@ -209,6 +209,12 @@
 									>
 								</button>
 							{/each}
+							{#if week.offset === 0}
+								<span
+									aria-hidden="true"
+									class="calendar-pill moving-selection bg-primary [--selection-anchor:--calendar-active]"
+								></span>
+							{/if}
 						</div>
 					{/each}
 				</div>
@@ -221,7 +227,7 @@
 				{format(cursor, 'MMMM', { locale: nb })}
 			</h2>
 			<div
-				class="month-grid grid grid-cols-7 gap-y-2 gap-x-0 -mx-1.5 max-md:touch-pan-y"
+				class="month-grid relative isolate grid grid-cols-7 gap-y-2 gap-x-0 -mx-1.5 max-md:touch-pan-y [anchor-scope:--calendar-active]"
 				use:horizontalSwipe={navigate}
 			>
 				{#each weekdays as day, index (index)}<span
@@ -232,7 +238,7 @@
 					{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
 					<button
 						type="button"
-						class="month-day flex flex-col items-center min-w-0 rounded-xl hover:bg-surface max-md:touch-pan-y {!isSameMonth(
+						class="month-day flex flex-col items-center min-w-0 rounded-xl hover:[&:not([aria-pressed=true])]:bg-surface max-md:touch-pan-y {!isSameMonth(
 							day,
 							cursor
 						)
@@ -245,7 +251,7 @@
 						on:click={(event) => chooseDay(day, event)}
 					>
 						<span
-							class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-[360px]:text-[1.25rem] {isSameDay(
+							class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-[360px]:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
 								day,
 								selected
 							)
@@ -265,6 +271,12 @@
 						>
 					</button>
 				{/each}
+				{#if monthDays.some((day) => isSameDay(day, selected))}
+					<span
+						aria-hidden="true"
+						class="calendar-pill moving-selection bg-primary [--selection-anchor:--calendar-active]"
+					></span>
+				{/if}
 			</div>
 		{:else}
 			<h2 class="sr-only">Årsvisning {cursor.getFullYear()}</h2>
@@ -306,3 +318,12 @@
 		{/if}
 	</div>
 </section>
+
+<style>
+	@supports (anchor-name: --calendar-active) and (left: anchor(left)) and
+		(width: anchor-size(width)) {
+		.day-number.selected {
+			background: transparent;
+		}
+	}
+</style>
