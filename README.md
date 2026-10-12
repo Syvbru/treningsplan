@@ -63,6 +63,9 @@ Løsningen er utviklet for en avgrenset gruppe utøvere og trenere, med tilgang 
 
 ## Demo
 
-<img src="static/images/dashboard-mobil1.jpeg" width="220" alt="Dashboard på mobil, visning 1">
-<img src="static/images/dashboard-mobil2.jpeg" width="220" alt="Dashboard på mobil, visning 2">
-<img src="static/images/dashboard-mobil3.jpeg" width="220" alt="Dashboard på mobil, visning 3">
+### Skjermbilder
+<img src="static/images/dashboard-mobil1.jpeg" width="250" alt="Dashboard på mobil, visning 1"> <img src="static/images/dashboard-mobil2.jpeg" width="250" alt="Dashboard på mobil, visning 2"> <img src="static/images/dashboard-mobil3.jpeg" width="250" alt="Dashboard på mobil, visning 3">
+
+### Se appen i bruk
+https://github.com/user-attachments/assets/156a0720-a104-496b-89f4-84832e3c2e6d
+
