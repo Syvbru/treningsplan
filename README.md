@@ -6,8 +6,8 @@ Målet var å samle treningsplaner og oppfølging på ett sted, slik at treneren
 
 ## Effekt i bruk
 
-- Som trener har jeg halvert tiden jeg bruker på oppfølging i hverdagen ved å samle utøverne i ett dashboard.
-- Utøverne bruker over halvparten mindre tid på å finne dagens økter enn med regnearkets mobilgrensesnitt.
+- Jeg anslår at appen har redusert tidsbruken min på treningsplanlegging og oppfølging med minst 30 % sammenlignet med tidligere arbeidsmetoder.
+- Utøverne bruker dobbelt så lite tid på å finne dagens økter enn med regnearkets mobilgrensesnitt.
 - Oversikten over fellesøkter gjør det enklere for utøverne å koordinere egentrening med hverandre.
 
 ## Funksjonalitet
@@ -53,7 +53,7 @@ Apps Script-automatiseringen og regnearkene er eksterne deler av løsningen og l
 
 Appen har to roller: utøver og trener. Treningsplanene administreres i Google Sheets, mens webappen gir en samlet og mer tilgjengelig flate for visning og oppfølging. Innlogging og API-tilgang håndteres av serverrutene i SvelteKit.
 
-Løsningen er laget for en lukket gruppe med kjente brukere og er et praktisk verktøy for treningsplanlegging, ikke et system for behandling av sensitive helseopplysninger. Dagens struktur og tilgangsmodell er valgt for å få en nyttig løsning i bruk for treneren og utøverne. Dersom appen åpnes for flere trenere, utøvere eller grupper, må blant annet gruppeseparasjon, tilgangsstyring og matching av økter videreutvikles for den bredere bruken.
+Løsningen er utviklet for en avgrenset gruppe utøvere og trenere, med tilgang til treningsplaner og individuell oppfølging. Dagens arkitektur er tilpasset dette bruksområdet. Ved eventuell utvidelse til flere trenere og grupper må blant annet tilgangsstyring, gruppeseparasjon og håndtering av personopplysninger gjennomgås og videreutvikles.
 
 ## Videre arbeid
 
