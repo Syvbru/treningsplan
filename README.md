@@ -63,7 +63,6 @@ Løsningen er utviklet for en avgrenset gruppe utøvere og trenere, med tilgang 
 
 ## Demo
 
-<img src="static/images/dashboard-mobil1.jpeg" width="220" alt="Dashboard på mobil, visning 1"> <img src="static/images/dashboard-mobil2.jpeg" width="220" alt="Dashboard på mobil, visning 2"> <img src="static/images/dashboard-mobil3.jpeg" width="220" alt="Dashboard på mobil, visning 3">
-<video width="220" controls muted playsinline>
-  <source src="static/images/dashboard-mobil4.mov" type="video/quicktime">
-</video>
+<img src="static/images/dashboard-mobil1.jpeg" width="220" alt="Dashboard på mobil, visning 1">
+<img src="static/images/dashboard-mobil2.jpeg" width="220" alt="Dashboard på mobil, visning 2">
+<img src="static/images/dashboard-mobil3.jpeg" width="220" alt="Dashboard på mobil, visning 3">
