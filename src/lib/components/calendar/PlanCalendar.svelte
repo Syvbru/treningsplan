@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	import {
 		addDays,
 		addMonths,
@@ -26,7 +25,6 @@
 	export let selected = startOfDay(new Date());
 	export let view: 'week' | 'month' | 'year' = 'week';
 	let cursor = startOfMonth(selected);
-	let calendarElement: HTMLElement;
 	const today = startOfDay(new Date());
 	const weekdays = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
 	const weekdayNames = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
@@ -46,28 +44,19 @@
 		else if (view === 'month') cursor = addMonths(cursor, direction);
 		else cursor = addYears(cursor, direction);
 	}
-	async function zoomOut(event: MouseEvent) {
+	function zoomOut() {
 		if (view === 'week') {
 			cursor = startOfMonth(selected);
 			view = 'month';
 		} else if (view === 'month') view = 'year';
-		await tick();
-		if (event.detail === 0)
-			calendarElement.querySelector<HTMLElement>('.year-picker select, .calendar-heading')?.focus();
 	}
-	async function chooseDay(day: Date, event: MouseEvent) {
+	function chooseDay(day: Date) {
 		selected = startOfDay(day);
 		view = 'week';
-		await tick();
-		if (event.detail === 0)
-			calendarElement.querySelector<HTMLElement>('.week-day[aria-pressed="true"]')?.focus();
 	}
-	async function chooseMonth(month: Date, event: MouseEvent) {
+	function chooseMonth(month: Date) {
 		cursor = month;
 		view = 'month';
-		await tick();
-		if (event.detail === 0)
-			calendarElement.querySelector<HTMLElement>('.calendar-heading')?.focus();
 	}
 	function goToday() {
 		selected = today;
@@ -81,7 +70,6 @@
 </script>
 
 <section
-	bind:this={calendarElement}
 	class="plan-calendar bg-card rounded-[1.75rem] px-5 pt-6 pb-7 sm:px-10 sm:pt-8 sm:pb-10 max-[360px]:px-4"
 	class:week-view={view === 'week'}
 	aria-label="Treningskalender"
@@ -106,7 +94,7 @@
 			{:else}
 				<button
 					type="button"
-					class="calendar-heading flex items-center gap-0.5 text-primary text-[1.125rem] font-[650] text-left min-h-11 leading-[1.3] sm:text-[1.5rem] {view ===
+					class="calendar-heading flex items-center gap-0.5 text-primary text-[1.125rem] font-[650] text-left min-h-11 leading-[1.3] sm:text-[1.5rem] hover:text-primary/60 {view ===
 					'week'
 						? 'max-sm:text-[1rem]'
 						: 'max-[360px]:text-[1rem]'}"
@@ -122,7 +110,7 @@
 			<div class="calendar-actions flex items-center shrink-0">
 				<button
 					type="button"
-					class="today-button px-2 min-h-11 text-primary text-[0.8125rem] hover:bg-surface {view ===
+					class="today-button px-2 min-h-11 text-primary text-[0.8125rem] rounded-xl hover:bg-surface {view ===
 					'week'
 						? 'max-sm:text-[0.75rem]'
 						: ''}"
@@ -178,7 +166,7 @@
 								{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
 								<button
 									type="button"
-									class="week-day flex flex-col items-center min-w-0 max-md:touch-pan-y"
+									class="week-day group flex flex-col items-center min-w-0 max-md:touch-pan-y"
 									aria-label={dayLabel(day)}
 									aria-pressed={isSameDay(day, selected)}
 									aria-current={isSameDay(day, today) ? 'date' : undefined}
@@ -189,7 +177,7 @@
 										aria-hidden="true">{weekdays[index]}</span
 									>
 									<span
-										class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-sm:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
+										class="day-number group-hover:[&:not(.selected)]:bg-surface flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-sm:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
 											day,
 											selected
 										)
@@ -238,7 +226,7 @@
 					{@const daySessions = byDate.get(format(day, 'yyyy-MM-dd')) ?? []}
 					<button
 						type="button"
-						class="month-day flex flex-col items-center min-w-0 rounded-xl hover:[&:not([aria-pressed=true])]:bg-surface max-md:touch-pan-y {!isSameMonth(
+						class="month-day group flex flex-col items-center min-w-0 rounded-xl max-md:touch-pan-y {!isSameMonth(
 							day,
 							cursor
 						)
@@ -248,10 +236,10 @@
 						aria-label={dayLabel(day)}
 						aria-pressed={isSameDay(day, selected)}
 						aria-current={isSameDay(day, today) ? 'date' : undefined}
-						on:click={(event) => chooseDay(day, event)}
+						on:click={() => chooseDay(day)}
 					>
 						<span
-							class="day-number flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-[360px]:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
+							class="day-number group-hover:[&:not(.selected)]:bg-surface flex items-center justify-center size-10 sm:size-12 max-[360px]:size-[34px] rounded-full text-[1.375rem] sm:text-[1.625rem] max-[360px]:text-[1.25rem] [&.selected]:[anchor-name:--calendar-active] {isSameDay(
 								day,
 								selected
 							)
@@ -287,9 +275,9 @@
 				{#each months as month (month.getMonth())}
 					<button
 						type="button"
-						class="mini-month text-left rounded-lg self-start max-md:touch-pan-y"
+						class="mini-month text-left rounded-lg p-3 -m-3 hover:bg-surface self-start max-md:touch-pan-y"
 						aria-label={`Vis ${format(month, 'MMMM yyyy', { locale: nb })}`}
-						on:click={(event) => chooseMonth(month, event)}
+						on:click={() => chooseMonth(month)}
 					>
 						<span
 							class="mini-month-title block text-primary capitalize font-semibold text-[0.8125rem] sm:text-[1rem] mb-2"

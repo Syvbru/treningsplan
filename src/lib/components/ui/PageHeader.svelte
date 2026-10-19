@@ -18,13 +18,11 @@
 			<div class="flex gap-2">
 				<button
 					type="button"
-					data-dialog-focus-fallback
-					on:click={(e) => {
-						e.currentTarget.focus();
+					on:click={() => {
 						onProfile();
 					}}
 					aria-label="Profil"
-					class="quiet-focus bg-card text-primary rounded-full p-2 md:p-2.5 border border-transparent"
+					class="bg-card text-primary rounded-full p-2 md:p-2.5 border border-transparent"
 					><User class="h-4 w-4 md:h-5 md:w-5" /></button
 				>
 			</div>

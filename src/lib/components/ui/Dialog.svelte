@@ -18,7 +18,6 @@
 	$: entranceSheet = animateEntrance && variant === 'sheet';
 	let element: HTMLDialogElement;
 	let content: HTMLDivElement;
-	let previous: HTMLElement | null = null;
 	let introReady = false;
 	let gestureActive = false;
 	let suppressClickUntil = 0;
@@ -48,29 +47,15 @@
 		);
 	}
 	onMount(() => {
-		previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		const overflow = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
 		element.showModal();
 		content.addEventListener('click', suppressSwipeClick, true);
-		const observer = new MutationObserver(() => {
-			if (element.open && !element.contains(document.activeElement)) {
-				element
-					.querySelector<HTMLElement>(
-						'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
-					)
-					?.focus();
-			}
-		});
-		observer.observe(content, { childList: true, subtree: true });
 		return () => {
 			clearTimeout(closeTimer);
 			content.removeEventListener('click', suppressSwipeClick, true);
-			observer.disconnect();
 			element.close();
 			document.body.style.overflow = overflow;
-			if (previous?.isConnected && previous !== document.body) previous.focus();
-			else document.querySelector<HTMLElement>('[data-dialog-focus-fallback]')?.focus();
 		};
 	});
 	function touchStart(e: TouchEvent) {
@@ -226,7 +211,7 @@
 						type="button"
 						aria-label="Lukk dialog"
 						on:click={onClose}
-						class="quiet-focus dialog-close shrink-0 h-8 w-8 items-center justify-center text-muted {variant ===
+						class="dialog-close shrink-0 h-8 w-8 items-center justify-center text-muted {variant ===
 						'sidebar'
 							? 'hidden'
 							: hideCloseOnMobile
@@ -239,7 +224,7 @@
 					type="button"
 					aria-label="Lukk dialog"
 					on:click={onClose}
-					class="quiet-focus dialog-close absolute right-5 top-4 z-10 rounded-lg bg-surface p-1.5 text-muted {variant ===
+					class="dialog-close absolute right-5 top-4 z-10 rounded-lg bg-surface p-1.5 text-muted {variant ===
 					'sidebar'
 						? 'hidden'
 						: hideCloseOnMobile

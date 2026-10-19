@@ -95,11 +95,10 @@
 
 			<button
 				aria-label="Velg statistikkdato"
-				on:click={(e) => {
-					e.currentTarget.focus();
+				on:click={() => {
 					openStatCalendar();
 				}}
-				class="quiet-focus bg-card border border-divider text-muted rounded-lg p-1.5 transition-colors"
+				class="bg-card border border-divider text-muted rounded-lg p-1.5 transition-colors"
 			>
 				<Calendar class="h-4 w-4" />
 			</button>

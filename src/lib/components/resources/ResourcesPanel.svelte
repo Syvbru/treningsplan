@@ -56,7 +56,7 @@
 				onClose();
 				showStyrkeSubmenu = false;
 			}}
-			class="quiet-focus flex h-8 w-8 shrink-0 items-center justify-center text-white"
+			class="flex h-8 w-8 shrink-0 items-center justify-center text-white"
 		>
 			<X class="h-5 w-5" />
 		</button>

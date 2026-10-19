@@ -28,7 +28,6 @@ export function classifyWorkout(title: string): WorkoutKind {
 	if (lower.includes('hvile')) return 'rest';
 	if (lower.includes('langtur')) return 'long';
 	if (lower.includes('hurtighet') || lower.includes('fartsøkt')) return 'speed';
-	if (lower.includes('teknikk')) return 'technique';
 	if (lower.includes('styrke') || lower.includes('basis')) return 'strength';
 	return 'easy';
 }

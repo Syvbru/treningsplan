@@ -102,9 +102,8 @@
 	{#if !loading && !error}<div class="technique-log-grid grid grid-cols-2 gap-3">
 			{#each logs as log (log.id)}<button
 					type="button"
-					class="quiet-focus min-w-0 w-full rounded-2xl p-3 text-left bg-card border border-divider flex flex-col"
-					on:click={(event) => {
-						event.currentTarget.focus();
+					class="min-w-0 w-full rounded-2xl p-3 text-left bg-card border border-divider flex flex-col"
+					on:click={() => {
 						selected = log;
 						mutationError = '';
 					}}
@@ -170,7 +169,7 @@
 							type="button"
 							aria-label="Rediger logg"
 							on:click={() => (editing = true)}
-							class="quiet-focus flex items-center gap-2 min-h-11 text-sm text-foreground"
+							class="flex items-center gap-2 min-h-11 text-sm text-foreground"
 							><Pen class="h-4 w-4" />Rediger</button
 						>
 						<button

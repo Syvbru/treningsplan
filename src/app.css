@@ -19,7 +19,6 @@
 	--color-workout-long: var(--workout-long);
 	--color-workout-rest: var(--workout-rest);
 	--color-workout-speed: var(--workout-speed);
-	--color-workout-technique: var(--workout-technique);
 	--color-workout-easy: var(--workout-easy);
 }
 
@@ -82,7 +81,6 @@
 	--workout-long: #00a99a;
 	--workout-rest: #34a853;
 	--workout-speed: #af52de;
-	--workout-technique: #c59700;
 	--workout-easy: #a9e4ff;
 }
 .dk {
@@ -106,7 +104,6 @@
 	--workout-long: #64d2c5;
 	--workout-rest: #30d158;
 	--workout-speed: #bf5af2;
-	--workout-technique: #ffd60a;
 	--workout-easy: #b1e7ff;
 }
 
@@ -143,10 +140,6 @@ body {
 	}
 }
 
-:focus-visible {
-	outline: 2px solid var(--p1, #eb26ad);
-	outline-offset: 3px;
-}
 dialog::backdrop {
 	background: rgb(15 23 42 / 0.4);
 	backdrop-filter: blur(4px);
@@ -180,12 +173,6 @@ progress::-moz-progress-bar {
 	}
 }
 
-.quiet-focus:focus,
-.quiet-focus:focus-visible,
-.quiet-focus:active {
-	outline: none !important;
-	box-shadow: none !important;
-}
 input:not([type='file']):focus,
 textarea:focus,
 select.form-field:focus,
